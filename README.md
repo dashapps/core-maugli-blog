@@ -13,6 +13,14 @@ Hi-perfomance, SEO&AI-SEO optimised
    npm install
    ```
 
+   During installation the `upgrade-config` script runs automatically
+   and updates your `maugli.config.ts` with any new fields. You can run
+   this manually later with:
+
+   ```bash
+   npm run upgrade
+   ```
+
 2. **Run the development server**
 
    ```bash
@@ -37,4 +45,5 @@ Hi-perfomance, SEO&AI-SEO optimised
 | `npm run featured:add <slug>` | Mark a post as featured           |
 | `npm run featured:remove <slug>` | Remove featured mark from a post |
 | `npm run featured:list` | List all featured posts                 |
+| `npm run upgrade` | Manually update `maugli.config.ts`          |
 

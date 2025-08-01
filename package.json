@@ -10,7 +10,9 @@
         "astro": "astro",
         "featured:add": "node scripts/featured.js add",
         "featured:remove": "node scripts/featured.js remove",
-        "featured:list": "node scripts/featured.js list"
+        "featured:list": "node scripts/featured.js list",
+        "upgrade": "node scripts/upgrade-config.js",
+        "postinstall": "node scripts/upgrade-config.js"
     },
     "dependencies": {
         "@astrojs/mdx": "^4.3.0",
