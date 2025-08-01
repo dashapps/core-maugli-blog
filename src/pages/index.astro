@@ -1,5 +1,6 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { getFilteredCollection } from '../utils/content-loader';
 import Button from '../components/Button.astro';
 import InfoCard from '../components/InfoCard.astro';
 import PostPreview from '../components/PostPreview.astro';
@@ -20,17 +21,11 @@ const pages = (dict as any).pages || (fallbackDict as any).pages || {};
 const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
 
 // Получаем все посты и показываем первые N постов
-let allPosts = (await getCollection('blog')).sort(sortItemsWithFeaturedFirst);
-if (!maugliConfig.showExamples) {
-    allPosts = allPosts.filter((post) => !post.data.isExample);
-}
+let allPosts = (await getFilteredCollection('blog')).sort(sortItemsWithFeaturedFirst);
 const displayPosts = allPosts.slice(0, siteConfig.postsPerPage || 4);
 
 // Получаем все рубрики
-let allRubrics = await getCollection('tags');
-if (!maugliConfig.showExamples) {
-    allRubrics = allRubrics.filter((tag) => !tag.data.isExample);
-}
+let allRubrics = await getFilteredCollection('tags');
 const rubricSlugs = allRubrics.map((r) => r.data.slug);
 
 // Получаем все теги с количеством постов и флагом рубрики

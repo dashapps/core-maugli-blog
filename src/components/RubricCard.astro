@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getFilteredCollection } from '../utils/content-loader';
 import { maugliConfig } from '../config/maugli.config';
 import { slugify } from '../utils/common-utils';
 import { getPostsByTag } from '../utils/data-utils';
@@ -45,7 +45,7 @@ const slug = slugify(title);
 let postCount = 0;
 let lastPublishDate = '';
 try {
-    const posts = await getCollection('blog');
+    const posts = await getFilteredCollection('blog');
     const rubricPosts = getPostsByTag(posts, slug);
     postCount = rubricPosts.length;
     if (postCount > 0) {

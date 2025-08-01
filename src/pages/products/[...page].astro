@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPathsOptions, Page } from 'astro';
-import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import InfoCard from '../../components/InfoCard.astro';
 import Pagination from '../../components/Pagination.astro';
@@ -18,7 +19,7 @@ const productsTitle = maugliConfig.pageTitles?.products?.trim() || dict.pages?.p
 const productsDescription = maugliConfig.productsDescription?.trim() || dict.pages?.products?.description || dicts['en'].pages.products.description;
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-    const products = (await getCollection('products')).sort((a, b) => {
+    const products = (await getFilteredCollection('products')).sort((a, b) => {
         if (b.data.isFeatured !== a.data.isFeatured) return b.data.isFeatured - a.data.isFeatured;
         return (b.data.publishDate?.getTime?.() || 0) - (a.data.publishDate?.getTime?.() || 0);
     });
@@ -29,9 +30,6 @@ type Props = { page: Page<CollectionEntry<'products'>> };
 
 const { page } = Astro.props;
 let productList = page.data;
-if (!maugliConfig.showExamples) {
-    productList = productList.filter((product) => !product.data.isExample);
-}
 const productsSection = await getEntry('pages', 'products');
 ---
 

@@ -1,5 +1,6 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
+import { type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../utils/content-loader';
 import { maugliConfig } from '../config/maugli.config';
 import { LANGUAGES } from '../i18n/languages';
 import FormattedDate from './FormattedDate.astro';
@@ -32,7 +33,7 @@ const { publishDate, readingTime = '5', post, author, authorImage, class: classN
 
 let authors = [];
 try {
-    authors = await getCollection('authors');
+    authors = await getFilteredCollection('authors');
 } catch (e) {
     console.warn('Не удалось загрузить коллекцию авторов:', e);
 }

@@ -1,5 +1,6 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { type CollectionEntry, render } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import Subscribe from '../../components/Subscribe.astro';
@@ -17,7 +18,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllTags, getPostsByTag, sortItemsWithFeaturedFirst } from '../../utils/data-utils';
 
 export async function getStaticPaths() {
-    const authors = await getCollection('authors');
+    const authors = await getFilteredCollection('authors');
     return authors.map((author) => ({
         params: { id: author.id },
         props: { author }
@@ -31,10 +32,7 @@ const { name, position, description, avatar, socials, seo } = author.data;
 const { Content } = await render(author);
 
 // Получаем все статьи блога
-let allPosts = await getCollection('blog');
-if (!maugliConfig.showExamples) {
-    allPosts = allPosts.filter((post) => !post.data.isExample);
-}
+let allPosts = await getFilteredCollection('blog');
 
 // Фильтруем статьи этого автора (с учетом дефолтного автора)
 const authorPosts = allPosts

@@ -1,5 +1,5 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { getFilteredCollection } from './content-loader';
 import siteConfig from '../data/site-config';
 import { sortItemsByDateDesc } from './data-utils';
 
@@ -8,7 +8,7 @@ import { sortItemsByDateDesc } from './data-utils';
  * This helper can be used in API routes or build scripts.
  */
 export async function generateBlogRss(context: { site: string }) {
-    const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
+    const posts = (await getFilteredCollection('blog')).sort(sortItemsByDateDesc);
     return rss({
         title: siteConfig.title,
         description: siteConfig.description,

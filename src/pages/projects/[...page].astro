@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPathsOptions, Page } from 'astro';
-import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import InfoCard from '../../components/InfoCard.astro';
 import Pagination from '../../components/Pagination.astro';
@@ -14,7 +15,7 @@ import { slugify } from '../../utils/common-utils';
 import { sortItemsByDateDesc } from '../../utils/data-utils';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-    const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+    const projects = (await getFilteredCollection('projects')).sort(sortItemsByDateDesc);
     return paginate(projects, { pageSize: siteConfig.projectsPerPage || 6 });
 }
 
@@ -22,11 +23,7 @@ type Props = { page: Page<CollectionEntry<'projects'>> };
 
 const { page } = Astro.props;
 let portfolio = page.data;
-let allProjects = await getCollection('projects');
-if (!maugliConfig.showExamples) {
-    portfolio = portfolio.filter((project) => !project.data.isExample);
-    allProjects = allProjects.filter((project) => !project.data.isExample);
-}
+let allProjects = await getFilteredCollection('projects');
 // Получаем все уникальные теги проектов
 const allTags = [...new Set(allProjects.flatMap((project) => project.data.tags || []))];
 const tagsWithCount = allTags.map((tag) => ({

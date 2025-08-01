@@ -1,5 +1,6 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { type CollectionEntry, render } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import ArticleMeta from '../../components/ArticleMeta.astro';
 import ContentFooter from '../../components/ContentFooter.astro';
 import HeroImage from '../../components/HeroImage.astro';
@@ -21,7 +22,7 @@ const dict = dicts[lang] || dicts['en'];
 const morePostsTitle = dict.buttons?.morePosts || dicts['en'].buttons.morePosts;
 
 export async function getStaticPaths() {
-    const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
+    const posts = (await getFilteredCollection('blog')).sort(sortItemsByDateDesc);
     const postCount = posts.length;
     return posts.map((post, index) => ({
         params: { id: post.id },
@@ -54,7 +55,7 @@ const tocItems = headings
 // Получаем картинку для баннера по productID (если есть)
 let bannerImage = { src: '/default.webp', alt: title };
 if (post.data.productID) {
-    const allProducts = await getCollection('products');
+    const allProducts = await getFilteredCollection('products');
     const product = allProducts.find((p) => p.id === post.data.productID);
     if (product && product.data.image) {
         bannerImage = {
