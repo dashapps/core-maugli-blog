@@ -6,6 +6,13 @@ Hi-perfomance, SEO&AI-SEO optimised
 
 ## Getting started
 
+To start a new project in an empty folder run:
+
+```bash
+ npx maugli-blog init my-blog
+ cd my-blog
+```
+
 1. **Install dependencies**
 
    ```bash
