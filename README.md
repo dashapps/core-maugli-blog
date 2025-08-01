@@ -15,6 +15,9 @@ To start a new project in an empty folder run:
 
 1. **Install dependencies**
 
+   If you created your project using the provided `init` script, the
+   dependencies are already installed and you can skip this step.
+
    ```bash
    npm install
    ```

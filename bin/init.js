@@ -1,39 +1,38 @@
 #!/usr/bin/env node
-import fs from 'fs/promises';
+
+import { cpSync, existsSync } from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const templateRoot = path.join(__dirname, '..');
+const targetDir = process.argv[2] ? path.resolve(process.argv[2]) : process.cwd();
 
-async function copyItem(item, targetDir) {
-  const src = path.join(rootDir, item);
+function copyItem(item) {
+  const src = path.join(templateRoot, item);
   const dest = path.join(targetDir, item);
-  await fs.cp(src, dest, { recursive: true });
+  cpSync(src, dest, { recursive: true });
+  console.log(`Copied ${item}`);
 }
 
-async function npmInstall(targetDir) {
-  await new Promise((resolve, reject) => {
-    const child = spawn('npm', ['install'], { cwd: targetDir, stdio: 'inherit' });
-    child.on('close', code => (code === 0 ? resolve() : reject(new Error(`npm install failed with code ${code}`))));
-  });
-}
-
-export default async function init(targetArg) {
-  const target = targetArg || '.';
-  const targetDir = path.resolve(process.cwd(), target);
-  await fs.mkdir(targetDir, { recursive: true });
-  for (const item of ['src', 'public', 'scripts', 'astro.config.mjs']) {
-    await copyItem(item, targetDir);
+// Copy package files first so npm install works correctly
+['package.json', 'package-lock.json'].forEach(file => {
+  if (existsSync(path.join(templateRoot, file))) {
+    copyItem(file);
   }
-  await npmInstall(targetDir);
-}
+});
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  init(process.argv[2]).catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
-}
+const items = [
+  'astro.config.mjs',
+  'tsconfig.json',
+  'public',
+  'src',
+  'scripts',
+  'typograf-batch.js',
+  'resize-all.cjs'
+];
+items.forEach(copyItem);
+
+execSync('npm install', { cwd: targetDir, stdio: 'inherit' });
