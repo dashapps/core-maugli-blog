@@ -1,5 +1,6 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import InfoCard from '../../components/InfoCard.astro';
 import RubricCard from '../../components/RubricCard.astro';
@@ -11,10 +12,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { slugify } from '../../utils/common-utils';
 import { getAllTags, getPostsByTag, sortItemsByDateDesc } from '../../utils/data-utils';
 
-let posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
-if (!maugliConfig.showExamples) {
-    posts = posts.filter((post) => !post.data.isExample);
-}
+let posts = (await getFilteredCollection('blog')).sort(sortItemsByDateDesc);
 const tags = getAllTags(posts).sort((tagA, tagB) => {
     const postCountTagA = getPostsByTag(posts, tagA.id).length;
     const postCountTagB = getPostsByTag(posts, tagB.id).length;
@@ -22,10 +20,7 @@ const tags = getAllTags(posts).sort((tagA, tagB) => {
 });
 
 // Получаем все mdx-файлы рубрик
-let allRubricFiles = await getCollection('tags');
-if (!maugliConfig.showExamples) {
-    allRubricFiles = allRubricFiles.filter((tag) => !tag.data.isExample);
-}
+let allRubricFiles = await getFilteredCollection('tags');
 const rubricSlugs = allRubricFiles.map((r) => r.data.slug);
 const rubricMeta = Object.fromEntries(allRubricFiles.map((r) => [r.data.slug, r]));
 

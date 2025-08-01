@@ -1,5 +1,6 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import ArticleMeta from '../../components/ArticleMeta.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ContentFooter from '../../components/ContentFooter.astro';
@@ -22,7 +23,7 @@ const articlesByTag = dict.pages?.productsId?.articlesByTag || dicts['en'].pages
 const casesByTag = dict.pages?.productsId?.casesByTag || dicts['en'].pages.productsId.casesByTag;
 
 export async function getStaticPaths() {
-    const products = (await getCollection('products')).sort(sortItemsByDateDesc);
+    const products = (await getFilteredCollection('products')).sort(sortItemsByDateDesc);
     return products.map((product) => ({
         params: { id: product.id },
         props: { product }
@@ -50,8 +51,8 @@ const tocItems = headings
     }));
 
 // Получаем связанные статьи (blog) и кейсы (projects), где productID совпадает с productID продукта
-const relatedPosts = (await getCollection('blog')).filter((post) => post.data.productID === product.data.productID);
-const relatedProjects = (await getCollection('projects')).filter((project) => project.data.productID === product.data.productID);
+const relatedPosts = (await getFilteredCollection('blog')).filter((post) => post.data.productID === product.data.productID);
+const relatedProjects = (await getFilteredCollection('projects')).filter((project) => project.data.productID === product.data.productID);
 
 // Сортировка: сначала featured, потом по дате
 const sortByFeaturedAndDate = (a, b) => {

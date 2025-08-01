@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getFilteredCollection } from '../utils/content-loader';
 import siteConfig from '../data/site-config.ts';
 import '../styles/global.css';
 // Определи тип выше:
@@ -68,7 +68,7 @@ function formatCanonicalURL(url: string | URL) {
 
 let authors = [];
 try {
-    authors = await getCollection('authors');
+    authors = await getFilteredCollection('authors');
 } catch (e) {
     console.warn('Не удалось загрузить коллекцию авторов:', e);
 }

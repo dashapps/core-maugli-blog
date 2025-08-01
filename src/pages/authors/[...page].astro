@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPathsOptions, Page } from 'astro';
-import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
 import AuthorCard from '../../components/AuthorCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import InfoCard from '../../components/InfoCard.astro';
@@ -15,7 +16,7 @@ const lang: string = typeof maugliConfig.defaultLang === 'string' && dicts[maugl
 const dict = dicts[lang] || dicts['en'];
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-    const authorsCollection = await getCollection('authors');
+    const authorsCollection = await getFilteredCollection('authors');
     // Сортируем авторов по имени в алфавитном порядке
     const authors = authorsCollection.sort((a, b) => a.data.name.localeCompare(b.data.name, 'ru'));
     return paginate(authors, { pageSize: 4 }); // 4 автора на страницу для красивой сетки 2x2
@@ -25,15 +26,9 @@ type Props = { page: Page<CollectionEntry<'authors'>> };
 
 const { page } = Astro.props;
 let authors = page.data;
-if (!maugliConfig.showExamples) {
-    authors = authors.filter((author) => !author.data.isExample);
-}
 
 // Получаем все статьи
-let allPosts = await getCollection('blog');
-if (!maugliConfig.showExamples) {
-    allPosts = allPosts.filter((post) => !post.data.isExample);
-}
+let allPosts = await getFilteredCollection('blog');
 
 // Фильтрация авторов по наличию статей, если showAuthorsWithoutArticles === false
 if (maugliConfig.showAuthorsWithoutArticles === false) {
