@@ -1,0 +1,126 @@
+{
+  "buttons": {
+    "share": "シェア",
+    "subscribe": "購読する",
+    "moreAboutProduct": "製品について詳しく",
+    "copied": "コピーしました！",
+    "copyLink": "リンクをコピー",
+    "copyLinkToArticle": "記事リンクをコピー",
+    "morePosts": "さらに記事を見る"
+  },
+  "form": {
+    "emailPlaceholder": "メールアドレス",
+    "emailLabel": "メール",
+    "subscribeAriaLabel": "購読フォーム"
+  },
+
+  "nav": {
+    "blog": "ブログ",
+    "products": "製品",
+    "projects": "事例",
+    "authors": "著者",
+    "tags": "トピック",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる"
+  },
+  "pages": {
+    "authors": {
+      "title": "著者",
+      "description": "{brand}のために執筆する専門家チームをご紹介",
+      "goToAuthor": "著者ページへ",
+      "avatarAlt": "アバター",
+      "onPlatform": "に"
+    },
+    "tags": {
+      "title": "カテゴリ",
+      "description": "カテゴリごとの記事一覧",
+      "blogRubrics": "ブログカテゴリ"
+    },
+    "index": {
+      "title": "<ブログ>",
+      "description": "AIの視点から見る自動化に関するブログ",
+      "articles": "記事",
+      "minutes": "分"
+    },
+    "products": {
+      "title": "製品",
+      "description": "すべてのMaugli製品"
+    },
+    "projects": {
+      "tagTitle": "タグ別サービス",
+      "title": "サービス"
+    },
+    "blog": {
+      "moreByTag": "関連トピックを見る"
+    },
+    "productsId": {
+      "articlesByTag": "関連する記事",
+      "casesByTag": "関連する事例"
+    }
+  },
+  "socials": {
+    "email": "メール",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "telegram": "Telegram",
+    "reddit": "Reddit",
+    "medium": "Medium",
+    "mastodon": "Mastodon",
+    "bluesky": "Bluesky"
+  },
+  "footer": {
+    "allRightsReserved": "全著作権所有"
+  },
+  "shareIconAriaLabel": {
+    "twitter": "Twitterでシェア",
+    "copy": "リンクをコピー",
+    "telegram": "Telegramでシェア",
+    "linkedin": "LinkedInでシェア",
+    "whatsapp": "WhatsAppでシェア",
+    "facebook": "Facebookでシェア",
+    "copied": "リンクをコピーしました"
+  },
+  "date": {
+    "today": "今日",
+    "yesterday": "昨日"
+  },
+  "sidebarAriaLabel": "サイドバー",
+  "summaryFAQCard": {
+    "ariaLabel": "概要とFAQ",
+    "summaryLabel": "概要：",
+    "faqLabel": "FAQ："
+  },
+  "tableOfContents": {
+    "title": "目次",
+    "ariaLabel": "目次"
+  },
+  "tagPill": {
+    "ariaLabel": "タグ：{tag}"
+  },
+  "tagPills": {
+    "ariaLabel": "タグ：{name} ({count})"
+  },
+  "tagsSection": {
+    "allCases": "すべての事例",
+    "allArticles": "すべての記事",
+    "allTags": "すべてのタグ",
+    "rubricAlt": "カテゴリ",
+    "tagAriaLabel": "タグ：{name} ({count})"
+  },
+  "themeToggle": {
+    "ariaLabel": "カラーモードを変更"
+  },
+  "pagination": {
+    "goToPage": "{lastPage}ページ中{page}ページへ移動",
+    "pageOf": "{lastPage}ページ中{currentPage}ページ"
+  },
+  "subscribe": {
+    "heading": "最新情報を購読する",
+    "mutedText": "最新の記事やニュースをいち早くお届けします！"
+  },
+  "notFound": {
+    "title": "ページが見つかりません",
+    "description": "申し訳ありません。このページは存在しないか削除されました。",
+    "button": "メインページへ"
+  }
+}

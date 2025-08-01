@@ -1,0 +1,167 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PostPreview from '../../components/PostPreview.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import TagsSection from '../../components/TagsSection.astro';
+import { maugliConfig } from '../../config/maugli.config';
+import BlueskyIcon from '../../icons/socials/BlueskyIcon.astro';
+import EmailIcon from '../../icons/socials/EmailIcon.astro';
+import LinkedinIcon from '../../icons/socials/LinkedinIcon.astro';
+import MastodonIcon from '../../icons/socials/MastodonIcon.astro';
+import MediumIcon from '../../icons/socials/MediumIcon.astro';
+import RedditIcon from '../../icons/socials/RedditIcon.astro';
+import TelegramIcon from '../../icons/socials/TelegramIcon.astro';
+import TwitterIcon from '../../icons/socials/TwitterIcon.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllTags, getPostsByTag, sortItemsWithFeaturedFirst } from '../../utils/data-utils';
+
+export async function getStaticPaths() {
+    const authors = await getCollection('authors');
+    return authors.map((author) => ({
+        params: { id: author.id },
+        props: { author }
+    }));
+}
+
+type Props = { author: CollectionEntry<'authors'> };
+
+const { author } = Astro.props;
+const { name, position, description, avatar, socials, seo } = author.data;
+const { Content } = await render(author);
+
+// Получаем все статьи блога
+let allPosts = await getCollection('blog');
+if (!maugliConfig.showExamples) {
+    allPosts = allPosts.filter((post) => !post.data.isExample);
+}
+
+// Фильтруем статьи этого автора (с учетом дефолтного автора)
+const authorPosts = allPosts
+  .filter(post => (post.data.author || maugliConfig.defaultAuthorId) === author.id)
+  .sort(sortItemsWithFeaturedFirst);
+
+// Получаем теги статей автора
+const authorTags = getAllTags(authorPosts).map((tag) => ({
+    id: tag.id,
+    name: tag.name,
+    count: getPostsByTag(authorPosts, tag.id).length
+}));
+
+// Получаем доступные соцсети
+const availableSocials = socials ? Object.entries(socials).filter(([_, url]) => url) : [];
+
+// Функция для получения компонента иконки
+const getIconComponent = (platform: string) => {
+    switch (platform) {
+        case 'email':
+            return EmailIcon;
+        case 'telegram':
+            return TelegramIcon;
+        case 'mastodon':
+            return MastodonIcon;
+        case 'medium':
+            return MediumIcon;
+        case 'bluesky':
+            return BlueskyIcon;
+        case 'reddit':
+            return RedditIcon;
+        case 'linkedin':
+            return LinkedinIcon;
+        case 'twitter':
+            return TwitterIcon;
+        default:
+            return EmailIcon; // fallback
+    }
+};
+
+// SEO данные
+const pageTitle = seo?.title || `${name} - ${position} | Maugli Content Farm`;
+const pageDescription = seo?.description || description;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} image={{ src: avatar || 'src/img/default/autor_default.webp', alt: `Фото ${name}` }} showHeader={false} fullWidth={true}>
+    <div class="max-w-[1280px] mx-auto">
+        <!-- Хлебные крошки -->
+        <Breadcrumbs />
+        
+        <!-- Информация об авторе на плашке -->
+        <div class="mb-16 sm:mb-24">
+            <div class="bg-[var(--bg-muted)] rounded-custom p-8 md:p-12">
+                <div class="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
+                    <!-- Аватар -->
+                    <div class="w-32 h-32 sm:w-40 sm:h-40 bg-[var(--bg-main)] rounded-full overflow-hidden flex-shrink-0">
+                        <img src={avatar || 'src/img/default/autor_default.webp'} alt={`Фото ${name}`} class="w-full h-full object-cover" />
+                    </div>
+
+                    <!-- Информация -->
+                    <div class="flex-grow">
+                        <h1 class="mb-2 text-[4rem] leading-tight font-serif font-[800] sm:text-4xl" style="color: var(--text-heading)">
+                            {name}
+                        </h1>
+                        <p class="text-[1rem] text-[var(--text-muted)] font-medium mb-4">
+                            {position}
+                        </p>
+                        <p class="text-lg text-[var(--text-main)] leading-[1.35] mb-6">
+                            {description}
+                        </p>
+
+                        <!-- Соцсети -->
+                        {
+                            availableSocials.length > 0 && (
+                                <div class="flex flex-wrap gap-3">
+                                    {availableSocials.map(([platform, url]) => {
+                                        const IconComponent = getIconComponent(platform);
+                                        return (
+                                            <a
+                                                href={platform === 'email' ? `mailto:${url}` : url as string}
+                                                target={platform === 'email' ? '_self' : '_blank'}
+                                                rel={platform === 'email' ? undefined : 'noopener noreferrer'}
+                                                class="inline-flex opacity-60 hover:opacity-100 items-center gap-2 px-4 py-2 border border-[var(--border-main)] rounded-custom hover:bg-[var(--bg-main)]  transition-colors duration-200"
+                                                title={platform === 'email' ? `Написать ${name}` : `${name} в ${platform}`}
+                                            >
+                                                <IconComponent class="w-4 h-4 text-[var(--text-heading)] " />
+                                                <span class="text-sm font-medium text-[var(--text-heading)]  capitalize">{platform}</span>
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статьи автора -->
+        {
+            authorPosts.length > 0 && (
+                <div class="mb-16 sm:mb-24">
+                    <h2 class="mb-12 text-2xl leading-tight font-serif font-[800] sm:mb-16 sm:text-3xl" style="color: var(--text-heading)">
+                        Статьи автора
+                    </h2>
+                    
+                    <!-- Теги -->
+                    {authorTags.length > 0 && (
+                        <TagsSection 
+                            tags={authorTags} 
+                            totalCount={authorPosts.length}
+                            basePath={`/authors/${author.id}`}
+                            class="mb-8"
+                        />
+                    )}
+                    
+                    <!-- Сетка статей -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        {authorPosts.map((post) => (
+                            <PostPreview post={post} headingLevel="h3" />
+                        ))}
+                    </div>
+                </div>
+            )
+        }
+
+        <!-- Подписка -->
+        <Subscribe class="my-16 sm:my-24" />
+    </div>
+</BaseLayout>

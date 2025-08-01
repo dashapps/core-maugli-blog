@@ -1,0 +1,203 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+export interface Props {
+    tags: Array<{
+        id: string;
+        name: string;
+        count: number;
+        isRubric?: boolean;
+    }>;
+    totalCount: number;
+    activeTagId?: string;
+    basePath?: string;
+    class?: string;
+    rubricImage?: string;
+    rubricDescription?: string;
+    rubricName?: string;
+}
+
+const { tags, totalCount, activeTagId, basePath = '/blog', class: className = '', rubricImage, rubricDescription = '', rubricName = '' } = Astro.props;
+const isAllActive = !activeTagId; // "Все" активен, если нет активного тега
+
+// Определяем куда ведет кнопка "Все" и куда ведут теги
+const allHref = basePath === '/projects' ? '/projects' : '/blog';
+const tagsBasePath = basePath === '/projects' ? '/projects/tags' : '/tags';
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const tagsSection = (dict as any).tagsSection || (fallbackDict as any).tagsSection || {};
+const allLabel = basePath === '/projects' ? tagsSection.allCases : tagsSection.allArticles;
+const allTagsLabel = tagsSection.allTags;
+
+// Fallback для изображения рубрики
+const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : maugliConfig.defaultRubricImage;
+---
+
+{
+    (rubricName || rubricDescription) && (
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-6">
+            <img
+                src={rubricImageFinal}
+                alt={rubricName || tagsSection.rubricAlt}
+                class="w-20 h-20 sm:w-40 sm:h-40 object-cover rounded-[16px_48px_16px_48px] border border-[var(--border-main)]"
+                style="flex-shrink:0;"
+            />
+            <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
+                {rubricName && <h2 class="text-xl sm:text-2xl font-bold mb-2">{rubricName}</h2>}
+                {rubricDescription && <div class="text-base sm:text-lg text-[var(--text-muted)]">{rubricDescription}</div>}
+            </div>
+        </div>
+    )
+}
+
+<div class:list={['flex flex-wrap items-center gap-2 py-4 mb-6', className]}>
+    <!-- Десктопная версия -->
+    <div class="hidden sm:flex flex-wrap items-center gap-2">
+        <a
+            href={allHref}
+            aria-label={allLabel + ` (${totalCount})`}
+            class:list={[
+                'inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline transition-all duration-200 ease-in-out hover:-translate-y-px rounded-3xl',
+                isAllActive
+                    ? 'bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)] hover:bg-[var(--brand-color-60)]'
+                    : 'border border-[var(--border-main)] text-[var(--text-heading)] hover:bg-[var(--bg-muted)]'
+            ]}
+        >
+            {allLabel} ({totalCount})
+        </a>
+        {
+            tags.map((tag) => {
+                const isActive = activeTagId === tag.id;
+                const isRubric = tag.isRubric;
+                const ariaLabel = tagsSection.tagAriaLabel
+                    ? tagsSection.tagAriaLabel.replace('{name}', tag.name).replace('{count}', tag.count)
+                    : `Tag: ${tag.name} (${tag.count})`;
+                return (
+                    <a
+                        href={`${tagsBasePath}/${tag.id}`}
+                        aria-label={ariaLabel}
+                        class:list={[
+                            'inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline transition-all duration-200 ease-in-out hover:-translate-y-px rounded-3xl',
+                            isActive
+                                ? 'bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)] hover:bg-[var(--brand-color-60)]'
+                                : isRubric
+                                  ? 'bg-[var(--bg-muted)] border border-[var(--border-main)] text-[var(--text-heading)] hover:bg-[var(--brand-color-20)]'
+                                  : 'border border-[var(--border-main)] text-[var(--text-muted)] opacity-75 hover:bg-[var(--bg-muted)]'
+                        ]}
+                    >
+                        {tag.name}
+                        <span style="color: inherit; opacity: 0.6;"> ({tag.count})</span>
+                    </a>
+                );
+            })
+        }
+    </div>
+    <!-- Мобильная версия -->
+    <div class="block sm:hidden w-full">
+        <input type="checkbox" id="tags-toggle" class="hidden peer" />
+        <div class="flex items-center justify-between w-full px-2">
+            {
+                isAllActive ? (
+                    <a
+                        href={allHref}
+                        aria-label={allLabel + ` (${totalCount})`}
+                        class="inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)]"
+                    >
+                        {allLabel} ({totalCount})
+                    </a>
+                ) : (
+                    tags
+                        .filter((tag) => activeTagId === tag.id)
+                        .map((tag) => {
+                            const ariaLabel = tagsSection.tagAriaLabel
+                                ? tagsSection.tagAriaLabel.replace('{name}', tag.name).replace('{count}', tag.count)
+                                : `Tag: ${tag.name} (${tag.count})`;
+                            return (
+                                <a
+                                    href={`${tagsBasePath}/${tag.id}`}
+                                    aria-label={ariaLabel}
+                                    class="inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)]"
+                                >
+                                    {tag.name}
+                                    <span style="color: inherit; opacity: 0.6;"> ({tag.count})</span>
+                                </a>
+                            );
+                        })
+                )
+            }
+            <label for="tags-toggle" class="flex items-center gap-1 px-2 py-1 cursor-pointer" style="color: var(--text-muted); opacity: 0.6;">
+                <span>{allTagsLabel}</span>
+                <span class="arrow-wrap" style="display:inline-flex;align-items:center;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:inherit;" class="arrow-svg">
+                        <g clip-path="url(#clip0_3691_7173)">
+                            <path
+                                d="M6.68112 2.28658L11.7136 7.31908C12.0951 7.70054 12.0951 8.319 11.7136 8.70045L11.6997 8.7144C11.3182 9.09586 10.6997 9.09586 10.3183 8.7144L5.28579 3.68191C4.90434 3.30045 4.90434 2.68199 5.28579 2.30054L5.29975 2.28658C5.6812 1.90513 6.29966 1.90513 6.68112 2.28658Z"
+                                fill="currentColor"></path>
+                            <path
+                                d="M11.6997 7.28755L11.7136 7.3015C12.0951 7.68296 12.0951 8.30142 11.7136 8.68287L6.68112 13.7154C6.29966 14.0968 5.6812 14.0968 5.29975 13.7154L5.28579 13.7014C4.90434 13.32 4.90434 12.7015 5.28579 12.32L10.3183 7.28755C10.6997 6.90609 11.3182 6.90609 11.6997 7.28755Z"
+                                fill="currentColor"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_3691_7173">
+                                <rect width="7" height="12" fill="white" transform="matrix(-1 0 0 1 12 2)"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </span>
+            </label>
+            <style>
+                .arrow-wrap .arrow-svg {
+                    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                #tags-toggle:checked + div label .arrow-wrap .arrow-svg {
+                    transform: rotate(90deg);
+                }
+                .tags-mobile-list {
+                    max-height: 0;
+                    opacity: 0;
+                    overflow: hidden;
+                    transition:
+                        max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                #tags-toggle:checked ~ .tags-mobile-list {
+                    max-height: 500px;
+                    opacity: 1;
+                }
+            </style>
+        </div>
+        <div class="tags-mobile-list flex-wrap gap-2 py-4 mb-6" style="margin-top: 8px;">
+            <a
+                href={allHref}
+                class:list={[
+                    'inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl',
+                    isAllActive
+                        ? 'bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)] hover:bg-[var(--brand-color-60)]'
+                        : 'border border-[var(--border-main)] text-[var(--text-heading)] hover:bg-[var(--bg-muted)]'
+                ]}
+            >
+                {allLabel} ({totalCount})
+            </a>
+            {
+                tags.map((tag) => (
+                    <a
+                        href={`${tagsBasePath}/${tag.id}`}
+                        class:list={[
+                            'inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl',
+                            activeTagId === tag.id
+                                ? 'bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)] hover:bg-[var(--brand-color-60)]'
+                                : tag.isRubric
+                                  ? 'bg-[var(--bg-muted)] border border-[var(--border-main)] text-[var(--text-heading)] hover:bg-[var(--brand-color-20)]'
+                                  : 'border border-[var(--border-main)] text-[var(--text-muted)] opacity-75 hover:bg-[var(--bg-muted)]'
+                        ]}
+                    >
+                        {tag.name}
+                        <span style="color: inherit; opacity: 0.6;"> ({tag.count})</span>
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+</div>

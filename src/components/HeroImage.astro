@@ -1,0 +1,38 @@
+---
+// src/components/HeroImage.astro
+export interface Props {
+    src: string;
+    alt?: string;
+    caption?: string;
+    width?: number | string;
+    height?: number | string;
+    className?: string;
+    srcset?: string;
+}
+const defaultWidth = 800;
+const { src, alt = '', caption, width = defaultWidth, height, className = '', srcset = '' } = Astro.props;
+
+// Вариант aspect-ratio: если есть оба размера, рассчитываем; иначе не пишем!
+const aspectRatio = width && height ? `${width} / ${height}` : undefined;
+
+let realSrcset = srcset;
+if (!srcset && src.includes('default-')) {
+    realSrcset = `${src.replace('800', '800')} 1x, ${src.replace('800', '1200')} 2x`;
+}
+---
+
+<figure class={`w-full max-w-[${width}px] mx-auto rounded-custom overflow-hidden bg-[var(--bg-muted)] ${className}`}>
+    <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        style={aspectRatio ? `aspect-ratio: ${aspectRatio}; width: 100%; height: auto;` : 'width: 100%; height: auto;'}
+        class="block rounded-custom object-cover"
+        loading="eager"
+        decoding="async"
+        srcset={realSrcset}
+        sizes="100vw"
+    />
+    {caption && <figcaption class="mt-2 text-sm text-[var(--text-main)] opacity-80 text-center px-2">{caption}</figcaption>}
+</figure>

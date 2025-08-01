@@ -1,0 +1,151 @@
+---
+import NavLink from './NavLink.astro';
+
+import ThemeToggle from './ThemeToggle.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+
+const navLinks = (maugliConfig.navLinks || []).map((link) => {
+    const d = dict as any;
+    return {
+        ...link,
+        label: d?.nav?.[link.key] || link.label
+    };
+});
+---
+
+<nav class="fixed top-0 left-0 w-full z-50 bg-[var(--bg-main)] opacity-95 backdrop-blur-lg flex items-center justify-between pt-4 pb-4">
+    <div class="flex items-center gap-8 w-full">
+        <a href={maugliConfig.brand.logoHref && maugliConfig.brand.logoHref.trim() ? maugliConfig.brand.logoHref : '/'} class="ml-6 flex-shrink-0 card-blur">
+            <picture>
+                <source srcset={maugliConfig.brand.logoDark} media="(prefers-color-scheme: dark)" />
+                <img src={maugliConfig.brand.logoLight} alt="Логотип" width="48" height="48" class="w-12 h-12" />
+            </picture>
+        </a>
+        <ul
+            id="menu-items"
+            class="menu flex gap-8 items-center mt-16 md:mt-0 justify-center w-full md:static md:flex-row md:gap-8 md:items-center md:justify-center max-md:flex-col max-md:gap-1 max-md:absolute max-md:top-0 max-md:right-0 max-md:left-0 max-md:w-screen max-md:pt-4 max-md:pb-10 max-md:z-20 max-md:rounded-none max-md:border-0 max-md:items-start max-md:bg-[var(--bg-main)] max-md:border-b max-md:border-b-[var(--border-main)] max-md:mx-0 max-md:p-0"
+        >
+            {
+                navLinks.map((link) => (
+                    <li class="py-1 w-full text-left md:w-auto md:text-center max-md:pl-4">
+                        <NavLink class="text-xl font-sans text-heading md:text-base" href={link.href}>
+                            {link.label}
+                        </NavLink>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+    <div class="flex items-center gap-2 md:gap-4 ml-auto mr-6">
+        <LanguageSwitcher class="order-1" />
+        {maugliConfig.enableThemeSwitcher !== false && <ThemeToggle class="order-2" />}
+        <button
+            class="menu-toggle cursor-pointer w-8 h-8 flex items-center justify-center relative z-30 md:hidden ml-auto text-[var(--text-heading)] order-3"
+            aria-expanded="false"
+            aria-controls="menu-items"
+        >
+            <span class="menu-toggle-icon w-6 h-px relative bg-current"></span>
+        </button>
+    </div>
+</nav>
+
+<style>
+    .text-heading {
+        color: var(--text-heading);
+    }
+    .nav-active {
+        color: var(--brand-color) !important;
+        font-weight: bold;
+        text-decoration: none !important;
+    }
+    @reference "tailwindcss";
+
+    @media (max-width: 767px) {
+        .menu {
+            @apply invisible opacity-0;
+            width: calc(100% + 1.25rem);
+        }
+        .menu.is-visible {
+            @apply visible opacity-100;
+            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+        .menu-toggle-icon {
+            transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+        .menu-toggle.is-active .menu-toggle-icon {
+            @apply w-0;
+            transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .menu-toggle-icon:before,
+        .menu-toggle-icon:after {
+            @apply w-6 h-px absolute left-1/2 top-0 origin-center -translate-x-1/2 bg-current;
+            content: '';
+            transition:
+                rotate 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                margin 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+        }
+        .menu-toggle-icon:before {
+            @apply -mt-1.5;
+        }
+        .menu-toggle-icon:after {
+            @apply mt-1.5;
+        }
+        .menu-toggle.is-active .menu-toggle-icon:before,
+        .menu-toggle.is-active .menu-toggle-icon:after {
+            @apply mt-0;
+            transition:
+                margin 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+                rotate 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+        .menu-toggle.is-active .menu-toggle-icon:before {
+            @apply rotate-45;
+        }
+        .menu-toggle.is-active .menu-toggle-icon:after {
+            @apply -rotate-45;
+        }
+    }
+</style>
+
+<script>
+    function menuToggle() {
+        const menu = document.querySelector('.menu');
+        const menuToggleBtn = document.querySelector('.menu-toggle');
+        if (!menu || !menuToggleBtn) return;
+        menuToggleBtn.addEventListener('click', () => {
+            const isMenuExpanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
+            menuToggleBtn.classList.toggle('is-active');
+            menuToggleBtn.setAttribute('aria-expanded', isMenuExpanded ? 'false' : 'true');
+            menu.classList.toggle('is-visible');
+        });
+        // Закрытие при клике вне меню
+        document.addEventListener('click', (e) => {
+            if (!menuToggleBtn.contains(e.target as Node) && !menu.contains(e.target as Node)) {
+                menuToggleBtn.classList.remove('is-active');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                menu.classList.remove('is-visible');
+            }
+        });
+        // Закрытие при прокрутке
+        window.addEventListener('scroll', () => {
+            menuToggleBtn.classList.remove('is-active');
+            menuToggleBtn.setAttribute('aria-expanded', 'false');
+            menu.classList.remove('is-visible');
+        });
+        // Закрытие при выборе пункта меню
+        menu.querySelectorAll('li').forEach((item) => {
+            item.addEventListener('click', () => {
+                menuToggleBtn.classList.remove('is-active');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                menu.classList.remove('is-visible');
+            });
+        });
+    }
+    menuToggle();
+    document.addEventListener('astro:after-swap', menuToggle);
+</script>

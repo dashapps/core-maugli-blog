@@ -1,0 +1,47 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+
+import { LANGUAGES } from '../i18n/languages';
+
+// Карточка баннера продукта для боковой панели статьи/проекта
+// props: product (CollectionEntry<'products'>)
+const { product } = Astro.props;
+const { seo, image, title, id, productLink } = product?.data || {};
+
+// Дефолтная картинка всегда
+const productID = product?.data?.productID;
+let bannerImage = productID ? `/${productID}.webp` : maugliConfig.defaultProductImage;
+if (!bannerImage) bannerImage = maugliConfig.defaultProductImage;
+// Кнопка: если есть productLink, то ссылка, иначе неактивная
+const buttonHref = productLink && productLink.trim() ? productLink : null;
+const isExternal = buttonHref && /^https?:\/\//.test(buttonHref);
+
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
+---
+
+<div class="product-banner-card relative aspect-[1200/630] overflow-hidden bg-[var(--card-bg)] rounded-custom flex flex-col justify-end">
+    <img src={bannerImage} alt={seo?.image?.alt || image?.alt || title || 'Product'} class="absolute inset-0 w-full h-full object-cover rounded-custom z-0" />
+    {
+        buttonHref ? (
+            <a
+                href={buttonHref}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
+                class="flex justify-center items-center min-w-[130px] h-12 font-extrabold text-[16px] px-4 py-3 mx-4 mb-4 transition-colors duration-200 rounded-custom bg-[var(--color-brand)] text-[var(--bg-main)] no-underline z-10"
+            >
+                {buttons.moreAboutProduct}
+            </a>
+        ) : (
+            <button
+                disabled
+                class="flex justify-center items-center min-w-[130px] h-12 font-extrabold text-[16px] px-1 py-3 mx-4 mb-4 transition-colors duration-200 cursor-not-allowed rounded-custom bg-[var(--bg-muted)] text-[var(--text-main)] no-underline z-10"
+            >
+                {buttons.moreAboutProduct}
+            </button>
+        )
+    }
+</div>

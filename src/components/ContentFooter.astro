@@ -1,0 +1,147 @@
+---
+import TagPill from './TagPill.astro';
+import Button from './Button.astro';
+import { slugify } from '../utils/common-utils';
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+export interface Props {
+    tags?: string[];
+    shareUrl?: string;
+    title?: string;
+    basePath?: string;
+    class?: string;
+    productLink?: string;
+}
+
+const { tags = [], shareUrl = '', title = '', basePath = '/blog', class: className = '', productLink = '' } = Astro.props;
+const tagsBasePath = basePath === '/projects' ? '/projects/tags' : '/tags';
+
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
+---
+
+<!-- Блок тегов и кнопки поделиться под контентом (только на мобильных, скрыт на sm и выше) -->
+<div class={`flex flex-wrap items-center gap-6 mt-8 sm:hidden ${className}`}>
+    <div class="flex flex-wrap gap-2 w-full">
+        {tags.length > 0 && tags.map((tag) => <TagPill tag={tag} href={`${tagsBasePath}/${slugify(tag)}`} />)}
+    </div>
+    <div class="flex gap-3 w-full">
+        <button
+            type="button"
+            class="share-button mobile-share flex-1 flex justify-center items-center h-12 min-h-12 font-extrabold text-[16px] px-4 py-3 transition-colors duration-200 rounded-custom border border-[var(--border-main)] bg-transparent text-[var(--text-heading)] no-underline"
+            aria-label={buttons.share}
+            data-url={shareUrl}
+            data-title={title}
+            data-copied-label={buttons.copied}
+        >
+            <span class="mobile-share-icon flex items-center justify-center">
+                <svg width="20" height="22" viewBox="0 0 20 22" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="mr-2">
+                    <g clip-path="url(#clip0_3671_7114)">
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M16 0C18.2091 0 20 1.79086 20 4C20 6.20914 18.2091 8 16 8C14.8882 8 13.8831 7.54567 13.1582 6.81348L7.84863 9.91211C7.94625 10.2581 8 10.6227 8 11C8 11.3765 7.94685 11.7405 7.84961 12.0859L13.1611 15.1816C13.8858 14.4517 14.8902 14 16 14C18.2091 14 20 15.7909 20 18C20 20.2091 18.2091 22 16 22C13.7909 22 12 20.2091 12 18C12 17.6214 12.0531 17.2553 12.1514 16.9082L6.84082 13.8135C6.11591 14.5454 5.11153 15 4 15C1.79086 15 0 13.2091 0 11C0 8.79086 1.79086 7 4 7C5.11103 7 6.11598 7.45324 6.84082 8.18457L12.1504 5.08691C12.053 4.74124 12 4.37683 12 4C12 1.79086 13.7909 0 16 0ZM16 16C15.3038 16 14.6912 16.356 14.333 16.8955C14.3183 16.9284 14.3027 16.9613 14.2842 16.9932C14.265 17.026 14.2439 17.0571 14.2217 17.0869C14.0808 17.3608 14 17.6708 14 18C14 19.1046 14.8954 20 16 20C17.1046 20 18 19.1046 18 18C18 16.8954 17.1046 16 16 16ZM4 9C2.89543 9 2 9.89543 2 11C2 12.1046 2.89543 13 4 13C4.73268 13 5.37041 12.6043 5.71875 12.0166C5.72084 12.0129 5.72345 12.0095 5.72559 12.0059C5.73143 11.9958 5.738 11.9863 5.74414 11.9766C5.90629 11.6876 6 11.3549 6 11C6 9.89543 5.10457 9 4 9ZM16 2C14.8954 2 14 2.89543 14 4C14 5.10457 14.8954 6 16 6C17.1046 6 18 5.10457 18 4C18 2.89543 17.1046 2 16 2Z"
+                        ></path>
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_3671_7114">
+                            <rect width="20" height="22" fill="white"></rect>
+                        </clipPath>
+                    </defs>
+                </svg>
+            </span>
+            {buttons.share}
+        </button>
+        {
+            productLink && (
+                <a
+                    href={productLink}
+                    target={productLink.startsWith('http') ? '_blank' : undefined}
+                    rel={productLink.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    class="flex-1 flex justify-center items-center h-12 min-h-12 font-extrabold text-[16px] px-4 py-3 transition-colors duration-200 rounded-custom bg-[var(--color-brand)] text-[var(--bg-main)] no-underline"
+                >
+                    {buttons.moreAboutProduct}
+                </a>
+            )
+        }
+    </div>
+</div>
+
+<!-- Десктопный блок -->
+<div class:list={['hidden sm:block md:hidden lg:hidden mt-8', className]}>
+    <div class="flex flex-wrap gap-2 w-full">
+        {tags.length > 0 && tags.map((tag) => <TagPill tag={tag} href={`${tagsBasePath}/${slugify(tag)}`} />)}
+    </div>
+    <button
+        type="button"
+        class="share-button mt-6 flex items-center justify-center h-12 min-h-12 font-extrabold text-[16px] px-4 py-3 rounded-custom border border-[var(--border-main)] bg-transparent text-[var(--text-heading)] no-underline"
+        aria-label={buttons.share}
+        data-url={shareUrl}
+        data-title={title}
+        data-copied-label={buttons.copied}
+    >
+        <svg width="20" height="22" viewBox="0 0 20 22" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="mr-2">
+            <g clip-path="url(#clip0_3671_7114)">
+                <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M16 0C18.2091 0 20 1.79086 20 4C20 6.20914 18.2091 8 16 8C14.8882 8 13.8831 7.54567 13.1582 6.81348L7.84863 9.91211C7.94625 10.2581 8 10.6227 8 11C8 11.3765 7.94685 11.7405 7.84961 12.0859L13.1611 15.1816C13.8858 14.4517 14.8902 14 16 14C18.2091 14 20 15.7909 20 18C20 20.2091 18.2091 22 16 22C13.7909 22 12 20.2091 12 18C12 17.6214 12.0531 17.2553 12.1514 16.9082L6.84082 13.8135C6.11591 14.5454 5.11153 15 4 15C1.79086 15 0 13.2091 0 11C0 8.79086 1.79086 7 4 7C5.11103 7 6.11598 7.45324 6.84082 8.18457L12.1504 5.08691C12.053 4.74124 12 4.37683 12 4C12 1.79086 13.7909 0 16 0ZM16 16C15.3038 16 14.6912 16.356 14.333 16.8955C14.3183 16.9284 14.3027 16.9613 14.2842 16.9932C14.265 17.026 14.2439 17.0571 14.2217 17.0869C14.0808 17.3608 14 17.6708 14 18C14 19.1046 14.8954 20 16 20C17.1046 20 18 19.1046 18 18C18 16.8954 17.1046 16 16 16ZM4 9C2.89543 9 2 9.89543 2 11C2 12.1046 2.89543 13 4 13C4.73268 13 5.37041 12.6043 5.71875 12.0166C5.72084 12.0129 5.72345 12.0095 5.72559 12.0059C5.73143 11.9958 5.738 11.9863 5.74414 11.9766C5.90629 11.6876 6 11.3549 6 11C6 9.89543 5.10457 9 4 9ZM16 2C14.8954 2 14 2.89543 14 4C14 5.10457 14.8954 6 16 6C17.1046 6 18 5.10457 18 4C18 2.89543 17.1046 2 16 2Z"
+                ></path>
+            </g>
+            <defs>
+                <clipPath id="clip0_3671_7114">
+                    <rect width="20" height="22" fill="white"></rect>
+                </clipPath>
+            </defs>
+        </svg>
+        {buttons.share}
+    </button>
+</div>
+
+<style>
+    .mobile-share {
+        /* Уникальный класс для мобильной кнопки */
+    }
+    .mobile-share-icon {
+        min-width: 20px;
+        min-height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .mobile-share-icon svg {
+        width: 20px;
+        height: 22px;
+        display: block;
+    }
+</style>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const shareButtons = document.querySelectorAll('.share-button');
+        shareButtons.forEach((button) => {
+            button.addEventListener('click', async () => {
+                await shareContent(button);
+            });
+        });
+
+        async function shareContent(button) {
+            const url = button.getAttribute('data-url') || '';
+            const title = button.getAttribute('data-title') || '';
+            // Только открываем нативный share, не копируем!
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: title,
+                        url: url
+                    });
+                } catch (err) {
+                    // ничего не делаем, не копируем
+                }
+            }
+        }
+    });
+</script>

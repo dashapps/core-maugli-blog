@@ -1,0 +1,58 @@
+---
+import ShareIcon from './ShareIcon.astro';
+export interface Props {
+    url: string;
+    platform: 'twitter' | 'telegram' | 'linkedin' | 'whatsapp' | 'facebook' | 'copy' | 'copied';
+    icon: string;
+    name?: string;
+}
+const { url, platform, icon, name = '' } = Astro.props;
+---
+
+<a
+    class="share-link share-button"
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer external"
+    title={name || platform}
+    aria-label={name || platform}
+    tabindex="0"
+>
+    <ShareIcon platform={platform} />
+</a>
+
+<style>
+    .share-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: none;
+        background: var(--text-main);
+        color: var(--bg-main);
+        width: 28px;
+        height: 28px;
+        transition: transform 0.2s ease;
+        text-decoration: none;
+        cursor: pointer;
+        padding: 0;
+    }
+    .share-link:hover {
+        transform: scale(1.1);
+    }
+    .share-link svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+    }
+    @media (min-width: 1024px) {
+        .share-link {
+            width: 36px;
+            height: 36px;
+        }
+    }
+    html[data-theme='dark'] .share-link {
+        background: var(--bg-main);
+        color: var(--text-main);
+    }
+</style>

@@ -1,0 +1,22 @@
+---
+import { type CollectionEntry } from 'astro:content';
+import Card from './Card.astro';
+
+type Props = { post: CollectionEntry<'blog'>; class?: string; headingLevel?: 'h2' | 'h3' };
+
+const { post, class: className, headingLevel = 'h2' } = Astro.props;
+const { title, publishDate, excerpt, image, seo, isFeatured } = post.data;
+---
+
+<Card
+    href={`/blog/${post.id}/`}
+    title={title}
+    image={image}
+    seo={seo}
+    publishDate={publishDate}
+    excerpt={excerpt}
+    headingLevel={headingLevel}
+    isFeatured={isFeatured}
+    class={className}
+    type="blog"
+/>

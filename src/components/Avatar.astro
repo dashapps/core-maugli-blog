@@ -1,0 +1,32 @@
+---
+export interface Props {
+    src?: string;
+    alt: string;
+    size?: string | number;
+    class?: string;
+}
+
+const { src, alt, size = '100px', class: className } = Astro.props;
+
+// Определяем размер - может быть строкой (например, "80px", "5rem") или числом (пиксели)
+const avatarSize = typeof size === 'number' ? `${size}px` : size;
+---
+
+<div class:list={['avatar-container', className]} style={`width: ${avatarSize}; height: ${avatarSize};`}>
+    <img src={src || 'src/img/default/autor_default.webp'} alt={alt} loading="lazy" class="w-full h-full object-cover" />
+</div>
+
+<style>
+    .avatar-container {
+        border-radius: var(--rounded-circle, 50%);
+        overflow: hidden;
+        border: 2px solid var(--border-main);
+        background: var(--bg-muted);
+        flex-shrink: 0;
+    }
+
+    .avatar-container.no-border {
+        border: none;
+        background: transparent;
+    }
+</style>

@@ -1,0 +1,143 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+
+export interface Heading {
+    title: string;
+    id: string;
+}
+
+export interface Props {
+    headings: Heading[];
+    title?: string;
+}
+
+const currentLang = maugliConfig.defaultLang || 'en';
+const dict = dicts[currentLang] || dicts['en'] || {};
+const fallbackDict = dicts['en'] || {};
+const { headings, title = dict.tableOfContents?.title || fallbackDict.tableOfContents?.title || 'Contents' } = Astro.props;
+---
+
+<div
+    class="w-full mb-4 rounded-custom p-6 sm:p-8 flex flex-col gap-3 card-shadow card-blur bg-[var(--bg-muted)]"
+    id="table-of-contents"
+    aria-label={dict.tableOfContents.ariaLabel || fallbackDict.tableOfContents.ariaLabel || 'Contents'}
+>
+    <h3 class="font-serif font-bold text-[18px] leading-[100%] text-[var(--brand-color)] flex-none">
+        {title}
+    </h3>
+
+    <div class="flex flex-col gap-2 flex-none">
+        {
+            headings.map((heading) => (
+                <a
+                    href={`#${heading.id}`}
+                    class="toc-link font-sans font-normal text-[12px] leading-[15px] text-[var(--text-heading)] hover:text-[var(--brand-color)] transition-all duration-300 ease-in-out hover:translate-x-1 transform"
+                    data-target={heading.id}
+                >
+                    {heading.title}
+                </a>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    #table-of-contents {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+    }
+
+    .toc-link.active {
+        color: var(--brand-color);
+        font-weight: 600;
+        transform: translateX(4px);
+    }
+</style>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const tocLinks = document.querySelectorAll('.toc-link');
+        if (!tocLinks.length) return;
+
+        function getSections() {
+            return Array.from(tocLinks)
+                .map((link) => {
+                    const id = (link as HTMLElement).dataset.target;
+                    return id ? document.getElementById(id) : null;
+                })
+                .filter(Boolean) as HTMLElement[];
+        }
+
+        function highlightActiveSection() {
+            const sections = getSections();
+            if (!sections.length) return;
+
+            const scrollPosition = window.scrollY + 100;
+            let activeSection = sections[0];
+
+            for (const section of sections) {
+                if (section && section.offsetTop <= scrollPosition) {
+                    activeSection = section;
+                }
+            }
+
+            tocLinks.forEach((link) => link.classList.remove('active'));
+
+            if (activeSection) {
+                const activeLink = document.querySelector(`.toc-link[data-target="${activeSection.id}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
+        }
+
+        // Обработчики событий
+        window.addEventListener('scroll', highlightActiveSection, { passive: true });
+        window.addEventListener('resize', highlightActiveSection);
+
+        // Инициализация
+        setTimeout(highlightActiveSection, 100);
+        highlightActiveSection();
+
+        // Обработка кликов по ссылкам
+        tocLinks.forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                if (targetId) {
+                    const el = document.querySelector(targetId);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        window.history.pushState(null, '', targetId);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Добавляем плавный скролл для якорных ссылок */
+    :global(html) {
+        scroll-behavior: smooth;
+    }
+
+    /* Стили для активной ссылки с более плавной анимацией */
+    .toc-link.active {
+        color: var(--brand-color) !important;
+        font-weight: 500;
+        transform: translateX(4px);
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Добавляем офсет для якорных ссылок, чтобы заголовки не скрывались под header */
+    :global(h2[id], h3[id]) {
+        scroll-margin-top: 80px;
+    }
+</style>

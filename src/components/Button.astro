@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type AnchorProps = HTMLAttributes<'a'> & { type?: never };
+type ButtonProps = HTMLAttributes<'button'> & { href?: never };
+
+type Props = ButtonProps | AnchorProps;
+
+const { href, class: className, ...rest } = Astro.props;
+const baseClasses = 'inline-flex items-center justify-center px-9 py-4 font-serif leading-tight transition rounded-custom';
+const defaultClasses = 'text-main bg-main border border-main hover:bg-muted';
+const buttonClasses = className?.includes('!bg-') ? baseClasses : `${baseClasses} ${defaultClasses}`;
+---
+
+{
+    href ? (
+        <a href={href} class:list={[buttonClasses, className]} {...rest}>
+            <slot />
+        </a>
+    ) : (
+        <button class:list={[buttonClasses, 'cursor-pointer', className]} {...rest}>
+            <slot />
+        </button>
+    )
+}

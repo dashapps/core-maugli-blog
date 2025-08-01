@@ -1,0 +1,102 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+import FormattedDate from './FormattedDate.astro';
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+const lang = maugliConfig.defaultLang || 'en';
+const dict = dicts[lang] || dicts['en'] || {};
+
+export interface Props {
+    publishDate?: Date;
+    readingTime?: string;
+    post?: CollectionEntry<'blog'>;
+    author?: string;
+    authorImage?: string;
+    class?: string;
+}
+
+const { publishDate, readingTime = '5', post, author, authorImage, class: className = '' } = Astro.props;
+
+// Логика выбора дефолтного автора:
+// 1. Если defaultAuthorId указан и есть в коллекции — он дефолтный.
+// 2. Если defaultAuthorId не указан или такого автора нет — дефолтный автор = первый из коллекции.
+// 3. Если в статье указан автор, но его нет в коллекции — используем дефолтного автора.
+// 4. Если коллекция авторов пуста — ошибка.
+
+let authors = [];
+try {
+    authors = await getCollection('authors');
+} catch (e) {
+    console.warn('Не удалось загрузить коллекцию авторов:', e);
+}
+
+if (authors.length === 0) {
+    throw new Error('В коллекции авторов нет ни одного автора. Создайте хотя бы одного автора!');
+}
+
+let defaultAuthorData = null;
+if (maugliConfig.defaultAuthorId) {
+    defaultAuthorData = authors.find((a) => a.id === maugliConfig.defaultAuthorId);
+}
+if (!defaultAuthorData) {
+    defaultAuthorData = authors[0];
+}
+
+let authorId = post?.data.author || defaultAuthorData.id;
+let authorData = authors.find((a) => a.id === authorId);
+if (!authorData) {
+    authorData = defaultAuthorData;
+    authorId = defaultAuthorData.id;
+}
+let authorName = authorData.data.name;
+let authorImg = authorData.data.avatar || 'src/img/default/autor_default.webp';
+---
+
+<!-- Метаинформация сверху -->
+<div class:list={['mb-6 flex items-center gap-4 text-sm', className]}>
+    <div class="flex items-center gap-2">
+        {
+            authorId ? (
+                <a
+                    href={`/authors/${authorId}`}
+                    class="author-link flex items-center gap-2 hover:opacity-80 transition-opacity duration-200 cursor-pointer"
+                    title={`${dict.pages.authors.goToAuthor}: ${authorName}`}
+                    data-astro-reload
+                    style="text-decoration: none; color: inherit; z-index: 10; position: relative;"
+                >
+                    <img src={authorImg} alt={authorName} class="w-8 h-8 rounded-full" />
+                    <span class="font-medium hover:text-[var(--brand-color)] transition-colors duration-200">{authorName}</span>
+                </a>
+            ) : (
+                <>
+                    <img src={authorImg} alt={authorName} class="w-8 h-8 rounded-full" />
+                    <span class="font-medium">{authorName}</span>
+                </>
+            )
+        }
+    </div>
+    {
+        publishDate && (
+            <>
+                <span style="color: var(--text-muted)">•</span>
+                <div style="color: var(--text-muted)">
+                    <FormattedDate date={publishDate} />
+                </div>
+            </>
+        )
+    }
+    <span style="color: var(--text-muted)">•</span>
+    <div class="flex items-center gap-1" style="color: var(--text-muted)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+        </svg>
+        <span>{readingTime} {dict.pages.index.minutes}</span>
+    </div>
+</div>

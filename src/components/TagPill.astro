@@ -1,0 +1,41 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+
+export interface Props {
+    tag: string;
+    href?: string;
+    class?: string;
+}
+
+const { tag, href, class: className = '' } = Astro.props;
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const tagPill = (dict as any).tagPill || (fallbackDict as any).tagPill || {};
+const ariaLabel = tagPill.ariaLabel ? tagPill.ariaLabel.replace('{tag}', tag) : `Tag: ${tag}`;
+---
+
+{
+    href ? (
+        <a
+            href={href}
+            aria-label={ariaLabel}
+            class={`inline-flex items-center justify-center px-3 py-1 bg-[var(--brand-color-20)] border border-[var(--brand-color)] rounded-3xl font-inter font-normal text-sm leading-[15px] text-[var(--brand-color)] whitespace-nowrap no-underline transition-all duration-200 ease-in-out hover:bg-[var(--brand-color-60)] hover:-translate-y-px ${className}`}
+        >
+            {tag}
+        </a>
+    ) : (
+        <span
+            aria-label={ariaLabel}
+            class={`inline-flex items-center justify-center px-3 py-1 bg-[var(--brand-color-20)] border border-[var(--brand-color)] rounded-3xl font-inter font-normal text-sm leading-[15px] text-[var(--brand-color)] whitespace-nowrap transition-all duration-200 ease-in-out hover:bg-[var(--brand-color-60)] hover:-translate-y-px ${className}`}
+        >
+            {tag}
+        </span>
+    )
+}
+
+<style>
+    /* Пустой стиль блок оставляем для будущих дополнений если понадобятся */
+</style>

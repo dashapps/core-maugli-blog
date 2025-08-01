@@ -1,0 +1,379 @@
+---
+import { slugify } from '../utils/common-utils';
+import TagPill from './TagPill.astro';
+import CopyLinkButton from './CopyLinkButton.astro';
+import ShareLink from './ShareLink.astro';
+import ShareIcon from './ShareIcon.astro';
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+
+export interface Props {
+    tags?: string[];
+    shareUrl?: string;
+    title?: string;
+    basePath?: string;
+}
+
+const { tags = [], shareUrl = '', title = '', basePath = '/blog' } = Astro.props;
+
+// Определяем куда ведут теги
+const tagsBasePath = basePath === '/projects' ? '/projects/tags' : '/tags';
+
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const tagsSection = (dict as any).tagsSection || (fallbackDict as any).tagsSection || {};
+const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
+
+const shareLinks = [
+    {
+        name: 'Twitter',
+        url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`,
+        icon: 'twitter' as const
+    },
+    {
+        name: 'Telegram',
+        url: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title)}`,
+        icon: 'telegram' as const
+    },
+    {
+        name: 'LinkedIn',
+        url: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}`,
+        icon: 'linkedin' as const
+    },
+    {
+        name: 'WhatsApp',
+        url: `https://wa.me/?text=${encodeURIComponent(title + ' ' + shareUrl)}`,
+        icon: 'whatsapp' as const
+    },
+    {
+        name: 'Facebook',
+        url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+        icon: 'facebook' as const
+    }
+];
+---
+
+<div class="w-full mb-2 rounded-custom border border-[var(--border-main)] py-6 px-8 flex-col gap-3 card-blur tags-share-container hidden md:flex">
+    <!-- Теги -->
+    {
+        tags.length > 0 && (
+            <div class="flex flex-col gap-3">
+                <h3 class="font-serif font-bold text-[18px] leading-[100%] text-[var(--text-heading)] flex-none">{tagsSection.allTags || 'Tags:'}</h3>
+                <div class="flex flex-wrap gap-2">
+                    {tags.map((tag) => (
+                        <TagPill tag={tag} href={`${tagsBasePath}/${slugify(tag)}`} />
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    <!-- Кнопки шаринга -->
+    <div class="flex flex-col gap-3">
+        <h3 class="font-serif font-bold text-[18px] leading-[100%] text-[var(--text-heading)] flex-none">{buttons.share || 'Share Article'}</h3>
+        <div class="flex flex-wrap gap-2 share-buttons">
+            <a
+                class="share-link share-button"
+                href={shareLinks[0].url}
+                target="_blank"
+                rel="noopener noreferrer external"
+                title={shareLinks[0].name}
+                aria-label={shareLinks[0].name}
+                tabindex="0"
+            >
+                <span class="share-icon" aria-label="Twitter">
+                    <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.0207 8.96875L18.7675 19.0295H17.0129L9.26554 8.96875H11.0207Z" fill="currentColor" fill-opacity="0.8"></path>
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM7.61466 8.16667L12.5701 14.6021L7.58333 19.8333H8.70614L13.0709 15.2521L16.5982 19.8333H20.4167L15.1838 13.0367L19.8236 8.16667H18.7031L14.683 12.385L11.4354 8.16667H7.61466Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                    </svg>
+                </span>
+            </a>
+            <a
+                class="share-link share-button"
+                href={shareLinks[1].url}
+                target="_blank"
+                rel="noopener noreferrer external"
+                title={shareLinks[1].name}
+                aria-label={shareLinks[1].name}
+                tabindex="0"
+            >
+                <span class="share-icon" aria-label="Telegram">
+                    <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM19.209 8.16667C18.7423 8.17491 18.0258 8.4236 14.5799 9.85685C13.373 10.3589 10.9608 11.3981 7.34351 12.974C6.75617 13.2076 6.44818 13.4365 6.42008 13.6599C6.36633 14.0889 6.98397 14.2225 7.76107 14.4751C8.39458 14.681 9.24686 14.9218 9.68994 14.9314C10.0918 14.94 10.5409 14.7747 11.0361 14.4347C14.4155 12.1535 16.1602 11.0002 16.2701 10.9751C16.3473 10.9576 16.4545 10.9352 16.527 10.9996C16.5993 11.0639 16.5922 11.1858 16.5846 11.2189C16.5231 11.4808 13.3495 14.3679 13.1654 14.5588C12.4672 15.284 11.6731 15.7276 12.8983 16.535C13.9584 17.2336 14.5753 17.6796 15.6674 18.3955C16.3653 18.853 16.9127 19.3955 17.6333 19.3292C17.9648 19.2986 18.3076 18.9868 18.4815 18.0571C18.8926 15.8594 19.7007 11.0972 19.8875 9.13509C19.9037 8.96324 19.8829 8.7434 19.8664 8.64689C19.8498 8.55033 19.8153 8.41263 19.6898 8.31079C19.5412 8.19027 19.3117 8.16489 19.209 8.16667Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                    </svg>
+                </span>
+            </a>
+            <a
+                class="share-link share-button"
+                href={shareLinks[2].url}
+                target="_blank"
+                rel="noopener noreferrer external"
+                title={shareLinks[2].name}
+                aria-label={shareLinks[2].name}
+                tabindex="0"
+            >
+                <span class="share-icon" aria-label="LinkedIn">
+                    <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.4889 12.0575C17.6633 12.0575 18.9321 12.7547 18.9321 14.7964L18.931 18.9321H16.8272V15.2795C16.8272 14.2022 16.369 13.8695 15.7779 13.8695C15.1538 13.8697 14.5417 14.3406 14.5417 15.3068V18.9321H12.4368V12.2449H14.4609V13.1717H14.4882C14.6914 12.7605 15.4029 12.0575 16.4889 12.0575Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                        <path d="M11.1728 18.9264H9.06787V12.2403H11.1728V18.9264Z" fill="currentColor" fill-opacity="0.8"></path>
+                        <path
+                            d="M9.89274 8.91919C10.127 8.87322 10.3702 8.89802 10.5906 8.98983C10.8109 9.08163 10.9989 9.23671 11.1312 9.4353C11.2636 9.63401 11.3342 9.8676 11.334 10.1064C11.3362 10.2662 11.3066 10.4249 11.2463 10.5729C11.1859 10.7209 11.0959 10.855 10.9825 10.9677C10.8691 11.0803 10.7344 11.1692 10.586 11.2286C10.4376 11.288 10.2787 11.3168 10.1189 11.3135C9.88021 11.3121 9.64736 11.2403 9.44954 11.1067C9.25169 10.973 9.09731 10.7837 9.00692 10.5627C8.9166 10.3417 8.89395 10.0987 8.94141 9.86483C8.9889 9.6309 9.10476 9.41613 9.27409 9.24788C9.44338 9.07974 9.6586 8.96517 9.89274 8.91919Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM8.03337 7C7.75931 7.00003 7.49628 7.1087 7.30249 7.30249C7.1087 7.49628 7.00003 7.75931 7 8.03337V19.9666C7.00003 20.2407 7.1087 20.5037 7.30249 20.6975C7.49628 20.8913 7.75931 21 8.03337 21H19.9666C20.2407 21 20.5037 20.8913 20.6975 20.6975C20.8913 20.5037 21 20.2407 21 19.9666V8.03337C21 7.75931 20.8913 7.49628 20.6975 7.30249C20.5037 7.1087 20.2407 7.00003 19.9666 7H8.03337Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                    </svg>
+                </span>
+            </a>
+            <a
+                class="share-link share-button"
+                href={shareLinks[3].url}
+                target="_blank"
+                rel="noopener noreferrer external"
+                title={shareLinks[3].name}
+                aria-label={shareLinks[3].name}
+                tabindex="0"
+            >
+                <span class="share-icon" aria-label="WhatsApp">
+                    <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.0302 8.17464C15.5779 8.17467 17.0352 8.7736 18.1283 9.86483C19.2214 10.9561 19.8231 12.4032 19.8231 13.9436C19.823 17.1241 17.2225 19.7091 14.0302 19.7091H14.0268C12.9871 19.7058 11.9674 19.4299 11.0782 18.9042L10.8674 18.7778L8.6748 19.3497L9.25985 17.2237L9.12256 17.0044C8.5409 16.0861 8.23673 15.0247 8.23673 13.9368C8.23675 10.7562 10.8377 8.17131 14.0302 8.17464ZM11.563 10.733C11.446 10.733 11.2586 10.7759 11.0981 10.9489C10.9377 11.1219 10.4897 11.5414 10.4897 12.3964C10.4898 13.248 11.1148 14.0731 11.2018 14.1897C11.2887 14.3061 12.4088 16.1125 14.1772 16.8079C15.648 17.3868 15.9491 17.2702 16.2667 17.2402C16.5844 17.2101 17.296 16.8211 17.443 16.4154C17.5867 16.0096 17.5867 15.6639 17.5433 15.5905C17.4998 15.5173 17.3827 15.4736 17.2089 15.3871C17.0345 15.3003 16.1793 14.8819 16.0189 14.822C15.8585 14.7655 15.7417 14.7353 15.6281 14.908C15.5111 15.081 15.1764 15.4706 15.0761 15.5871C14.9759 15.7033 14.8721 15.7168 14.6984 15.6304C14.5245 15.5439 13.9632 15.3605 13.2982 14.7685C12.7802 14.3095 12.429 13.7408 12.3286 13.5676C12.2283 13.3946 12.3186 13.3015 12.4055 13.215C12.4824 13.1385 12.5795 13.0118 12.6664 12.9119C12.7532 12.8122 12.7834 12.7389 12.8402 12.6226C12.8969 12.5062 12.8699 12.4065 12.8265 12.3201C12.783 12.2369 12.4419 11.3782 12.2882 11.0355C12.1579 10.7463 12.021 10.7397 11.8974 10.7364C11.7971 10.7331 11.68 10.733 11.563 10.733Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM14.0302 7C10.1892 7 7.0604 10.1107 7.06038 13.9368C7.05704 15.1577 7.37783 16.352 7.9895 17.4066L7 21L10.6903 20.0316C11.7098 20.5839 12.8567 20.8769 14.0234 20.877H14.0268C17.871 20.8769 21 17.7662 21 13.9402C21.0033 12.087 20.2777 10.3434 18.9606 9.03255C17.6469 7.72189 15.8954 7.00003 14.0302 7Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                    </svg>
+                </span>
+            </a>
+            <a
+                class="share-link share-button"
+                href={shareLinks[4].url}
+                target="_blank"
+                rel="noopener noreferrer external"
+                title={shareLinks[4].name}
+                aria-label={shareLinks[4].name}
+                tabindex="0"
+            >
+                <span class="share-icon" aria-label="Facebook">
+                    <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM15.6685 7.58333C13.7987 7.58333 12.5776 8.72769 12.5776 10.7985V12.6191H10.5V15.0083H12.5776V20.7835C12.9947 20.8497 13.4217 20.8832 13.8564 20.8832C14.2911 20.8832 14.7177 20.8497 15.1348 20.7835V15.0083H17.0414L17.4043 12.6191H15.1348V11.0697C15.1348 10.416 15.4514 9.77824 16.4678 9.77824H17.5V7.74455C17.4937 7.74346 16.5605 7.58334 15.6685 7.58333Z"
+                            fill="currentColor"
+                            fill-opacity="0.8"></path>
+                    </svg>
+                </span>
+            </a>
+            <CopyLinkButton url={shareUrl} />
+        </div>
+    </div>
+</div>
+
+<style>
+    .tags-share-container {
+        position: relative;
+        width: 100%;
+        border-radius: 8px 24px;
+        box-sizing: border-box;
+    }
+
+    .share-buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 0px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .share-link,
+    .share-button {
+        background: none;
+        color: var(--text-main);
+        border: none;
+        box-shadow: none;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: transform 0.2s ease;
+        text-decoration: none;
+        cursor: pointer;
+        padding: 0;
+    }
+    .share-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        color: var(--text-main);
+        min-width: 28px;
+        min-height: 28px;
+    }
+    .share-icon svg {
+        color: inherit;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    .share-link:hover,
+    .share-button:hover {
+        transform: scale(1.1);
+        background: none;
+    }
+    @media (min-width: 1024px) {
+        .share-link,
+        .share-button {
+            width: 36px;
+            height: 36px;
+        }
+        .share-icon {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            min-height: 36px;
+        }
+    }
+    html[data-theme='dark'] .share-link,
+    html[data-theme='dark'] .share-button {
+        color: var(--text-main);
+        background: none;
+    }
+
+    /* Кнопка копирования — адаптация под тему */
+    .copy-link-button {
+        border: none;
+        background: none;
+        color: var(--text-main);
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        text-decoration: none;
+        width: 28px;
+        height: 28px;
+        box-shadow: none;
+    }
+    .copy-link-button .copy-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .copy-link-button .copy-icon svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+    }
+    .copy-link-button:hover {
+        transform: scale(1.1);
+        background: none;
+    }
+    @media (min-width: 1024px) {
+        .copy-link-button {
+            width: 36px;
+            height: 36px;
+        }
+        .copy-link-button .copy-icon {
+            width: 36px;
+            height: 36px;
+        }
+    }
+    /* Темная тема */
+    html[data-theme='dark'] .copy-link-button {
+        color: var(--text-main);
+        background: none;
+    }
+    /* Скрыть блок на мобиле */
+    @media (max-width: 767px) {
+        .tags-share-container {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        // Обработчик для кнопки копирования ссылки в боковом блоке
+        const copyButtons = document.querySelectorAll('.tags-share-container .copy-link-btn');
+
+        copyButtons.forEach((button) => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const url = button.getAttribute('data-url') || window.location.href;
+
+                try {
+                    await navigator.clipboard.writeText(url);
+
+                    // Системный звук копирования
+                    try {
+                        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                    } catch (audioErr) {
+                        console.log('Audio context not available');
+                    }
+
+                    // Меняем иконку на галочку
+                    const shareIcon = button.querySelector('.share-icon');
+                    if (shareIcon) {
+                        const originalContent = shareIcon.innerHTML;
+                        shareIcon.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM12.9307 16.8096L8 11.8789L5.87891 14L11.9395 20.0605C12.2322 20.3533 12.633 20.5119 13.0469 20.499C13.4607 20.4861 13.8511 20.3027 14.125 19.9922L22.6172 10.3672L20.3672 8.38281L12.9307 16.8096Z" fill="currentColor" fill-opacity="0.8"/>
+                        </svg>`;
+
+                        // Возвращаем исходную иконку через 5 секунд
+                        setTimeout(() => {
+                            shareIcon.innerHTML = originalContent;
+                        }, 5000);
+                    }
+                } catch (err) {
+                    console.error('Failed to copy URL:', err);
+                }
+            });
+        });
+    });
+</script>

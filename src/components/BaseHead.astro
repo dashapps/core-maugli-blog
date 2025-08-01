@@ -1,0 +1,121 @@
+---
+import { getCollection } from 'astro:content';
+import siteConfig from '../data/site-config.ts';
+import '../styles/global.css';
+// Определи тип выше:
+export type ImageMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
+
+export type Props = {
+    title?: string;
+    description?: string;
+    image?: {
+        width?: string;
+        height?: string;
+        type?: ImageMimeType;
+        src: string;
+        alt?: string;
+    };
+    pageType?: 'website' | 'article';
+    seo?: {
+        title?: string;
+        description?: string;
+        keywords?: string[];
+        image?: {
+            width?: string;
+            height?: string;
+            type?: ImageMimeType;
+            src: string;
+            alt?: string;
+        };
+        pageType?: 'website' | 'article';
+    };
+};
+
+const { seo = {}, title: baseTitle, description: baseDescription = '', image: baseImage = siteConfig.image, pageType: basePageType = 'website' } = Astro.props;
+
+// ОДНА переменная для title, description, keywords, image, pageType
+const seoTitle = seo.title || baseTitle || siteConfig.title;
+const seoDescription = seo.description || baseDescription || siteConfig.description;
+const seoKeywords = seo.keywords?.length ? seo.keywords.join(', ') : '';
+const seoImage = seo.image || baseImage || siteConfig.image;
+
+const resolvedImage =
+    seoImage && seoImage.src
+        ? {
+              src: new URL(seoImage.src, Astro.site).toString(),
+              alt: seoImage.alt,
+              width: 'width' in seoImage ? seoImage.width : undefined,
+              height: 'height' in seoImage ? seoImage.height : undefined,
+              type: 'type' in seoImage ? seoImage.type : undefined
+          }
+        : undefined;
+const pageType = seo.pageType || basePageType;
+const canonicalURL = new URL(Astro.request.url, Astro.site);
+
+/**
+ * Enforce some standard canonical URL formatting across the site.
+ */
+function formatCanonicalURL(url: string | URL) {
+    const path = url.toString();
+    const hasQueryParams = path.includes('?');
+    // If there are query params, make sure the URL has no trailing slash
+    if (hasQueryParams) {
+        return path.replace(/\/?$/, '');
+    }
+    // otherwise, canonical URL always has a trailing slash
+    return path.replace(/\/?$/, '/');
+}
+
+let authors = [];
+try {
+    authors = await getCollection('authors');
+} catch (e) {
+    console.warn('Не удалось загрузить коллекцию авторов:', e);
+}
+if (authors.length === 0) {
+    throw new Error('В коллекции авторов нет ни одного автора. Создайте хотя бы одного автора!');
+}
+let defaultAuthor = authors[0];
+let defaultAuthorName = defaultAuthor.data.name;
+---
+
+<!-- High Priority Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{seoTitle}</title>
+<meta name="robots" content="index, follow" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- SEO -->
+<meta name="description" content={seoDescription} />
+<meta name="keywords" content={seoKeywords} />
+<meta name="author" content={defaultAuthorName} />
+<link rel="canonical" href={formatCanonicalURL(canonicalURL)} />
+
+<!-- Low Priority Global Metadata -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="var(--theme-color)" />
+<link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
+<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={pageType} />
+<meta property="og:url" content={formatCanonicalURL(canonicalURL)} />
+<meta property="og:title" content={seoTitle} />
+<meta property="og:description" content={seoDescription} />
+{resolvedImage?.src && <meta property="og:image" content={resolvedImage.src} />}
+{resolvedImage?.alt && <meta property="og:image:alt" content={resolvedImage.alt} />}
+{typeof resolvedImage?.width !== 'undefined' && <meta property="og:image:width" content={resolvedImage.width} />}
+{typeof resolvedImage?.height !== 'undefined' && <meta property="og:image:height" content={resolvedImage.height} />}
+{resolvedImage?.type && <meta property="og:image:type" content={resolvedImage.type} />}
+
+<!-- X/Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={formatCanonicalURL(canonicalURL)} />
+<meta property="twitter:title" content={seoTitle} />
+<meta property="twitter:description" content={seoDescription} />
+{resolvedImage?.src && <meta property="twitter:image" content={resolvedImage.src} />}
+{resolvedImage?.alt && <meta name="twitter:image:alt" content={resolvedImage?.alt} />}

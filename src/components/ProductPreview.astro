@@ -1,0 +1,21 @@
+---
+import { type CollectionEntry } from 'astro:content';
+import Card from './Card.astro';
+
+type Props = { product: CollectionEntry<'products'>; class?: string; headingLevel?: 'h2' | 'h3' };
+
+const { product, class: className, headingLevel = 'h2' } = Astro.props;
+const { title, description, image, seo, isFeatured } = product.data;
+---
+
+<Card
+    href={`/products/${product.id}/`}
+    title={title}
+    image={image}
+    seo={seo}
+    description={description}
+    headingLevel={headingLevel}
+    isFeatured={isFeatured}
+    class={className}
+    type="product"
+/>

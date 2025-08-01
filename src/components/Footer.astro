@@ -1,0 +1,122 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+import AuthorLinksGroup from './AuthorLinksGroup.astro';
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+const lang = maugliConfig.lang || maugliConfig.defaultLang || 'en';
+const dict = dicts[lang] || dicts['en'] || {};
+
+const navLinks = (maugliConfig.navLinks || []).map((link) => ({
+    ...link,
+    label: dict.nav?.[link.key] || link.label
+}));
+const yearStart = 2025;
+const yearEnd = 2025;
+const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–${yearEnd}`;
+---
+
+<footer class="w-full pt-12 pb-10 mb-6 sm:pt-24 sm:pb-14">
+    <style>
+        .footer-link {
+            transition: color 0.2s;
+        }
+        .footer-link:hover {
+            color: var(--brand-color);
+            text-decoration: none;
+        }
+        .rss-outline {
+            border: 1.5px solid var(--text-muted);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s;
+            background: none;
+        }
+        .rss-outline svg {
+            color: var(--text-muted);
+            stroke: var(--text-muted);
+        }
+        .rss-outline:hover {
+            border-color: var(--brand-color);
+        }
+    </style>
+    {
+        navLinks.length > 0 && (
+            <div class="mb-4 flex flex-wrap gap-x-6 gap-y-1 justify-between items-center">
+                <div class="flex flex-wrap gap-x-6 gap-y-1 items-center">
+                    {lang === 'ru' ? (
+                        <a
+                            class="footer-link flex items-center text-muted mr-2"
+                            href="/rss.xml"
+                            target="_blank"
+                            rel="noopener"
+                            style="color:var(--text-heading);"
+                        >
+                            RSS
+                        </a>
+                    ) : (
+                        <a class="footer-link flex items-center mr-2" href="/rss.xml" aria-label="RSS" target="_blank" rel="noopener">
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 22 22"
+                                fill="none"
+                                stroke="var(--text-heading)"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                style="display:inline;vertical-align:middle;"
+                            >
+                                <circle cx="6.18" cy="17.82" r="2.18" fill="none" stroke="var(--text-heading)" stroke-width="1.7" />
+                                <path d="M4 4a16 16 0 0 1 16 16" />
+                                <path d="M4 11a9 9 0 0 1 9 9" />
+                            </svg>
+                        </a>
+                    )}
+                    {navLinks.map((link) => (
+                        <a class="footer-link font-serif text-heading" href={link.href}>
+                            {link.label}
+                        </a>
+                    ))}
+                </div>
+                <div class="hidden sm:block text-sm font-serif" style="color:var(--text-muted);text-align:right;opacity:0.6;">
+                    {maugliConfig.brand.name} © {copyrightYears}. {dict.footer.allRightsReserved}
+                </div>
+            </div>
+        )
+    }
+    {
+        navLinks.length > 0 && (
+            <div class="block sm:hidden w-full mt-2 text-sm font-serif" style="color:var(--text-muted);text-align:left;opacity:0.6;">
+                {maugliConfig.brand.name} © {copyrightYears}. {dict.footer.allRightsReserved}
+            </div>
+        )
+    }
+    <div class="block sm:hidden mt-4"></div>
+    <div
+        class:list={[
+            'pt-6 flex flex-col gap-4 border-t border-solid border-main',
+            { 'sm:flex-row-reverse sm:justify-between sm:items-center': Object.values(maugliConfig.links || {}).some(Boolean) }
+        ]}
+    >
+        <div class="flex flex-row justify-between items-end w-full mt-2">
+            <img src="/footerlabel.svg" alt="Maugli Label" style="height:32px;width:auto;" />
+            {
+                Object.values(maugliConfig.links || {}).some(Boolean) && (
+                    <div class="flex flex-row items-center gap-2 ml-4">
+                        <AuthorLinksGroup socials={maugliConfig.links} authorName={maugliConfig.brand.name} maxLinks={8} />
+                    </div>
+                )
+            }
+        </div>
+    </div>
+</footer>

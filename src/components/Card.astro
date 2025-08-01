@@ -1,0 +1,99 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import FormattedDate from './FormattedDate.astro';
+
+type Props = {
+    href: string;
+    title: string;
+    image?: any;
+    seo?: any;
+    publishDate?: Date;
+    excerpt?: string;
+    description?: string;
+    headingLevel?: 'h2' | 'h3';
+    isFeatured?: boolean;
+    class?: string;
+    type?: string; // добавлен тип
+};
+
+const { href, title, image, seo, publishDate, excerpt, description, headingLevel = 'h2', isFeatured = false, class: className, type } = Astro.props;
+
+const TitleTag = headingLevel;
+
+// Определяем изображение для карточки
+const cardImage =
+    seo?.image?.src ||
+    (image && typeof image.src === 'string' && image.src.length > 0 ? image.src : undefined) ||
+    (type === 'blog'
+        ? maugliConfig.defaultBlogImage
+        : type === 'project'
+          ? maugliConfig.defaultProjectImage
+          : type === 'product'
+            ? maugliConfig.defaultProductImage
+            : maugliConfig.seo.defaultImage);
+const cardImageAlt = seo?.image?.alt || image?.alt || title || 'Изображение';
+
+// Определяем контент для отображения
+const content = excerpt || description;
+---
+
+<article
+    class:list={[
+        'w-full border border-[var(--border-main)] rounded-custom overflow-hidden transition-all duration-300 relative group hover:-translate-y-1',
+        isFeatured ? 'bg-[var(--bg-muted)]' : 'bg-[var(--bg-main)]',
+        className
+    ]}
+>
+    <a href={href} class="block w-full h-full">
+        <!-- Изображение -->
+        <div class="w-full aspect-[1200/630] bg-[var(--bg-muted)] overflow-hidden relative">
+            <img
+                src={cardImage}
+                alt={cardImageAlt}
+                loading="lazy"
+                class="w-full h-full object-cover rounded-custom transition-transform duration-300 group-hover:scale-105"
+            />
+
+            <!-- Звездочка featured в правом верхнем углу -->
+            {
+                isFeatured && (
+                    <div class="absolute top-0 right-0 mr-4">
+                        <svg width="36" height="48" viewBox="0 0 36 48" fill="none" class="w-6 h-8">
+                            <path
+                                d="M36 40C36 44.4183 32.4183 48 28 48H8C3.58172 48 1.28855e-07 44.4183 0 40V0H36V40ZM18.8574 18.4238C18.4688 17.7781 17.5323 17.7782 17.1436 18.4238L13.6104 24.2939C13.4708 24.5258 13.2431 24.6918 12.9795 24.7529L6.30469 26.2988C5.57047 26.469 5.28131 27.3595 5.77539 27.9287L10.2666 33.1025C10.4439 33.307 10.5312 33.5751 10.5078 33.8447L9.91504 40.6709C9.84998 41.4217 10.6078 41.9716 11.3018 41.6777L17.6104 39.0049C17.8595 38.8995 18.1415 38.8994 18.3906 39.0049L24.6992 41.6777C25.3931 41.9714 26.151 41.4216 26.0859 40.6709L25.4932 33.8447C25.4698 33.5751 25.557 33.307 25.7344 33.1025L30.2266 27.9287C30.72 27.3596 30.4301 26.4691 29.6963 26.2988L23.0215 24.7529C22.7578 24.6918 22.5302 24.5258 22.3906 24.2939L18.8574 18.4238Z"
+                                fill="var(--brand-color)"
+                            />
+                        </svg>
+                    </div>
+                )
+            }
+            {/* Дата только для статей */}
+            {
+                type === 'blog' && publishDate && (
+                    <div class="absolute top-4 left-5 md:left-6 lg:left-7">
+                        <div class="px-2 py-1 bg-[var(--bg-main-40)] backdrop-blur-sm rounded-normal text-[11px] text-[var(--text-main)] leading-[1.4]">
+                            <FormattedDate date={publishDate} />
+                        </div>
+                    </div>
+                )
+            }
+        </div>
+
+        <!-- Контент -->
+        <div class="p-5 md:p-6 lg:p-7 flex flex-col gap-3 md:gap-4">
+            <TitleTag
+                class="text-xl md:text-xl lg:text-[22px] leading-[1.15] font-serif font-extrabold text-[var(--text-heading)] m-0 group-hover:text-[var(--brand-color)] transition-colors duration-300"
+            >
+                {title}
+            </TitleTag>
+
+            {content && <div class="text-sm md:text-[15px] opacity-60 leading-[1.5] text-[var(--text-main)] flex-grow">{content}</div>}
+        </div>
+    </a>
+</article>
+
+<style>
+    .group:hover {
+        box-shadow: var(--card-shadow);
+    }
+</style>

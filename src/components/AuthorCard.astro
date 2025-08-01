@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import { maugliConfig } from '../config/maugli.config';
+import { getPostsByAuthor } from '../utils/data-utils';
+import AuthorLinksGroup from './AuthorLinksGroup.astro';
+import Avatar from './Avatar.astro';
+import CountBadge from './CountBadge.astro';
+
+export interface Props {
+    author: {
+        name: string;
+        position: string;
+        description: string;
+        avatar?: string;
+        socials?: {
+            email?: string;
+            telegram?: string;
+            mastodon?: string;
+            medium?: string;
+            bluesky?: string;
+            reddit?: string;
+            linkedin?: string;
+            twitter?: string;
+        };
+        slug: string;
+    };
+    class?: string;
+}
+
+const { author, class: className } = Astro.props;
+const { name, position, description, avatar, socials, slug } = author;
+
+// Получаем количество статей автора через getPostsByAuthor
+let posts: import('astro:content').CollectionEntry<'blog'>[] = [];
+try {
+    posts = await getCollection('blog');
+} catch (e) {
+    posts = [];
+}
+const postCount = getPostsByAuthor(posts, slug).length;
+---
+
+<article class="w-full border border-[var(--border-main)] rounded-custom card-bg hover:card-shadow hover:-translate-y-1 transition-all duration-300 p-6 group">
+    <div class="flex flex-col gap-2">
+        <!-- Аватар и имя/должность в одной строке -->
+        <div class="flex flex-row items-start gap-4">
+            <!-- Аватар автора слева -->
+            <Avatar
+                src={avatar || maugliConfig.defaultAuthorImage || 'src/img/default/autor_default.webp'}
+                alt={name}
+                size="clamp(70px, 15vw, 100px)"
+                class="no-border"
+            />
+
+            <!-- Имя, должность и соцсети справа -->
+            <div class="flex flex-col mt-1gap-0.5 flex-1 min-w-0">
+                <a href={`/authors/${slug}/`} class="block" style="text-decoration: none;">
+                    <h3
+                        class="font-serif font-[800] text-[1.3rem] text-[var(--text-heading)] hover:text-[var(--brand-color)] transition-colors duration-300 break-words"
+                        style="line-height: 1.05; word-wrap: break-word; overflow-wrap: break-word;"
+                    >
+                        {name}
+                        {maugliConfig.showAuthorArticleCount && postCount > 0 && <CountBadge count={postCount} />}
+                    </h3>
+                    <p class="text-sm text-[var(--text-main)] mt-1 mb-2 opacity-37 break-words" style="word-wrap: break-word; overflow-wrap: break-word;">
+                        {position}
+                    </p>
+                </a>
+                <!-- Иконки соцсетей -->
+
+                <AuthorLinksGroup authorName={name} socials={socials} maxLinks={8} class="flex-row items-center gap-2 shrink-0" />
+            </div>
+        </div>
+
+        <!-- Описание автора -->
+        {
+            description && (
+                <div class="mt-0 ml-2">
+                    <a href={`/authors/${slug}/`} class="block" style="text-decoration: none;">
+                        <p class="text-[1rem] text-[var(--text-main)] leading-[1.35] opacity-65 line-clamp-3 hover:opacity-80 transition-opacity duration-300">
+                            {description}
+                        </p>
+                    </a>
+                </div>
+            )
+        }
+    </div>
+</article>
+
+<style>
+    /* Убираем тень при наведении, чтобы она совпадала с рубриками */
+    article:hover {
+        box-shadow: none;
+    }
+</style>

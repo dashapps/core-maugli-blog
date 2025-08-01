@@ -1,0 +1,123 @@
+---
+
+/**
+ * @typedef InfoCardProps
+ * @property {string} [title]
+ * @property {string} [description]
+ * @property {{ src: string, alt?: string }} [image]
+ * @property {string} [class]
+ * @property {any} [jsonld]
+ */
+
+
+import { marked } from 'marked';
+/** @type {InfoCardProps} */
+const { title, description = '', class: className = '', jsonld } = Astro.props;
+let html = description ? marked.parse(description) : '';
+---
+
+{
+    description && (
+        <>
+        <div class={`w-full max-w-full rounded-custom px-8 py-8 mb-8 card-bg grid grid-cols-1 sm:grid-cols-16 items-start ${className}`}>
+            <div class="sm:col-span-5 flex items-start justify-start mb-4 sm:mb-0">
+                {title && (
+                    <h2 class="text-3xl sm:text-4xl sm:mt-3 ld:mt-8 font-serif font-extrabold leading-tight line-clamp-3" style="color: var(--text-heading);">
+                        {title}
+                    </h2>
+                )}
+            </div>
+            <div class="sm:col-span-11 mt-0 text-m sm:text-m info-card-content prose" style="color: var(--text-main); opacity: 0.8;">
+                <div set:html={html} />
+            </div>
+        </div>
+        {jsonld && (
+            <script type="application/ld+json">
+                {JSON.stringify(jsonld)}
+            </script>
+        )}
+        </>
+    )
+}
+
+<style>
+    .info-card-content :global(h3) {
+        font-family: var(--font-serif);
+        font-weight: var(--font-weight-extra-bold, 800);
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-heading);
+        line-height: 1.05;
+    }
+    .info-card-content :global(p) {
+        font-family: var(--font-sans);
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        line-height: 1.4;
+        color: var(--text-main);
+    }
+    .info-card-content :global(ul),
+    .info-card-content :global(ol) {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+        padding-left: 1.2rem;
+        line-height: 1.4;
+        color: var(--text-main);
+        list-style-position: inside;
+    }
+    .info-card-content :global(ul) {
+        list-style-type: disc;
+    }
+    .info-card-content :global(ol) {
+        list-style-type: decimal;
+    }
+    .info-card-content :global(ul ul),
+    .info-card-content :global(ol ul),
+    .info-card-content :global(ul ol),
+    .info-card-content :global(ol ol) {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        margin-left: 1.2rem;
+        font-size: 0.95em;
+        opacity: 0.85;
+    }
+    .info-card-content :global(li) {
+        font-family: var(--font-sans);
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        line-height: 1.4;
+        color: var(--text-main);
+        padding-left: 0.2em;
+    }
+    .info-card-content :global(blockquote) {
+        font-family: var(--font-serif);
+        background: var(--bg-muted);
+        border-radius: var(--card-radius);
+        border-left: 1px solid var(--text-heading);
+        font-size: 1.3em;
+        padding: 1.2em 1em 1.2em 2.5em;
+        margin: 1.2rem 0;
+        color: rgba(var(--text-main));
+        box-shadow: none;
+        font-style: normal;
+        line-height: 1.2;
+    }
+    .info-card-content :global(a) {
+        color: var(--color-brand);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .info-card-content :global(a):hover {
+        color: var(--color-brand-60);
+        text-decoration: underline;
+    }
+    .info-card-content :global(code) {
+        background: var(--bg-muted);
+        padding: 0.2em 0.4em;
+        border-radius: var(--code-radius, 4px);
+        font-size: 0.95em;
+        font-family: var(--font-mono, 'Fira Mono', 'Consolas', monospace);
+        color: var(--text-main);
+    }
+</style>

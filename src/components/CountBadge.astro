@@ -1,0 +1,17 @@
+---
+// Компонент для бейджа-счётчика (например, количество постов у автора или в рубрике)
+// Используется и в AuthorCard, и в RubricCard для консистентности
+export interface Props {
+    count: number;
+    class?: string;
+}
+
+const { count, class: className = '' } = Astro.props;
+---
+
+<span
+    class={`ml-2 px-2 py-0.5 rounded-normal border border-[var(--border-main)] bg-[var(--card-bg)] text-[var(--text-muted)] text-base font-semibold inline-block align-middle ${className}`}
+    style="vertical-align: middle;"
+>
+    {count}
+</span>

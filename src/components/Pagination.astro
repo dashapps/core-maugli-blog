@@ -1,0 +1,70 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+import ArrowLeft from '../icons/ArrowLeft.astro';
+import ArrowRight from '../icons/ArrowRight.astro';
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+const { page, class: className } = Astro.props;
+const lang = maugliConfig.defaultLang || 'en';
+const dict = dicts[lang] || dicts['en'] || {};
+
+function getGoToPageLabel(targetPage, lastPage) {
+    return dict.pagination.goToPage.replace('{page}', targetPage).replace('{lastPage}', lastPage);
+}
+function getPageOfLabel(currentPage, lastPage) {
+    return dict.pagination.pageOf.replace('{currentPage}', currentPage).replace('{lastPage}', lastPage);
+}
+---
+
+<nav aria-label="Pagination" class:list={['flex items-center justify-center gap-4', className]}>
+    {
+        page.url.prev && (
+            <a href={page.url.prev} aria-label={getGoToPageLabel(page.currentPage - 1, page.lastPage)} class="pagination-btn">
+                <ArrowLeft class="w-5 h-5 fill-current" />
+            </a>
+        )
+    }
+    <span class="pagination-text" aria-current="page">{getPageOfLabel(page.currentPage, page.lastPage)}</span>
+    {
+        page.url.next && (
+            <a href={page.url.next} aria-label={getGoToPageLabel(page.currentPage + 1, page.lastPage)} class="pagination-btn">
+                <ArrowRight class="w-5 h-5 fill-current" />
+            </a>
+        )
+    }
+</nav>
+
+<style>
+    .pagination-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        color: var(--text-muted);
+        background: transparent;
+        border: none;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .pagination-btn:hover {
+        background: var(--bg-muted);
+        color: var(--text-main);
+        transform: scale(1.05);
+    }
+
+    .pagination-text {
+        font-size: 14px;
+        color: var(--text-muted);
+        padding: 0 16px;
+        font-weight: 500;
+    }
+</style>

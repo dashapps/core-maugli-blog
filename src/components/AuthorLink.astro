@@ -1,0 +1,25 @@
+---
+export interface Props {
+    href?: string;
+    platform: string;
+    icon: any;
+    ariaLabel: string;
+}
+
+const { href, platform, icon: IconComponent, ariaLabel } = Astro.props;
+---
+
+{
+    href && (
+        <a
+            href={href}
+            target={platform === 'email' ? undefined : '_blank'}
+            rel={platform === 'email' ? undefined : 'noopener noreferrer'}
+            aria-label={ariaLabel}
+            class="flex items-center justify-center w-7 h-7 border border-[var(--text-main)] rounded-circle shrink-0 opacity-30 hover:opacity-100 hover:border-[var(--text-main)] transition-all duration-300"
+            style="text-decoration: none; padding: 0;"
+        >
+            <IconComponent class="w-4 h-4 text-[var(--text-main)]" />
+        </a>
+    )
+}

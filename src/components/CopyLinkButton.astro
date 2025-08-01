@@ -1,0 +1,133 @@
+---
+export interface Props {
+    url?: string;
+    title?: string;
+    ariaLabel?: string;
+}
+
+const { url = '', title = '', ariaLabel = '' } = Astro.props;
+---
+
+<button class="copy-link-button rounded-circle" title={title} aria-label={ariaLabel} data-url={url}>
+    <div class="copyIcon">
+        <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM11.3112 12.8618C11.1393 12.8618 10.9742 12.93 10.8526 13.0515L8.34611 15.5649C7.84129 16.1144 7.56815 16.8377 7.5839 17.5837C7.5997 18.3299 7.90325 19.0413 8.43099 19.569C8.95873 20.0968 9.67009 20.4003 10.4163 20.4161C11.1623 20.4319 11.8856 20.1587 12.4351 19.6539L14.9485 17.1474C15.07 17.0258 15.1382 16.8607 15.1382 16.6888C15.1382 16.5169 15.07 16.3518 14.9485 16.2302C14.8268 16.1086 14.6614 16.04 14.4893 16.04C14.3174 16.04 14.1523 16.1086 14.0308 16.2302L11.5243 18.7367C11.2208 19.0295 10.8157 19.193 10.394 19.193C9.9723 19.193 9.56673 19.0296 9.26326 18.7367C9.11447 18.5885 8.99635 18.4123 8.91577 18.2183C8.83519 18.0243 8.79386 17.816 8.79386 17.606C8.79387 17.396 8.83526 17.1881 8.91577 16.9941C8.99631 16.8002 9.11454 16.6239 9.26326 16.4757L11.7698 13.9692C11.8914 13.8476 11.96 13.6826 11.96 13.5107C11.96 13.3386 11.8914 13.1732 11.7698 13.0515C11.6482 12.93 11.4831 12.8618 11.3112 12.8618ZM15.5489 11.8022C15.3769 11.8023 15.212 11.8709 15.0903 11.9925L11.9122 15.1707C11.8517 15.2307 11.8037 15.3022 11.7709 15.3809C11.7381 15.4596 11.7208 15.544 11.7208 15.6292C11.7208 15.7145 11.7381 15.7989 11.7709 15.8776C11.8037 15.9563 11.8516 16.0278 11.9122 16.0878C11.9726 16.1477 12.0443 16.1952 12.123 16.2274C12.2016 16.2595 12.2858 16.2757 12.3708 16.2752C12.4557 16.2757 12.5399 16.2595 12.6186 16.2274C12.6973 16.1952 12.769 16.1477 12.8293 16.0878L16.0075 12.9097C16.1291 12.788 16.1977 12.6231 16.1978 12.4511C16.1978 12.2791 16.1291 12.1142 16.0075 11.9925C15.8858 11.8709 15.7209 11.8022 15.5489 11.8022ZM17.5291 7.58333C16.763 7.58333 16.0279 7.88645 15.4845 8.42643L12.9718 10.9329C12.9116 10.9931 12.8636 11.0645 12.8311 11.1431C12.7985 11.2218 12.7815 11.3064 12.7815 11.3915C12.7815 11.4767 12.7985 11.5612 12.8311 11.6399C12.8636 11.7185 12.9116 11.7899 12.9718 11.8501C13.032 11.9103 13.1033 11.9582 13.182 11.9908C13.2607 12.0234 13.3452 12.0404 13.4303 12.0404C13.5154 12.0403 13.5996 12.0233 13.6781 11.9908C13.7568 11.9582 13.8287 11.9103 13.8889 11.8501L16.3954 9.34359C16.6988 9.05085 17.104 8.88731 17.5256 8.88729C17.9474 8.88729 18.353 9.05071 18.6564 9.34359C18.8052 9.4918 18.9233 9.66803 19.0039 9.86198C19.0845 10.056 19.1258 10.2643 19.1258 10.4744C19.1258 10.6843 19.0844 10.8923 19.0039 11.0862C18.9234 11.2801 18.8052 11.4564 18.6564 11.6046L16.1499 14.1111C16.0894 14.1711 16.0414 14.2427 16.0086 14.3213C15.9759 14.3999 15.9585 14.4844 15.9585 14.5697C15.9585 14.6549 15.9759 14.7393 16.0086 14.818C16.0414 14.8967 16.0894 14.9682 16.1499 15.0282C16.21 15.0888 16.2814 15.1373 16.3601 15.1701C16.4388 15.2028 16.5233 15.2196 16.6085 15.2196C16.6937 15.2196 16.7782 15.2029 16.8569 15.1701C16.9356 15.1373 17.007 15.0888 17.0671 15.0282L19.5736 12.5155C20.1135 11.9721 20.4167 11.237 20.4167 10.4709C20.4166 9.70486 20.1136 8.96983 19.5736 8.42643C19.0302 7.88641 18.2951 7.58336 17.5291 7.58333Z"
+                fill="var(--text-main)"
+                fill-opacity="0.8"></path>
+        </svg>
+    </div>
+</button>
+
+<style>
+    .copy-link-button {
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        text-decoration: none;
+        width: 28px;
+        height: 28px;
+        color: var(--bg-main);
+    }
+
+    .copy-link-button:hover {
+        transform: scale(1.1);
+    }
+
+    .copyIcon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .copyIcon svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Планшеты */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .copy-link-button {
+            width: 28px;
+            height: 28px;
+        }
+        .copyIcon {
+            width: 28px;
+            height: 28px;
+        }
+    }
+
+    /* Десктоп */
+    @media (min-width: 1024px) {
+        .copy-link-button {
+            width: 36px;
+            height: 36px;
+        }
+        .copyIcon {
+            width: 36px;
+            height: 36px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        // Обработчик для кнопки копирования ссылки
+        const copyButtons = document.querySelectorAll('.copy-link-button');
+
+        copyButtons.forEach((button) => {
+            button.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const url = button.getAttribute('data-url') || window.location.href;
+
+                try {
+                    await navigator.clipboard.writeText(url);
+
+                    // Попытка воспроизвести системный звук копирования
+                    try {
+                        // Создаем короткий звуковой сигнал
+                        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                    } catch (audioErr) {
+                        console.log('Audio context not available');
+                    }
+
+                    // Временно меняем иконку на галочку
+                    const iconDiv = button.querySelector('.copyIcon');
+                    if (iconDiv) {
+                        const originalContent = iconDiv.innerHTML;
+                        iconDiv.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 0C21.732 0 28 6.26801 28 14C28 21.732 21.732 28 14 28C6.26801 28 0 21.732 0 14C0 6.26801 6.26801 0 14 0ZM12.9307 16.8096L8 11.8789L5.87891 14L11.9395 20.0605C12.2322 20.3533 12.633 20.5119 13.0469 20.499C13.4607 20.4861 13.8511 20.3027 14.125 19.9922L22.6172 10.3672L20.3672 8.38281L12.9307 16.8096Z" fill="var(--text-main)" fill-opacity="0.8"/>
+                        </svg>`;
+
+                        // Возвращаем исходную иконку через 2 секунды
+                        setTimeout(() => {
+                            iconDiv.innerHTML = originalContent;
+                        }, 2000);
+                    }
+                } catch (err) {
+                    console.error('Failed to copy URL:', err);
+                }
+            });
+        });
+    });
+</script>

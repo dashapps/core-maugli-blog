@@ -1,0 +1,90 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+
+export interface Props {
+    class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+const lang: string = maugliConfig.defaultLang || 'en';
+const dict = dicts[lang] || dicts['en'] || {};
+const navLinks = maugliConfig.navLinks || [];
+const currentUrl = Astro.url.pathname;
+
+// Не показываем хлебные крошки на главной странице
+if (currentUrl === '/') {
+    return null;
+}
+
+// Универсальная логика: строим крошки по navLinks и сегментам
+const crumbs = [];
+// Логотип
+crumbs.push({
+    href: maugliConfig.brand.logoHref && maugliConfig.brand.logoHref.trim() ? maugliConfig.brand.logoHref : '/',
+    icon: maugliConfig.brand.logoBreadcrumbsLight
+});
+// Главная страница (navLinks[0])
+const mainNav = navLinks[0];
+if (mainNav) {
+    const mainLabel = mainNav.label || dict.nav?.[mainNav.key] || en.nav[mainNav.key] || 'Blog';
+    crumbs.push({ href: mainNav.href, label: mainLabel });
+}
+// Сегменты пути (кроме главной и последнего)
+const pathParts = currentUrl.split('/').filter(Boolean);
+let path = '';
+for (let i = 0; i < pathParts.length - 1; i++) {
+    path += '/' + pathParts[i];
+    const nav = navLinks.find((l) => l.href === path);
+    if (nav) {
+        const navLabel = nav.label || dict.nav?.[nav.key] || en.nav[nav.key] || nav.key;
+        crumbs.push({ href: nav.href, label: navLabel });
+    }
+}
+
+// Удаляем устаревшую логику с isCurrent
+
+const isTagsRoot = currentUrl === '/tags';
+const isTagPage = currentUrl.startsWith('/tags/') && pathParts.length === 1;
+---
+
+<div class:list={['flex items-center gap-3 mb-6', className]}>
+    {
+        crumbs.map((crumb, idx) =>
+            idx === 0 ? (
+                <a href={crumb.href} class="flex-shrink-0" target="_blank" rel="noopener noreferrer">
+                    <picture>
+                        <img src={crumb.icon} alt="Maugli" class="w-9 h-9" />
+                    </picture>
+                </a>
+            ) : (
+                <>
+                    <svg class="w-4 h-4 flex-shrink-0" style="color: var(--text-muted)" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                    <a href={crumb.href} class="text-sm font-bold" style="color: var(--text-heading)" data-astro-reload>
+                        {crumb.label}
+                    </a>
+                </>
+            )
+        )
+    }
+    <!-- Добавляем стрелку в самом конце всегда -->
+    <svg class="w-4 h-4 flex-shrink-0" style="color: var(--text-muted)" fill="currentColor" viewBox="0 0 20 20">
+        <path
+            fill-rule="evenodd"
+            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+            clip-rule="evenodd"></path>
+    </svg>
+</div>

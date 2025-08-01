@@ -1,0 +1,71 @@
+---
+import Button from './Button.astro';
+import TagPills from './TagPills.astro';
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+export interface Props {
+    tags?: string[];
+    shareUrl?: string;
+    title?: string;
+    basePath?: string;
+    class?: string;
+}
+
+const { tags = [], shareUrl = '', title = '', basePath = '/blog', class: className } = Astro.props;
+
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
+---
+
+<!-- Мобильный блок тегов и кнопки поделиться (видимый только на мобилке) -->
+<div class:list={['sm:hidden mt-8 flex flex-wrap items-center justify-between gap-6', className]}>
+    <TagPills tags={tags as any} basePath={basePath} />
+    <Button class="share-button" aria-label={buttons.share} data-url={shareUrl} data-title={title}>{buttons.share}</Button>
+</div>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const shareButton = document.querySelector('.share-button');
+        if (!shareButton) return;
+        const shareLabel = buttons.share;
+        const copiedLabel = buttons.copied;
+        shareButton.addEventListener('click', async () => {
+            await shareContent(shareButton, shareLabel, copiedLabel);
+        });
+
+        async function shareContent(button, label, copied) {
+            const url = button.getAttribute('data-url') || '';
+            const title = button.getAttribute('data-title') || '';
+            // Проверяем, поддерживает ли браузер Web Share API
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: title,
+                        url: url
+                    });
+                } catch (err) {
+                    // Если пользователь отменил или произошла ошибка, используем fallback
+                    await fallbackCopy(button, url, label, copied);
+                }
+            } else {
+                // Fallback для браузеров без поддержки Web Share API
+                await fallbackCopy(button, url, label, copied);
+            }
+        }
+
+        async function fallbackCopy(button, url, label, copied) {
+            try {
+                await navigator.clipboard.writeText(url);
+                button.innerText = copied;
+                setTimeout(() => {
+                    button.innerText = label;
+                }, 2500);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+    });
+</script>

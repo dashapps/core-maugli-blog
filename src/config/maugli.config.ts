@@ -1,0 +1,213 @@
+// MAUGLI_CONFIG_VERSION — config version for CLI/automation compatibility
+export const MAUGLI_CONFIG_VERSION = '0.1';
+// Main configuration interface for the Maugli project
+export interface MaugliConfig {
+  // Show example/demo content (for CLI/empty blog setup)
+  showExamples?: boolean;
+  // Default author ID (used if no author is specified)
+  defaultAuthorId?: string;
+  // Show authors without articles (default: true)
+  showAuthorsWithoutArticles?: boolean;
+  // Config version for CLI/automation compatibility
+  configVersion?: string;
+  // Automation settings for integration with Maugli farm (not used on frontend)
+  automation?: {
+    farmName?: string;           // Name of the farm/channel for integration
+    farmChannelId?: string;      // Blog/channel ID for Maugli farm integration
+    farmAuthorIds?: string[];    // Array of farm author IDs for API
+    farmRubricIds?: string[];    // Array of farm rubric IDs for API
+    farmProductIds?: string[];   // Array of farm product IDs for API
+    farmProjectIds?: string[];   // Array of farm project/case IDs for API
+  };
+  // Brand and logo settings
+  brand: {
+    name: string; // Brand name
+    description: string; // Brand description
+    logoLight: string; // Logo for navigation (light theme). Used for dark theme if logoDark is not specified.
+    logoDark?: string; // Logo for navigation (dark theme). If not specified, logoLight is used.
+    logoHref?: string; // Logo link (main site). If not specified, links to blog index.
+    logoBreadcrumbsLight: string; // Logo for breadcrumbs (light theme). Used for dark theme if logoBreadcrumbsDark is not specified.
+    logoBreadcrumbsDark?: string; // Logo for breadcrumbs (dark theme). If not specified, logoBreadcrumbsLight is used.
+  };
+  // SEO and Open Graph settings
+  seo: {
+    titleSuffix: string; // Suffix for page titles
+    defaultImage: string; // Default image for SEO
+    author: string; // Default author (getter)
+    jsonld?: Record<string, any>; // JSON-LD structured data
+  };
+  // Default images for various entities
+  defaultBlogImage: string; // Default blog image
+  defaultProductImage: string; // Default product image
+  defaultProjectImage: string; // Default project/case image
+  defaultAuthorImage: string; // Default author image
+  defaultRubricImage: string; // Default rubric/category image
+  // Feature toggles
+  features: {
+    enableSubscribe: boolean; // Enable subscribe block
+    enableMultiLang: boolean; // Enable multilingual support
+    enableFAQ: boolean; // Enable FAQ block
+    enableRSS: boolean; // Enable RSS feed
+  };
+  // Control display of tags/rubrics
+  // Theme switcher
+  enableThemeSwitcher?: boolean; // Enable theme switcher (true by default)
+  // Social and contact links (displayed in the footer)
+  links?: Record<string, string>; // Social/contact links for footer
+  navLinks?: Array<{ key: string; label: string; href: string }>; // Navigation links
+  // Language and copyright
+  defaultLang?: string; // Default language code
+  copyright?: string; // Copyright string
+  // Page titles for different sections
+  pageTitles?: Record<string, string>; // Custom page titles
+  // Subscribe block settings
+  subscribe?: {
+    enabled?: boolean; // Enable subscribe block
+    heading?: string; // Subscribe heading
+    mutedText?: string; // Subscribe muted text
+    formUrl?: string; // Subscribe form URL
+  };
+  // Author and language switcher
+  showAuthorArticleCount?: boolean; // Show article count for author
+  showLangSwitcher?: boolean; // Show language switcher
+  // Control display of tags/rubrics
+  showOnlyRubricsTags?: boolean; // true — show only rubrics, false — show all tags
+  langLinks?: Record<string, string>; // External links for each language
+  authorsDescription?: string; // Authors block description (override localization)
+  // Template and security
+  isProTemplate?: boolean; // Is this a pro template
+  secretKey?: string; // Secret key for pro features
+  // Home page title override
+  indexTitle?: string; // Custom title for index page
+}
+// Main exported configuration object for the Maugli project
+export const maugliConfig: MaugliConfig = {
+  configVersion: MAUGLI_CONFIG_VERSION, // Config version for CLI/automation compatibility
+  showExamples: true, // Show example/demo content (set false to hide all demo content)
+  brand: {
+    name: 'Maugli', // Brand name
+    description: 'Content farm for smart automation', // Brand description
+    logoLight: '/logoblog-icon.svg', // Logo for navigation (light theme). Used for dark theme if logoDark is not specified.
+    // Logo for navigation (dark theme). If not specified, logoLight is used.
+    logoDark: undefined,
+    // Logo link (main site). If not specified, links to blog index.
+    logoHref: 'https://maugli.cfd',
+    logoBreadcrumbsLight: '/logo-icon.svg', // Logo for breadcrumbs (light theme). Used for dark theme if logoBreadcrumbsDark is not specified.
+    // Logo for breadcrumbs (dark theme). If not specified, logoBreadcrumbsLight is used.
+    logoBreadcrumbsDark: undefined,
+  },
+  // Automation block for Maugli farm integration (not used on frontend)
+  automation: {
+    farmName: '',         // Name of the farm/channel for integration
+    farmChannelId: '',    // Blog/channel ID for Maugli farm integration
+    farmAuthorIds: [],    // Array of farm author IDs for API
+    farmRubricIds: [],    // Array of farm rubric IDs for API
+    farmProductIds: [],   // Array of farm product IDs for API
+    farmProjectIds: [],   // Array of farm project/case IDs for API
+  },
+  enableThemeSwitcher: true, // Enable theme switcher (true by default)
+  seo: {
+    titleSuffix: ' — Maugli', // Suffix for page titles
+    defaultImage: '/default-image.webp', // Default image for SEO
+    get author() { return maugliConfig.defaultAuthorId || 'ИlyichAI'; }, // Default author (getter)
+    jsonld: {
+      organization: {
+        name: 'Maugli AI Content Farm',
+        url: 'https://maugli.cfd/',
+        logo: 'https://maugli.cfd/images/logo.svg',
+        sameAs: [
+          'https://www.linkedin.com/company/maugli',
+          'https://twitter.com/maugli_ai',
+          'https://t.me/maugli_channel'
+        ],
+        contact: {
+          email: 'info@maugli.cfd',
+          contactType: 'customer support'
+        }
+      },
+      website: {
+        name: 'Maugli Content Farm',
+        url: 'https://maugli.cfd/',
+        searchTemplate: 'https://maugli.cfd/search?q={search_term_string}'
+      },
+      articleDefaults: {
+        publisher: 'Maugli Content Farm',
+        author: 'Maugli Editorial Team',
+        image: 'https://maugli.cfd/images/default-article.jpg',
+        language: 'maugliConfig.defaultLang'
+      },
+      schema: {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Maugli',
+        url: 'https://maugli.cfd',
+        logo: 'https://maugli.cfd/logoblog-icon.svg',
+        founder: 'Daria Zorina'
+      }
+    }
+  },
+  defaultBlogImage: 'src/assets/img/default/blog_default.webp', // Default blog image
+  defaultProductImage: 'src/assets/img/default/product_default.webp', // Default product image
+  defaultProjectImage: 'src/assets/img/default/project_default.webp', // Default project/case image
+  defaultAuthorImage: 'src/assets/img/default/autor_default.webp', // Default author image
+  defaultRubricImage: 'src/assets/img/default/rubric_default.webp', // Default rubric/category image
+  features: {
+    enableSubscribe: true, // Enable subscribe block
+    enableMultiLang: false, // Enable multilingual support
+    enableFAQ: true, // Enable FAQ block
+    enableRSS: true, // Enable RSS feed
+  },
+  showOnlyRubricsTags: true, // Show only rubrics by default
+
+  links: {
+    products: '/products', // Products page
+    about: '/about', // About page
+    email: 'mailto:info@maugli.cfd', // Contact email
+    telegram: 'https://t.me/mauglibot', // Telegram link
+    mastodon: '', // Mastodon link
+    medium: 'https://medium.com/@maugli', // Medium link
+    bluesky: '', // Bluesky link
+    reddit: '', // Reddit link
+    linkedin: 'https://linkedin.com/company/maugli', // LinkedIn link
+    twitter: 'https://twitter.com/mauglibot', // Twitter link
+  }, // Contacts displayed in the footer
+  navLinks: [
+    { key: 'blog', label: '', href: '/' }, // Blog main page
+    { key: 'products', label: '', href: '/products' }, // Products page
+    { key: 'projects', label: '', href: '/projects' }, // Projects page
+    { key: 'authors', label: '', href: '/authors' }, // Authors page
+    { key: 'tags', label: '', href: '/tags' }, // Tags page
+  ],
+  defaultLang: 'en', // Default language code
+  copyright: '© Maugli, 2025. All rights reserved.', // Copyright string
+  pageTitles: {
+    home: 'https://maugli.cfd', // Home page title
+    products: '', // Products page title
+    authors: '', // Authors page title
+    tags: '' // Tags page title
+  },
+  subscribe: {
+    enabled: false, // Enable subscribe block
+    heading: '', // Subscribe heading
+    mutedText: '', // Subscribe muted text
+    formUrl: 'https://your-form-url.com' // Subscribe form URL
+  },
+  defaultAuthorId: 'default-autor', // Default author id (used if no author is specified). Use the filename of the author .md file without the .md extension
+  showAuthorsWithoutArticles: true, // Show authors without articles (default: true)
+  showAuthorArticleCount: true, // Show article count for author
+  showLangSwitcher: true, // Show language switcher
+  langLinks: {
+    ru: 'https://maugli.cfd/ru', // Russian version
+    en: 'https://maugli.cfd/en', // English version
+    es: 'https://maugli.cfd/es', // Spanish version
+    de: 'https://maugli.cfd/de', // German version
+    pt: 'https://google.com', // Portuguese version
+    fr: 'https://google.com', // French version
+    zh: 'https://google.com', // Chinese version
+    ja: 'https://google.com', // Japanese version
+  },
+  authorsDescription: '', // Authors block description (override localization)
+  indexTitle: 'Maugli Blog', // Custom title for index page
+  isProTemplate: false, // Is this a pro template
+  secretKey: '0000-0000-0000-0000-0000', // Secret key for pro features
+};

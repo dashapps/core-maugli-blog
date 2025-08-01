@@ -1,0 +1,122 @@
+---
+import { LANGUAGES } from '../i18n/languages';
+import { maugliConfig } from '../config/maugli.config';
+
+const langLinks = maugliConfig.langLinks || {};
+// Универсальный список языков: только те, что есть в langLinks и в LANGUAGES
+const availableLanguages = LANGUAGES.filter((l) => langLinks[l.code]);
+const currentLang = maugliConfig.defaultLang;
+const showLangSwitcher = maugliConfig.showLangSwitcher !== false && availableLanguages.length > 1;
+const current = availableLanguages.find((l) => l.code === currentLang) || availableLanguages[0];
+---
+
+{
+    showLangSwitcher && (
+        <div class="relative inline-block text-left">
+            <button
+                id="lang-switcher"
+                class="flex items-center gap-2 px-4 py-2 rounded-[var(--radius-main)] bg-[var(--bg-main)] text-[var(--text-heading)] border-none cursor-pointer"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                style="width: auto; white-space: nowrap; height:48px; min-height:48px;"
+            >
+                <span
+                    class="flag-box flex items-center justify-center w-7 h-7 rounded-[var(--radius-main)] shadow-[var(--shadow-main)]"
+                    style="min-width:28px; min-height:28px; max-width:28px; max-height:28px;"
+                >
+                    {current && (
+                        <img
+                            src={current.icon.replace(/^\/public\/|^\/|^flags\//, '/src/icons/flags/')}
+                            alt={current.code.toUpperCase()}
+                            width="28"
+                            height="28"
+                            style="pointer-events:none;"
+                        />
+                    )}
+                </span>
+                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                        fill-rule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+            </button>
+            <ul
+                id="lang-list"
+                class="absolute right-0 mt-2 px-3 py-4 rounded-[var(--rounded-custom)] bg-[var(--bg-muted)] shadow-[var(--shadow-main)] z-50 hidden"
+                role="listbox"
+                style="width: auto; min-width: max-content; white-space: nowrap;"
+            >
+                {availableLanguages.map((lang) => (
+                    <li
+                        class={`flex items-center rounded-[var(--radius-main)] gap-3 px-2 py-1 cursor-pointer hover:bg-[var(--bg-accent)] h-12 min-h-[48px] max-h-[48px] ${lang.code === currentLang ? 'font-bold text-[var(--brand-color)]' : ''}`}
+                        data-lang={lang.code}
+                        role="option"
+                        aria-selected={lang.code === currentLang}
+                    >
+                        <a
+                            href={langLinks[lang.code]}
+                            target="_self"
+                            class="flex items-center gap-2 w-full h-full"
+                            style="text-decoration:none; color:inherit;"
+                        >
+                            <span
+                                class="flag-box flex items-center justify-center w-7 h-7 rounded-[var(--radius-main)] shadow-[var(--shadow-main)]"
+                                style="min-width:28px; min-height:28px; max-width:28px; max-height:28px;"
+                            >
+                                <img
+                                    src={lang.icon.replace(/^\/public\/|^\/|^flags\//, '/src/icons/flags/')}
+                                    alt={lang.code.toUpperCase()}
+                                    width="28"
+                                    height="28"
+                                    style="pointer-events:none;"
+                                />
+                            </span>
+                            <span class="text-heading">{lang.label}</span>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const btn = document.getElementById('lang-switcher');
+        const list = document.getElementById('lang-list');
+        if (!btn || !list) return;
+        btn.addEventListener('click', () => {
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', !expanded);
+            list.classList.toggle('hidden');
+        });
+        // Удаляем обработчики смены языка, теперь переход по ссылке
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !list.contains(e.target)) {
+                btn.setAttribute('aria-expanded', false);
+                list.classList.add('hidden');
+            }
+        });
+        window.addEventListener('scroll', () => {
+            btn.setAttribute('aria-expanded', false);
+            list.classList.add('hidden');
+        });
+    });
+</script>
+
+<style>
+    #lang-list li[aria-selected='true'] {
+        background: transparent;
+        color: var(--brand-color);
+        border-radius: var(--rounded-custom);
+        font-weight: bold;
+    }
+    #lang-list li:hover {
+        background: var(--background-color-main);
+        border-radius: var(--rounded-custom);
+        color: var(--text-main);
+        font-weight: normal;
+    }
+</style>

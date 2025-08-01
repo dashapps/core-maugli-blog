@@ -1,0 +1,129 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import InfoCard from '../../components/InfoCard.astro';
+import RubricCard from '../../components/RubricCard.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import TagPills from '../../components/TagPills.astro';
+import { maugliConfig } from '../../config/maugli.config';
+import { LANGUAGES } from '../../i18n/languages';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { slugify } from '../../utils/common-utils';
+import { getAllTags, getPostsByTag, sortItemsByDateDesc } from '../../utils/data-utils';
+
+let posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
+if (!maugliConfig.showExamples) {
+    posts = posts.filter((post) => !post.data.isExample);
+}
+const tags = getAllTags(posts).sort((tagA, tagB) => {
+    const postCountTagA = getPostsByTag(posts, tagA.id).length;
+    const postCountTagB = getPostsByTag(posts, tagB.id).length;
+    return postCountTagB - postCountTagA;
+});
+
+// Получаем все mdx-файлы рубрик
+let allRubricFiles = await getCollection('tags');
+if (!maugliConfig.showExamples) {
+    allRubricFiles = allRubricFiles.filter((tag) => !tag.data.isExample);
+}
+const rubricSlugs = allRubricFiles.map((r) => r.data.slug);
+const rubricMeta = Object.fromEntries(allRubricFiles.map((r) => [r.data.slug, r]));
+
+// Формируем список рубрик только по реально используемым тегам
+const rubricCards = tags
+    .filter((tag) => rubricSlugs.includes(tag.id))
+    .map((tag) => {
+        const rubric = rubricMeta[tag.id];
+        const postCount = getPostsByTag(posts, tag.id).length;
+        const lastPost = posts
+            .filter((post) => (post.data.tags || []).some((t) => slugify(t) === tag.id))
+            .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())[0];
+        const updatedAt = lastPost ? lastPost.data.publishDate?.toString() : undefined;
+        return {
+            slug: rubric.data.slug,
+            title: rubric.data.title,
+            description: rubric.data.description,
+            image: rubric.data.image,
+            postCount,
+            updatedAt,
+            quote: rubric.data.quote,
+            isFeatured: rubric.data.isFeatured
+        };
+    });
+
+// Обычные теги — только те, для которых нет mdx-файла
+const simpleTags = tags.filter((tag) => !rubricSlugs.includes(tag.id));
+
+// Сортируем rubricCards по дате последнего поста (lastPublishDate), самые свежие — выше
+const rubricCardsSorted = [...rubricCards].sort((a, b) => {
+    const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+    const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+    return dateB - dateA;
+});
+
+const dicts: Record<string, any> = Object.fromEntries(LANGUAGES.map((l) => [l.code, l.dict]));
+const lang: string = typeof maugliConfig.defaultLang === 'string' && dicts[maugliConfig.defaultLang] ? maugliConfig.defaultLang : 'en';
+const dict = dicts[lang] || dicts['en'];
+const pageTitle = dict.pages?.tags?.title || dicts['en'].pages.tags.title;
+const pageDesc = dict.pages?.tags?.description || dicts['en'].pages.tags.description;
+const blogRubrics = dict.pages?.tags?.blogRubrics || dicts['en'].pages.tags.blogRubrics;
+const moreTags = dict.pages?.tags?.moreTags || dicts['en'].pages.tags.moreTags || 'More tags';
+
+const rubricsSection = await getEntry('pages', 'rubrics');
+---
+
+<BaseLayout title={pageTitle} description={pageDesc} showHeader={false} fullWidth={true}>
+    <div class="max-w-[1280px] mx-auto">
+        <Breadcrumbs />
+
+        <h1 class="mb-12 text-3xl font-serif font-[800] sm:mb-16 sm:text-5xl" style="color: var(--text-heading)">{blogRubrics}</h1>
+
+        {/* Карточки рубрик */}
+        {
+            rubricCardsSorted.length > 0 && (
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                    {rubricCardsSorted.map((rubric) => (
+                        <RubricCard rubric={rubric} />
+                    ))}
+                </div>
+            )
+        }
+
+        {/* Обычные теги */}
+        {
+            simpleTags.length > 0 && (
+                <h2 class="mb-8 text-2xl sm:text-3xl font-serif font-[700]" style="color: var(--text-heading)">
+                    {moreTags}
+                </h2>
+            )
+        }
+        {
+            simpleTags.length > 0 && (
+                <TagPills
+                    tags={simpleTags.map((tag) => ({
+                        id: tag.id,
+                        name: tag.name,
+                        count: getPostsByTag(posts, tag.id).length,
+                        isRubric: rubricSlugs.includes(tag.id)
+                    }))}
+                    basePath="/tags"
+                    class="mb-10"
+                />
+            )
+        }
+    </div>
+    {maugliConfig.subscribe?.enabled && <Subscribe class="my-16 sm:my-24" />}
+
+    {/* InfoCard о рубриках внизу страницы */}
+    {
+        rubricsSection && (
+            <div class="max-w-[1280px] mx-auto">
+                <InfoCard title={rubricsSection.data.title} description={rubricsSection.body} image={rubricsSection.data.image} class="mt-16" />
+            </div>
+        )
+    }
+</BaseLayout>
+
+<!-- Пример использования TagsSection:
+<TagsSection tags={tagsWithRubricFlag} totalCount={posts.length} />
+-->

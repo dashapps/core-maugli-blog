@@ -1,0 +1,59 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+
+type Props = { date: Date };
+
+const { date } = Astro.props;
+const lang = maugliConfig.defaultLang || 'en';
+const dict = dicts[lang] || dicts['en'] || {};
+const locale = lang;
+
+// Получаем текущую дату
+const now = new Date();
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+
+// Приводим переданную дату к началу дня для корректного сравнения
+const inputDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+// Определяем формат отображения
+let displayText: string;
+
+if (inputDate.getTime() === today.getTime()) {
+    displayText = dict.date.today;
+} else if (inputDate.getTime() === yesterday.getTime()) {
+    displayText = dict.date.yesterday;
+} else {
+    // Для остальных дат
+    const currentYear = now.getFullYear();
+    const dateYear = date.getFullYear();
+
+    if (dateYear === currentYear) {
+        // Текущий год - не показываем год
+        displayText = date.toLocaleDateString(locale, {
+            month: 'long',
+            day: 'numeric'
+        });
+    } else {
+        // Другой год - показываем год
+        displayText = date.toLocaleDateString(locale, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+}
+---
+
+<time datetime={date.toISOString()}>
+    {displayText}
+</time>
