@@ -59,6 +59,14 @@ marked with `isExample: true` in their frontmatter.
 | `npm run featured:remove <slug>` | Remove featured mark from a post            |
 | `npm run featured:list`          | List all featured posts                     |
 | `npm run upgrade`                | Manually update `maugli.config.ts`          |
+| `npm run backup-update`          | Backup key files then run `npm update` |
+
+## Updating
+
+Running `npm update` will replace the theme's components and layouts with the latest versions. Content under `src/content/**`, your stylesheet `src/styles/global.css` and your `src/config/maugli.config.ts` file are kept. Commit any local changes before updating.
+
+Use `npm run backup-update` to copy these files to a timestamped `maugli-backup-*` directory before updating.
+
 
 ## Licensing
 
