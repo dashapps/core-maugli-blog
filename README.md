@@ -42,6 +42,16 @@ To start a new project in an empty folder run:
  npm run build
 ```
 
+### Testing
+
+Run the test suite to verify that example content is filtered correctly:
+
+```bash
+npm test
+```
+
+All tests should complete without errors.
+
 If you want to hide the example content included with this theme, set
 `showExamples: false` in `src/config/maugli.config.ts`. Example files are
 marked with `isExample: true` in their frontmatter.
