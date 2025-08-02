@@ -62,6 +62,15 @@ marked with `isExample: true` in their frontmatter.
 
 ## Licensing
 
-This theme is distributed under the **GPL-3.0-or-later** license. For use without GPL obligations, including removing the "Created with Maugli" badge provided by `MaugliFloatingLabel.astro` and the footer image, a commercial license is required.
+This theme is dual-licensed:
 
-Contact **licensing@maugli.cfd** or visit <https://maugli.cfd/licensing> for commercial licensing options.
+* **GPL-3.0-or-later** – use, study and modify the code under the terms of the
+  GNU General Public License.
+* **Commercial license** – use the theme without GPL obligations.
+
+Removing the "Created with Maugli" badge (for example the
+`MaugliFloatingLabel.astro` component and the footer image) requires the
+commercial license.
+
+Contact <licensing@maugli.cfd> or visit
+<https://maugli.cfd/licensing> for more information.
