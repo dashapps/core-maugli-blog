@@ -47,6 +47,7 @@
         "tailwindcss": "^4.0.17",
         "ts-node": "^10.9.2",
         "tsx": "^4.20.3",
+        "typescript": "^5.9.2",
         "typograf": "^7.4.4"
     },
     "devDependencies": {
