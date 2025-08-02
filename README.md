@@ -24,9 +24,12 @@ netlify deploy --prod
 To start a new project in an empty folder run:
 
 ```bash
- npx maugli-blog init my-blog
- cd my-blog
+npx core-maugli init my-blog
+cd my-blog
+npm run dev
 ```
+
+Your blog will be available at `http://localhost:4321/`
 
 1. **Install dependencies**
 
