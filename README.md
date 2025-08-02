@@ -68,6 +68,23 @@ Running `npm update` will replace the theme's components and layouts with the la
 Use `npm run backup-update` to copy these files to a timestamped `maugli-backup-*` directory before updating.
 
 
+
+## Updating
+
+Running `npm update` will replace the files in `src/components` and
+`src/layouts` with the latest versions. Your content under `src/content/**`,
+the global stylesheet `src/styles/global.css`, and
+`src/config/maugli.config.ts` are preserved.
+
+Always commit your changes to version control before updating so you can easily
+restore them if needed. Optionally, you can create a backup prior to updating:
+
+```bash
+npm run backup
+npm update
+```
+
+=======
 ## Licensing
 
 This theme is dual-licensed:
@@ -80,5 +97,8 @@ Removing the "Created with Maugli" badge (for example the
 `MaugliFloatingLabel.astro` component and the footer image) requires the
 commercial license.
 
+Contact **licensing@maugli.cfd** or visit <https://maugli.cfd/licensing> for commercial licensing options.
+
+=======
 Contact <licensing@maugli.cfd> or visit
 <https://maugli.cfd/licensing> for more information.
