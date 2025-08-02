@@ -59,3 +59,9 @@ marked with `isExample: true` in their frontmatter.
 | `npm run featured:remove <slug>` | Remove featured mark from a post            |
 | `npm run featured:list`          | List all featured posts                     |
 | `npm run upgrade`                | Manually update `maugli.config.ts`          |
+
+## Licensing
+
+This theme is distributed under the **GPL-3.0-or-later** license. For use without GPL obligations, including removing the "Created with Maugli" badge provided by `MaugliFloatingLabel.astro` and the footer image, a commercial license is required.
+
+Contact **licensing@maugli.cfd** or visit <https://maugli.cfd/licensing> for commercial licensing options.
