@@ -60,6 +60,7 @@ marked with `isExample: true` in their frontmatter.
 | `npm run featured:list`          | List all featured posts                     |
 | `npm run upgrade`                | Manually update `maugli.config.ts`          |
 
+
 ## Updating
 
 Running `npm update` will replace the files in `src/components` and
@@ -74,4 +75,11 @@ restore them if needed. Optionally, you can create a backup prior to updating:
 npm run backup
 npm update
 ```
+
+=======
+## Licensing
+
+This theme is distributed under the **GPL-3.0-or-later** license. For use without GPL obligations, including removing the "Created with Maugli" badge provided by `MaugliFloatingLabel.astro` and the footer image, a commercial license is required.
+
+Contact **licensing@maugli.cfd** or visit <https://maugli.cfd/licensing> for commercial licensing options.
 
