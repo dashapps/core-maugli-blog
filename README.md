@@ -4,6 +4,21 @@ Hi-perfomance, SEO&AI-SEO optimised
 
 [![Deploy to Netlify Button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/dashapps/maugli-astro-theme)
 
+Before deploying, push this project to your own Git repository. Update the
+`repository=` parameter in the link above so it points to your repository or
+connect the repo through the Netlify UI.
+
+Example link:
+`https://app.netlify.com/start/deploy?repository=https://github.com/your-user/your-repo`
+
+Using Netlify CLI instead:
+
+```
+npm install -g netlify-cli
+netlify init
+netlify deploy --prod
+```
+
 ## Getting started
 
 To start a new project in an empty folder run:
@@ -69,7 +84,7 @@ marked with `isExample: true` in their frontmatter.
 | `npm run featured:remove <slug>` | Remove featured mark from a post            |
 | `npm run featured:list`          | List all featured posts                     |
 | `npm run upgrade`                | Manually update `maugli.config.ts`          |
-| `npm run backup-update`          | Backup key files then run `npm update` |
+| `npm run backup-update`          | Backup key files then run `npm update`      |
 
 ## Updating
 
@@ -77,14 +92,13 @@ Running `npm update` will replace the theme's components and layouts with the la
 
 Use `npm run backup-update` to copy these files to a timestamped `maugli-backup-*` directory before updating.
 
-
 ## Licensing
 
 This theme is dual-licensed:
 
-* **GPL-3.0-or-later** – use, study and modify the code under the terms of the
+- **GPL-3.0-or-later** – use, study and modify the code under the terms of the
   GNU General Public License.
-* **Commercial license** – use the theme without GPL obligations.
+- **Commercial license** – use the theme without GPL obligations.
 
 Removing the "Created with Maugli" badge (for example the
 `MaugliFloatingLabel.astro` component and the footer image) requires the
