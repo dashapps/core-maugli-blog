@@ -13,6 +13,7 @@
     "featured:list": "node scripts/featured.js list",
     "backup": "node scripts/backup.js",
     "upgrade": "node scripts/upgrade-config.js",
+    "backup-update": "node scripts/update-with-backup.js",
     "postinstall": "node scripts/upgrade-config.js"
   },
   "dependencies": {
