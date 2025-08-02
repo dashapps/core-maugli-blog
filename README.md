@@ -1,4 +1,14 @@
-# Maugli Blog - Astro & Tailwind CSS Theme by maugli.cfd
+# Maugli Blog - Astro & Tailwind CSS2. **Interface Language** - Choose from:
+   - 🇺🇸 English (default)
+   - 🇷🇺 Русский
+   - 🇪🇸 Español  
+   - 🇩🇪 Deutsch
+   - 🇵🇹 Português
+   - 🇫🇷 Français
+   - 🇨🇳 中文
+   - 🇯🇵 日本語
+3. **Main Domain** - Do you have a main domain to link this blog to? (e.g., mybrand.com - leave empty if none)
+4. **Multilingual Support** - Enable/disable multiple languages (disabled by default)maugli.cfd
 
 Hi-perfomance, SEO&AI-SEO optimised
 
@@ -21,7 +31,7 @@ netlify deploy --prod
 
 ## Getting started
 
-To start a new project in an empty folder run:
+To start a new project, run the interactive setup:
 
 ```bash
 npx core-maugli init my-blog
@@ -29,7 +39,27 @@ cd my-blog
 npm run dev
 ```
 
+### Interactive Setup
+
+The setup wizard will ask you to configure:
+
+1. **Blog Name** - The display name for your blog (can be changed later in config)
+2. **Interface Language** - Choose from:
+   - 🇺🇸 English (default)
+   - 🇸 Español  
+   - 🇩🇪 Deutsch
+   - �� Português
+   - �� Français
+   - 🇨🇳 中文
+   - 🇯🇵 日本語
+3. **Main Domain** - Your main website URL (leave empty for local blog)
+4. **Multilingual Support** - Enable/disable multiple languages (disabled by default)
+
 Your blog will be available at `http://localhost:4321/`
+
+### Manual Installation
+
+If you prefer to install without the interactive setup:
 
 1. **Install dependencies**
 
@@ -70,9 +100,19 @@ npm test
 
 All tests should complete without errors.
 
-If you want to hide the example content included with this theme, set
-`showExamples: false` in `src/config/maugli.config.ts`. Example files are
-marked with `isExample: true` in their frontmatter.
+## Configuration
+
+### Initial Setup
+The interactive setup automatically configures your blog based on your choices. All settings can be changed later in `src/config/maugli.config.ts`.
+
+### Customization Options
+- **Blog Name & Description** - Change `brand.name` and `brand.description`
+- **Language Settings** - Modify `defaultLang` and `features.enableMultiLang`
+- **Domain Configuration** - Update `brand.logoHref` for your main site link
+- **Example Content** - Set `showExamples: false` to hide demo content
+- **Theme & Features** - Enable/disable various blog features
+
+Example files are marked with `isExample: true` in their frontmatter.
 
 ### Useful npm scripts
 
