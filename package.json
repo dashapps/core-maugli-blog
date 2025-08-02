@@ -12,6 +12,7 @@
     "featured:remove": "node scripts/featured.js remove",
     "featured:list": "node scripts/featured.js list",
     "upgrade": "node scripts/upgrade-config.js",
+    "backup-update": "node scripts/update-with-backup.js",
     "postinstall": "node scripts/upgrade-config.js"
   },
   "dependencies": {
