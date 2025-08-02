@@ -59,3 +59,19 @@ marked with `isExample: true` in their frontmatter.
 | `npm run featured:remove <slug>` | Remove featured mark from a post            |
 | `npm run featured:list`          | List all featured posts                     |
 | `npm run upgrade`                | Manually update `maugli.config.ts`          |
+
+## Updating
+
+Running `npm update` will replace the files in `src/components` and
+`src/layouts` with the latest versions. Your content under `src/content/**`,
+the global stylesheet `src/styles/global.css`, and
+`src/config/maugli.config.ts` are preserved.
+
+Always commit your changes to version control before updating so you can easily
+restore them if needed. Optionally, you can create a backup prior to updating:
+
+```bash
+npm run backup
+npm update
+```
+
