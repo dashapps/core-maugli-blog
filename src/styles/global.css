@@ -1,3 +1,4 @@
+/* Import fonts. Replace or add lines to use other Fontsource packages. */
 @import '@fontsource-variable/inter/wght.css' layer(base);
 @import '@fontsource-variable/geologica/wght.css' layer(base);
 
@@ -23,8 +24,8 @@
         --bg-main-40: rgba(255, 255, 255, 0.4);
         --bg-muted: rgba(237, 241, 247, 0.621);
         --border-main: rgba(17, 28, 44, 0.13);
-        --font-sans: 'Inter Variable', sans-serif;
-        --font-serif: 'Geologica Variable', sans-serif;
+        --font-sans: 'Inter Variable', sans-serif; /* Update if you change the sans-serif font */
+        --font-serif: 'Geologica Variable', sans-serif; /* Update if you change the serif font */
 
         /* Card Styles */
         --card-shadow:
@@ -100,8 +101,8 @@ html.dark {
 */
 
 @theme inline {
-    --font-sans: 'Inter Variable', sans-serif;
-    --font-serif: 'Geologica Variable', sans-serif;
+    --font-sans: 'Inter Variable', sans-serif; /* Match --font-sans above if changed */
+    --font-serif: 'Geologica Variable', sans-serif; /* Match --font-serif above if changed */
     --font-weight-bold: 700;
     --font-weight-extra-bold: 800;
     --text-color-main: var(--text-main);
