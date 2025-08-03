@@ -2,6 +2,12 @@
 
 Hi-perfomance, SEO&AI-SEO optimised
 
+## Introduction
+
+Maugli is a lightweight, agent-friendly blog that can integrate into an existing site or run as a standalone project. Link the blog's logo to your primary site by setting `brand.logoHref` in [`src/config/maugli.config.ts`](src/config/maugli.config.ts).
+
+The theme includes a `product` entity for showcasing offerings. Rename it (for example, to "services") and hide or customize related menu items by editing the `navLinks` array in the same configuration file.
+
 [![Deploy to Netlify Button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/dashapps/maugli-astro-theme)
 
 Before deploying, push this project to your own Git repository. Update the
