@@ -7,6 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import siteConfig from './src/data/site-config';
 import remarkSlug from 'remark-slug';
 import customSlugify from './src/utils/remark-slugify';
+import { maugliConfig } from './src/config/maugli.config';
 
 export const pwaOptions = {
     registerType: 'autoUpdate',
@@ -16,21 +17,21 @@ export const pwaOptions = {
         short_name: "Maugli",
         start_url: "/",
         display: "standalone",
-        background_color: "#ffffff",
-        theme_color: "#0cbf11",
-        icons: [
+        background_color: maugliConfig.pwa?.backgroundColor ?? '#ffffff',
+        theme_color: maugliConfig.pwa?.themeColor ?? '#0cbf11',
+        icons: maugliConfig.pwa?.icons ?? [
             {
                 src: "/icon-192.png",
                 sizes: "192x192",
                 type: "image/png",
-                purpose: "any maskable"
+                purpose: "any maskable",
             },
             {
                 src: "/icon-512.png",
                 sizes: "512x512",
-                type: "image/png"
-            }
-        ]
+                type: "image/png",
+            },
+        ],
     },
     workbox: {
         navigateFallback: '/index.html',
