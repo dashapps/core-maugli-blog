@@ -90,6 +90,12 @@ If you want to hide the example content included with this theme, set
 `showExamples: false` in `src/config/maugli.config.ts`. Example files are
 marked with `isExample: true` in their frontmatter.
 
+To restore the default example posts and other sample content later, run:
+
+```bash
+npx core-maugli init .
+```
+
 ### Useful npm scripts
 
 | Script                           | Description                                 |
@@ -105,11 +111,29 @@ marked with `isExample: true` in their frontmatter.
 | `npm run upgrade`                | Manually update `maugli.config.ts`          |
 | `npm run backup-update`          | Backup key files then run `npm update`      |
 
+## Checking installed version
+
+See which version of the theme is installed:
+
+```bash
+npm list core-maugli
+```
+
 ## Updating
 
-Running `npm update` will replace the theme's components and layouts with the latest versions. Content under `src/content/**`, your stylesheet `src/styles/global.css` and your `src/config/maugli.config.ts` file are kept. Commit any local changes before updating.
+Upgrade to the latest release:
 
-Use `npm run backup-update` to copy these files to a timestamped `maugli-backup-*` directory before updating.
+```bash
+npm update
+```
+
+To back up key files and then update, run:
+
+```bash
+npm run backup-update
+```
+
+Both commands replace the theme's components and layouts with the latest versions. Content under `src/content/**`, your stylesheet `src/styles/global.css` and your `src/config/maugli.config.ts` file are kept. Commit any local changes before updating.
 
 ## Licensing
 
