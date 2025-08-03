@@ -1,16 +1,52 @@
 #!/usr/bin/env node
 
 import { execSync } from 'child_process';
-import { cpSync, existsSync, writeFileSync } from 'fs';
+import { cpSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
+import readline from 'readline';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const templateRoot = path.join(__dirname, '..');
 
-export default function init(targetName) {
+function getLanguageCodes() {
+  const file = readFileSync(path.join(templateRoot, 'src/i18n/languages.ts'), 'utf8');
+  const codes = [];
+  const regex = /{\s*code:\s*'([^']+)'/g;
+  let match;
+  while ((match = regex.exec(file)) !== null) {
+    codes.push(match[1]);
+  }
+  return codes;
+}
+
+function promptLang(codes) {
+  return new Promise(resolve => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question(`Choose language (${codes.join(', ')}): `, answer => {
+      rl.close();
+      resolve(codes.includes(answer) ? answer : codes[0]);
+    });
+  });
+}
+
+function updateConfig(targetDir, lang) {
+  const configPath = path.join(targetDir, 'src', 'config', 'maugli.config.ts');
+  if (!existsSync(configPath)) return;
+  let content = readFileSync(configPath, 'utf8');
+  content = content.replace(/defaultLang:\s*'[^']*'/, `defaultLang: '${lang}'`);
+  const multiMatch = content.match(/enableMultiLang:\s*(true|false)/);
+  const multi = multiMatch ? multiMatch[1] === 'true' : false;
+  content = content.replace(/showLangSwitcher:\s*(true|false)/, `showLangSwitcher: ${multi}`);
+  writeFileSync(configPath, content);
+  console.log(`Configured default language to ${lang}`);
+}
+
+export default async function init(targetName, langOption) {
   const targetDir = targetName ? path.resolve(targetName) : process.cwd();
+  const codes = getLanguageCodes();
+  const lang = langOption && codes.includes(langOption) ? langOption : await promptLang(codes);
 
   function copyItem(item) {
     const src = path.join(templateRoot, item);
@@ -86,9 +122,21 @@ dist/
   console.log('Created .prettierrc');
 
   execSync('npm install', { cwd: targetDir, stdio: 'inherit' });
+  updateConfig(targetDir, lang);
 }
 
 // Если скрипт запускается напрямую
 if (import.meta.url === `file://${process.argv[1]}`) {
-  init(process.argv[2]);
+  const args = process.argv.slice(2);
+  let targetName;
+  let lang;
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--lang' && i + 1 < args.length) {
+      lang = args[i + 1];
+      i++;
+    } else {
+      targetName = args[i];
+    }
+  }
+  await init(targetName, lang);
 }

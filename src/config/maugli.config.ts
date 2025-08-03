@@ -195,7 +195,7 @@ export const maugliConfig: MaugliConfig = {
   defaultAuthorId: 'default-autor', // Default author id (used if no author is specified). Use the filename of the author .md file without the .md extension
   showAuthorsWithoutArticles: true, // Show authors without articles (default: true)
   showAuthorArticleCount: true, // Show article count for author
-  showLangSwitcher: true, // Show language switcher
+  showLangSwitcher: false, // Show language switcher
   langLinks: {
     ru: 'https://maugli.cfd/ru', // Russian version
     en: 'https://maugli.cfd/en', // English version

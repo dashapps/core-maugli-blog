@@ -29,6 +29,22 @@ cd my-blog
 npm run dev
 ```
 
+To initialize inside the current folder use:
+
+```bash
+npx core-maugli init .
+```
+
+The init script lets you choose a language or pass one with `--lang`. Available codes: `ru`, `en`, `es`, `de`, `pt`, `fr`, `zh`, `ja`.
+
+Example:
+
+```bash
+npx core-maugli init my-blog --lang es
+```
+
+You pick the language only once during project creation; updates won't ask again.
+
 Your blog will be available at `http://localhost:4321/`
 
 1. **Install dependencies**
