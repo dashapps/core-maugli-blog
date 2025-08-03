@@ -82,6 +82,12 @@ Your blog will be available at `http://localhost:4321/`
  npm run build
 ```
 
+`npm run build` runs [`scripts/verify-assets.js`](scripts/verify-assets.js)
+before the Astro build. This script checks the SHA-256 hashes of the
+floating label component and footer badge to ensure they haven't been
+modified. If you change these assets without updating their hashes in
+the script, the build will fail.
+
 ### Testing
 
 Run the test suite to verify that example content is filtered correctly:
@@ -108,7 +114,7 @@ npx core-maugli init .
 | -------------------------------- | ------------------------------------------- |
 | `npm run dev`                    | Start local dev server                      |
 | `npm start`                      | Alias for `npm run dev`                     |
-| `npm run build`                  | Format content then create production build |
+| `npm run build`                  | Format content, verify assets, then create production build |
 | `npm run typograf`               | Run typograf on all posts                   |
 | `npm run astro`                  | Access the Astro CLI                        |
 | `npm run featured:add <slug>`    | Mark a post as featured                     |
