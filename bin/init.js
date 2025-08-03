@@ -31,6 +31,46 @@ function promptLang(codes) {
   });
 }
 
+function promptRepo() {
+  return new Promise(resolve => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question('Repository URL: ', answer => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+async function getRepoUrl(targetDir, repoOption) {
+  if (repoOption) return repoOption;
+  try {
+    const url = execSync('git remote get-url origin', {
+      cwd: targetDir,
+      stdio: ['ignore', 'pipe', 'ignore']
+    })
+      .toString()
+      .trim();
+    if (url) return url;
+  } catch {
+    // ignore
+  }
+  return await promptRepo();
+}
+
+function updateReadme(targetDir, repoUrl) {
+  if (!repoUrl) return;
+  const readmePath = path.join(targetDir, 'README.md');
+  if (!existsSync(readmePath)) return;
+  let content = readFileSync(readmePath, 'utf8');
+  const pattern = /https:\/\/app\.netlify\.com\/start\/deploy\?repository=[^\)\s]+/;
+  content = content.replace(
+    pattern,
+    `https://app.netlify.com/start/deploy?repository=${repoUrl}`
+  );
+  writeFileSync(readmePath, content);
+  console.log('Updated Netlify link in README.md');
+}
+
 function updateConfig(targetDir, lang) {
   const configPath = path.join(targetDir, 'src', 'config', 'maugli.config.ts');
   if (!existsSync(configPath)) return;
@@ -43,7 +83,7 @@ function updateConfig(targetDir, lang) {
   console.log(`Configured default language to ${lang}`);
 }
 
-export default async function init(targetName, langOption) {
+export default async function init(targetName, langOption, repoOption) {
   const targetDir = targetName ? path.resolve(targetName) : process.cwd();
   const codes = getLanguageCodes();
   const lang = langOption && codes.includes(langOption) ? langOption : await promptLang(codes);
@@ -81,6 +121,9 @@ export default async function init(targetName, langOption) {
     'LICENSE'
   ];
   items.forEach(copyItem);
+
+  const repoUrl = await getRepoUrl(targetDir, repoOption);
+  updateReadme(targetDir, repoUrl);
 
   // Create essential config files
   const gitignoreContent = `
@@ -130,13 +173,17 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2);
   let targetName;
   let lang;
+  let repo;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--lang' && i + 1 < args.length) {
       lang = args[i + 1];
+      i++;
+    } else if (args[i] === '--repo' && i + 1 < args.length) {
+      repo = args[i + 1];
       i++;
     } else {
       targetName = args[i];
     }
   }
-  await init(targetName, lang);
+  await init(targetName, lang, repo);
 }

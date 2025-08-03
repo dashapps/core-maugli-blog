@@ -8,7 +8,7 @@ Maugli is a lightweight, agent-friendly blog that can integrate into an existing
 
 The theme includes a `product` entity for showcasing offerings. Rename it (for example, to "services") and hide or customize related menu items by editing the `navLinks` array in the same configuration file.
 
-[![Deploy to Netlify Button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/dashapps/maugli-astro-theme)
+[![Deploy to Netlify Button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/dashapps/core-maugli-blog)
 
 Before deploying, push this project to your own Git repository. Update the
 `repository=` parameter in the link above so it points to your repository or
@@ -239,3 +239,4 @@ commercial license.
 
 Contact <licensing@maugli.cfd> or visit
 <https://maugli.cfd/licensing> for more information.
+
