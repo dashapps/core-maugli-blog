@@ -49,6 +49,12 @@ export interface MaugliConfig {
     enableFAQ: boolean; // Enable FAQ block
     enableRSS: boolean; // Enable RSS feed
   };
+  // Progressive Web App settings
+  pwa?: {
+    themeColor?: string; // Theme color for the PWA manifest
+    backgroundColor?: string; // Background color for the PWA manifest
+    icons?: Array<{ src: string; sizes: string; type: string; purpose?: string }>; // Icons for the PWA manifest
+  };
   // Control display of tags/rubrics
   // Theme switcher
   enableThemeSwitcher?: boolean; // Enable theme switcher (true by default)
@@ -156,6 +162,14 @@ export const maugliConfig: MaugliConfig = {
     enableMultiLang: false, // Enable multilingual support
     enableFAQ: true, // Enable FAQ block
     enableRSS: true, // Enable RSS feed
+  },
+  pwa: {
+    themeColor: '#0cbf11', // Theme color for the PWA manifest
+    backgroundColor: '#ffffff', // Background color for the PWA manifest
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
   },
   showOnlyRubricsTags: true, // Show only rubrics by default
 
