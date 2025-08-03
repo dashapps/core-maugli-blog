@@ -85,8 +85,20 @@ Your blog will be available at `http://localhost:4321/`
 `npm run build` runs [`scripts/verify-assets.js`](scripts/verify-assets.js)
 before the Astro build. This script checks the SHA-256 hashes of the
 floating label component and footer badge to ensure they haven't been
-modified. If you change these assets without updating their hashes in
-the script, the build will fail.
+modified. The floating label's hash is validated to ensure compliance
+with licensing.
+
+If you hold a commercial license and legitimately change the label,
+generate its new SHA-256 hash and replace the value for
+`src/components/MaugliFloatingLabel.astro` in the `files` object of
+[`scripts/verify-assets.js`](scripts/verify-assets.js). For example:
+
+```bash
+node -e "import { createHash } from 'crypto'; import { readFileSync } from 'fs'; console.log(createHash('sha256').update(readFileSync('src/components/MaugliFloatingLabel.astro')).digest('hex'))"
+```
+
+If you change these assets without updating their hashes in the
+script, the build will fail.
 
 ### Customizing fonts
 
