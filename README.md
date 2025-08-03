@@ -88,6 +88,30 @@ floating label component and footer badge to ensure they haven't been
 modified. If you change these assets without updating their hashes in
 the script, the build will fail.
 
+### Customizing fonts
+
+This project uses [Fontsource](https://fontsource.org/) for typography. To add a different font, install the desired package:
+
+```bash
+npm install @fontsource-variable/roboto
+```
+
+Then replace or add the corresponding `@import` line in [`src/styles/global.css`](src/styles/global.css):
+
+```css
+@import '@fontsource-variable/roboto/wght.css' layer(base);
+```
+
+Update the `--font-sans` or `--font-serif` variables in the same file so Tailwind uses the new font:
+
+```css
+--font-sans: 'Roboto Variable', sans-serif;
+/* or */
+--font-serif: 'Roboto Variable', sans-serif;
+```
+
+Repeat these steps for any other fonts you want to include.
+
 ### Testing
 
 Run the test suite to verify that example content is filtered correctly:
