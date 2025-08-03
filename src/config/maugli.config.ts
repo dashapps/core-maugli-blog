@@ -1,5 +1,5 @@
 // MAUGLI_CONFIG_VERSION — config version for CLI/automation compatibility
-export const MAUGLI_CONFIG_VERSION = '0.2';
+export const MAUGLI_CONFIG_VERSION = '0.3';
 // Main configuration interface for the Maugli project
 export interface MaugliConfig {
   // Show example/demo content (for CLI/empty blog setup)
@@ -18,6 +18,11 @@ export interface MaugliConfig {
     farmRubricIds?: string[];    // Array of farm rubric IDs for API
     farmProductIds?: string[];   // Array of farm product IDs for API
     farmProjectIds?: string[];   // Array of farm project/case IDs for API
+  };
+  // Repository settings for deployment
+  repository?: {
+    url?: string; // User's repository URL for Netlify deployment button
+    netlifyEnabled?: boolean; // Enable Netlify deployment button (default: true)
   };
   // Brand and logo settings
   brand: {
@@ -110,6 +115,11 @@ export const maugliConfig: MaugliConfig = {
     farmRubricIds: [],    // Array of farm rubric IDs for API
     farmProductIds: [],   // Array of farm product IDs for API
     farmProjectIds: [],   // Array of farm project/case IDs for API
+  },
+  // Repository settings for deployment
+  repository: {
+    url: 'https://github.com/dashapps/core-maugli-blog', // User's repository URL for Netlify deployment button
+    netlifyEnabled: true, // Enable Netlify deployment button (default: true)
   },
   enableThemeSwitcher: true, // Enable theme switcher (true by default)
   seo: {

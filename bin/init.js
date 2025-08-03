@@ -71,7 +71,7 @@ function updateReadme(targetDir, repoUrl) {
   console.log('Updated Netlify link in README.md');
 }
 
-function updateConfig(targetDir, lang) {
+function updateConfig(targetDir, lang, repoUrl) {
   const configPath = path.join(targetDir, 'src', 'config', 'maugli.config.ts');
   if (!existsSync(configPath)) return;
   let content = readFileSync(configPath, 'utf8');
@@ -79,8 +79,20 @@ function updateConfig(targetDir, lang) {
   const multiMatch = content.match(/enableMultiLang:\s*(true|false)/);
   const multi = multiMatch ? multiMatch[1] === 'true' : false;
   content = content.replace(/showLangSwitcher:\s*(true|false)/, `showLangSwitcher: ${multi}`);
+  
+  // Update repository URL if provided
+  if (repoUrl) {
+    content = content.replace(
+      /repository:\s*{[^}]*url:\s*'[^']*'/,
+      `repository: {\n    url: '${repoUrl}'`
+    );
+  }
+  
   writeFileSync(configPath, content);
   console.log(`Configured default language to ${lang}`);
+  if (repoUrl) {
+    console.log(`Configured repository URL to ${repoUrl}`);
+  }
 }
 
 export default async function init(targetName, langOption, repoOption) {
@@ -165,7 +177,7 @@ dist/
   console.log('Created .prettierrc');
 
   execSync('npm install', { cwd: targetDir, stdio: 'inherit' });
-  updateConfig(targetDir, lang);
+  updateConfig(targetDir, lang, repoUrl);
 }
 
 // Если скрипт запускается напрямую

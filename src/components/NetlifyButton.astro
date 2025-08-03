@@ -1,0 +1,22 @@
+---
+import { maugliConfig } from '../config/maugli.config.ts';
+
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Use repository URL from config, fallback to default
+const repositoryUrl = maugliConfig.repository?.url || 'https://github.com/dashapps/core-maugli-blog';
+const netlifyEnabled = maugliConfig.repository?.netlifyEnabled !== false;
+const netlifyUrl = `https://app.netlify.com/start/deploy?repository=${repositoryUrl}`;
+---
+
+{
+    netlifyEnabled && (
+        <a href={netlifyUrl} target="_blank" rel="noopener noreferrer" class={className}>
+            <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />
+        </a>
+    )
+}

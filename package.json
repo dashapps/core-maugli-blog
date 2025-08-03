@@ -2,11 +2,11 @@
     "name": "core-maugli",
     "description": "Astro & Tailwind CSS blog theme for Maugli.",
     "type": "module",
-    "version": "1.1.8",
+    "version": "1.1.9",
     "license": "GPL-3.0-or-later OR Commercial",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/dashapps/maugli-astro-theme.git"
+        "url": "git+https://github.com/dashapps/core-maugli-blog.git"
     },
     "author": "Maugli Content Farm",
     "keywords": [

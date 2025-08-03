@@ -10,12 +10,17 @@ The theme includes a `product` entity for showcasing offerings. Rename it (for e
 
 [![Deploy to Netlify Button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/dashapps/core-maugli-blog)
 
-Before deploying, push this project to your own Git repository. Update the
-`repository=` parameter in the link above so it points to your repository or
-connect the repo through the Netlify UI.
+The Netlify deployment button automatically uses your repository URL configured in [`src/config/maugli.config.ts`](src/config/maugli.config.ts). When you run `npx core-maugli init`, it will ask for your repository URL and configure the deployment button accordingly.
 
-Example link:
-`https://app.netlify.com/start/deploy?repository=https://github.com/your-user/your-repo`
+You can also use the dynamic `<NetlifyButton />` component in your Astro pages:
+
+```astro
+---
+import NetlifyButton from '../components/NetlifyButton.astro';
+---
+
+<NetlifyButton />
+```
 
 Using Netlify CLI instead:
 
