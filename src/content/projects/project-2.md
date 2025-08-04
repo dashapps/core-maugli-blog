@@ -4,7 +4,7 @@ description: Описание второго проекта для тестир�
 publishDate: '2025-06-01'
 seo:
   image:
-    src: 'src/assets/img/examples/projects/project_2.webp'
+    src: '/img/examples/projects/project_2.webp'
     alt: Второй проект
     width: '1200'
     height: '630'

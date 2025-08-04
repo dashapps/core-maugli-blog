@@ -8,7 +8,7 @@ tags:
   - Автоматизация бизнеса
 seo:
   image:
-    src: /src/assets/img/examples/blog/post_1_jsonld_guide.webp
+    src: /img/examples/blog/post_1_jsonld_guide.webp
     alt: ТехРев и ИльичAI
 isExample: true
 ---

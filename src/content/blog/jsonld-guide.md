@@ -25,7 +25,7 @@ seo:
     - Maugli Editorial System
     - рекомендации нейросетей
   image:
-    src: /src/assets/img/examples/blog/test-post.webp
+    src: /img/examples/blog/test-post.webp
     alt: JSON-LD в Maugli Editorial System
     width: '1200'
     height: '630'
@@ -84,7 +84,7 @@ jsonld:
       height: 200
   image:
     '@type': ImageObject
-    url: src/assets/img/examples/blog/post_1_jsonld_guide.webp
+    url: /img/examples/blog/post_1_jsonld_guide.webp
     width: 1200
     height: 630
     caption: JSON-LD и AI-SEO
@@ -171,7 +171,7 @@ jsonld:
       height: 200
   image:
     '@type': ImageObject
-    url: /post_1_jsonld_guide.webp
+    url: /img/examples/blog/post_1_jsonld_guide.webp
     width: 1200
     height: 630
     caption: JSON-LD и AI-SEO

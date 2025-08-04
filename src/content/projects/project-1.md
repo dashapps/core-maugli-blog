@@ -22,7 +22,7 @@ generativeEngineOptimization:
         answer: 'Да, система создает контент в соответствии с заданной тональностью и может писать от лица конкретного персонажа.'
 seo:
   image:
-    src: 'src/assets/img/examples/projects/project_1.webp'
+    src: '/img/examples/projects/project_1.webp'
     alt: Смотреть
     width: '1200'
     height: '630'

@@ -6,7 +6,7 @@ updatedDate: 2025-07-10
 isFeatured: true
 tags: ['контент', 'редакция', 'автоматизация']
 image:
-  src: 'src/assets/img/examples/products/product_1.webp'
+  src: '/img/examples/products/product_1.webp'
   alt: 'Maugli Content Farm'
 seo:
   title: 'Редакция Maugli — умная платформа для контента'

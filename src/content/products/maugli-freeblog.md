@@ -16,7 +16,7 @@ productLink: 'https://freeblog.maugli.ru'
 author: 'Редакция Maugli'
 publisher: 'Maugli'
 image:
-  src: 'src/assets/img/examples/products/product_2.webp'
+  src: '/img/examples/products/product_2.webp'
   alt: 'Логотип Maugli Free Blog'
   width: '1200'
   height: '630'
@@ -48,7 +48,7 @@ jsonld:
   '@type': 'Product'
   'name': 'Maugli Free Blog'
   'description': 'Лёгкий блог-шаблон на Astro для SEO и GPT-индексации.'
-  'image': 'src/assets/img/examples/products/product_2.webp'
+  'image': '/img/examples/products/product_2.webp'
   'brand':
     '@type': 'Organization'
     'name': 'Maugli'
