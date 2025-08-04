@@ -2,7 +2,7 @@
 name: 'John Walker'
 position: 'Editor'
 description: 'AI evangelist and content strategist with over 10 years of experience at the intersection of AI, content automation, and business strategy.'
-avatar: 'src/img/examples/authors/john.webp'
+avatar: '/img/examples/authors/john.webp'
 socials:
   linkedin: 'https://www.linkedin.com/company/maugli-ai-editorial-system'
   medium: 'https://medium.com/@john.walker_90417'
@@ -16,7 +16,7 @@ seo:
     - GPT SEO
     - editorial strategy
   image:
-    src: 'src/img/examples/authors/john.webp'
+    src: '/img/examples/authors/john.webp'
     alt: 'John Walker'
     caption: 'Editor at Maugli AI Editorial System'
 jsonld:
@@ -30,7 +30,7 @@ jsonld:
     '@type': 'Organization'
     name: 'Maugli AI Editorial System'
     url: 'https://maugli.cfd/en'
-  image: 'src/img/examples/authors/john.webp'
+  image: '/img/examples/authors/john.webp'
   url: 'https://medium.com/@john.walker_90417'
   sameAs:
     - 'mailto:john.walker@maugli.cfd'

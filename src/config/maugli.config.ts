@@ -162,11 +162,11 @@ export const maugliConfig: MaugliConfig = {
       }
     }
   },
-  defaultBlogImage: 'src/assets/img/default/blog_default.webp', // Default blog image
-  defaultProductImage: 'src/assets/img/default/product_default.webp', // Default product image
-  defaultProjectImage: 'src/assets/img/default/project_default.webp', // Default project/case image
-  defaultAuthorImage: 'src/assets/img/default/autor_default.webp', // Default author image
-  defaultRubricImage: 'src/assets/img/default/rubric_default.webp', // Default rubric/category image
+  defaultBlogImage: '/img/default/blog_default.webp', // Default blog image
+  defaultProductImage: '/img/default/product_default.webp', // Default product image
+  defaultProjectImage: '/img/default/project_default.webp', // Default project/case image
+  defaultAuthorImage: '/img/default/autor_default.webp', // Default author image
+  defaultRubricImage: '/img/default/rubric_default.webp', // Default rubric/category image
   features: {
     enableSubscribe: true, // Enable subscribe block
     enableMultiLang: false, // Enable multilingual support

@@ -2,7 +2,7 @@
 name: 'Default Author'
 position: 'Editor-in-Chief'
 description: 'Default author and content editor for Maugli Blog. Used by default when no custom author is configured.'
-avatar: 'src/img/default/autor_default.webp'
+avatar: '/img/default/autor_default.webp'
 socials:
   telegram: 'https://t.me/mauglibot'
   linkedin: 'https://www.linkedin.com/company/maugli'
@@ -21,7 +21,7 @@ seo:
     - AI content
     - SEO
   image:
-    src: 'src/img/default/autor_default.webp'
+    src: '/img/default/autor_default.webp'
     alt: 'Default Author'
     caption: 'Default editor of Maugli Blog'
 jsonld:
@@ -30,7 +30,7 @@ jsonld:
   name: 'Default Author'
   jobTitle: 'Editor-in-Chief'
   url: 'https://maugli.cfd'
-  image: 'src/img/default/autor_default.webp'
+  image: '/img/default/autor_default.webp'
   sameAs:
     - 'https://t.me/mauglibot'
     - 'https://www.linkedin.com/company/maugli'

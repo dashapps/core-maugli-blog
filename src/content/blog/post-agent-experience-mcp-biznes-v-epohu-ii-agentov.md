@@ -23,7 +23,7 @@ seo:
     - протокол MCP
     - интеграция нейросетей
 image:
-  src: /src/assets/img/examples/blog/test-post.webp
+  src: /img/examples/blog/test-post.webp
   alt: 'Agent Experience и MCP: новый интерфейс бизнеса и нейросетей'
   width: '1200'
   height: '630'

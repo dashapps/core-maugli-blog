@@ -78,7 +78,7 @@ const pageTitle = seo?.title || `${name} - ${position} | Maugli Content Farm`;
 const pageDescription = seo?.description || description;
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} image={{ src: avatar || 'src/img/default/autor_default.webp', alt: `Фото ${name}` }} showHeader={false} fullWidth={true}>
+<BaseLayout title={pageTitle} description={pageDescription} image={{ src: avatar || '/img/default/autor_default.webp', alt: `Фото ${name}` }} showHeader={false} fullWidth={true}>
     <div class="max-w-[1280px] mx-auto">
         <!-- Хлебные крошки -->
         <Breadcrumbs />
@@ -89,7 +89,7 @@ const pageDescription = seo?.description || description;
                 <div class="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
                     <!-- Аватар -->
                     <div class="w-32 h-32 sm:w-40 sm:h-40 bg-[var(--bg-main)] rounded-full overflow-hidden flex-shrink-0">
-                        <img src={avatar || 'src/img/default/autor_default.webp'} alt={`Фото ${name}`} class="w-full h-full object-cover" />
+                        <img src={avatar || '/img/default/autor_default.webp'} alt={`Фото ${name}`} class="w-full h-full object-cover" />
                     </div>
 
                     <!-- Информация -->

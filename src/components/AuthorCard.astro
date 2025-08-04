@@ -46,7 +46,7 @@ const postCount = getPostsByAuthor(posts, slug).length;
         <div class="flex flex-row items-start gap-4">
             <!-- Аватар автора слева -->
             <Avatar
-                src={avatar || maugliConfig.defaultAuthorImage || 'src/img/default/autor_default.webp'}
+                src={avatar || maugliConfig.defaultAuthorImage || '/img/default/autor_default.webp'}
                 alt={name}
                 size="clamp(70px, 15vw, 100px)"
                 class="no-border"

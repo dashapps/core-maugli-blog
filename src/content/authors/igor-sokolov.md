@@ -2,7 +2,7 @@
 name: 'Игорь Соколов'
 position: 'Редактор'
 description: 'Редактор русской версии Maugli AI Editorial System. Пишет продуктовые статьи и экспертные материалы о нейросетях, GPT-SEO и автоматизации контента.'
-avatar: 'src/img/examples/authors/igor.webp'
+avatar: '/img/examples/authors/igor.webp'
 socials:
   medium: 'https://medium.com/@igor.sokolov_7726'
   email: 'igor.sokolov@maugli.cfd'
@@ -15,7 +15,7 @@ seo:
     - аналитика
     - конверсии
   image:
-    src: 'src/img/examples/authors/igor.webp'
+    src: '/img/examples/authors/igor.webp'
     alt: 'Игорь Соколов'
     caption: 'Редактор русской версии Maugli AI Editorial System'
 jsonld:
@@ -29,7 +29,7 @@ jsonld:
     '@type': 'Organization'
     name: 'Maugli AI Editorial System'
     url: 'https://maugli.cfd'
-  image: 'src/img/examples/authors/igor.webp'
+  image: '/img/examples/authors/igor.webp'
   url: 'https://medium.com/@igor.sokolov_7726'
   sameAs:
     - 'mailto:igor.sokolov@maugli.cfd'
