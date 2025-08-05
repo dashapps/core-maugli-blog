@@ -112,14 +112,77 @@ function getPreviewImageSrc(imageSrc: string): string {
     return absolutePreviewPath;
 }
 
-const imageSrc = image?.src || maugliConfig.defaultRubricImage;
-const previewImageSrc = getPreviewImageSrc(imageSrc);
+// Всегда используем дефолтное изображение для рубрик
+const previewImageSrc = '/img/default/previews/rubric_default.webp';
+
+// Список стоп-слов (предлоги, союзы, знаки)
+const stopWords = [
+    'и',
+    'в',
+    'на',
+    'с',
+    'по',
+    'от',
+    'до',
+    'за',
+    'над',
+    'под',
+    'о',
+    'об',
+    'у',
+    'для',
+    'к',
+    'ко',
+    'из',
+    'без',
+    'при',
+    'а',
+    'но',
+    'или',
+    'да',
+    'же',
+    'ли',
+    'бы',
+    'не',
+    'то',
+    'же',
+    'the',
+    'of',
+    'to',
+    'in',
+    'on',
+    'at',
+    'by',
+    'for',
+    'with',
+    'from',
+    'as',
+    'an',
+    'or',
+    'but',
+    '&'
+];
+
+function getRubricInitials(title: string): string {
+    if (!title) return '';
+    // Удаляем лишние символы
+    const clean = title.replace(/[^\wа-яА-ЯёЁ\s]/gi, ' ');
+    const words = clean.split(/\s+/).filter(Boolean);
+    // Берём первые буквы каждого слова, кроме стоп-слов
+    const initials = words
+        .filter((word) => !stopWords.includes(word.toLowerCase()))
+        .slice(0, 2)
+        .map((word) => word[0]?.toUpperCase() || '')
+        .join('');
+    return initials;
+}
+
+const rubricInitials = getRubricInitials(title);
 
 // Debug информация только в development режиме
 if (import.meta.env.DEV) {
     console.log('RubricCard Debug:', {
         title,
-        originalImageSrc: imageSrc,
         previewImageSrc,
         defaultRubricImage: maugliConfig.defaultRubricImage
     });
@@ -131,8 +194,18 @@ if (import.meta.env.DEV) {
         class={`w-full h-[195px] border border-[var(--border-main)] rounded-custom card-bg hover:card-shadow hover:-translate-y-1 transition-all duration-300 p-6 flex flex-row gap-4 items-start ${className}`}
     >
         <!-- Левая часть: картинка и дата -->
-        <div class="flex flex-col items-end gap-2 w-[105px] h-[147px]">
-            <img src={previewImageSrc} alt={image?.alt || title} class="w-[105px] h-[107px] object-cover rounded-custom" loading="lazy" />
+        <div class="flex flex-col items-end gap-2 w-[105px] h-[147px] relative">
+            <img src={previewImageSrc} alt={title} class="w-[105px] h-[107px] object-cover rounded-custom" loading="lazy" />
+            {
+                rubricInitials && (
+                    <span style="position:absolute;left:0;top:0;width:105px;height:107px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;">
+                        <span style="position:absolute;left:0;top:0;width:105px;height:107px;background:rgba(0,0,0,0.10);border-radius:inherit;z-index:1;" />
+                        <span style="position:relative;z-index:2;font-size:48px;font-weight:700;font-family:inherit;color:var(--brand-color);letter-spacing:2px;">
+                            {rubricInitials}
+                        </span>
+                    </span>
+                )
+            }
             <div class="flex flex-col items-end gap-1 w-[74px] h-[32px]">
                 <span class={`flex items-center gap-1 text-[12px] text-right ${isBrandDate ? 'text-[var(--brand-color)]' : 'text-[var(--text-muted)]'}`}>
                     <svg
