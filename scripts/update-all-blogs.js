@@ -22,8 +22,9 @@ const CORRECT_SCRIPTS = {
     "dev": "node resize-all.cjs && node scripts/generate-previews.js && astro dev",
     "prestart": "node resize-all.cjs && node scripts/generate-previews.js",
     "start": "astro dev",
-    "build": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+    "build": "node scripts/check-version.js && node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
     "build:fast": "node resize-all.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+    "build:no-check": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
     "optimize": "node scripts/optimize-images.cjs",
     "optimize:squoosh": "node scripts/squoosh-optimize.js",
     "test": "node tests/examplesFilter.test.ts",
@@ -34,6 +35,10 @@ const CORRECT_SCRIPTS = {
     "upgrade": "node scripts/upgrade-config.js",
     "update-components": "node scripts/update-components.js",
     "backup-update": "node scripts/update-with-backup.js",
+    "update-all-blogs": "node scripts/update-all-blogs.js",
+    "check-version": "node scripts/check-version.js",
+    "auto-update": "node scripts/auto-update.js",
+    "build:ci": "SKIP_VERSION_CHECK=true npm run build",
     "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
     "generate-previews": "node scripts/generate-previews.js"
 };
@@ -48,7 +53,10 @@ const REQUIRED_SCRIPTS = [
     'scripts/setup-user-images.js',
     'scripts/featured.js',
     'scripts/update-components.js',
-    'scripts/update-with-backup.js'
+    'scripts/update-with-backup.js',
+    'scripts/check-version.js',
+    'scripts/auto-update.js',
+    '.gitignore'
 ];
 
 function log(message, type = 'info') {
@@ -74,18 +82,18 @@ function updateBlogProject(projectPath) {
     const absolutePath = path.resolve(projectPath);
     
     if (!fs.existsSync(absolutePath)) {
-        log(`Путь не существует: ${absolutePath}`, 'error');
+        log(`Project path does not exist: ${absolutePath}`, 'error');
         return false;
     }
     
     const packageJsonPath = path.join(absolutePath, 'package.json');
     
     if (!fs.existsSync(packageJsonPath)) {
-        log(`package.json не найден в: ${absolutePath}`, 'error');
+        log(`package.json not found in: ${absolutePath}`, 'error');
         return false;
     }
     
-    log(`Обновляем проект: ${absolutePath}`, 'info');
+    log(`Updating project: ${absolutePath}`, 'info');
     
     try {
         // 1. Читаем package.json
@@ -93,7 +101,7 @@ function updateBlogProject(projectPath) {
         
         // 2. Проверяем, что это проект core-maugli
         if (packageJson.name !== 'core-maugli') {
-            log(`Пропускаем: не core-maugli проект (${packageJson.name})`, 'warning');
+            log(`Skipping: not a core-maugli project (${packageJson.name})`, 'warning');
             return false;
         }
         
@@ -140,20 +148,20 @@ function updateBlogProject(projectPath) {
         }
         
         // 7. Обновляем npm пакеты
-        log(`Обновляем npm пакеты...`, 'info');
+        log(`Updating npm packages...`, 'info');
         process.chdir(absolutePath);
         execSync('npm update core-maugli', { stdio: 'pipe' });
         
         // 8. Результат
-        log(`Проект обновлен успешно!`, 'success');
-        log(`  Версия: ${oldVersion} → ${CURRENT_VERSION}`, 'info');
-        log(`  Скрипты обновлены: ${scriptsUpdated ? 'Да' : 'Нет'}`, 'info');
-        log(`  Файлы скриптов скопированы: ${scriptsCopied}`, 'info');
+        log(`Project updated successfully!`, 'success');
+        log(`  Version: ${oldVersion} → ${CURRENT_VERSION}`, 'info');
+        log(`  Scripts updated: ${scriptsUpdated ? 'Yes' : 'No'}`, 'info');
+        log(`  Script files copied: ${scriptsCopied}`, 'info');
         
         return true;
         
     } catch (error) {
-        log(`Ошибка при обновлении: ${error.message}`, 'error');
+        log(`Error during update: ${error.message}`, 'error');
         return false;
     }
 }
@@ -162,8 +170,8 @@ function main() {
     const args = process.argv.slice(2);
     
     if (args.length === 0) {
-        log('Использование: node scripts/update-all-blogs.js [путь_к_проекту]', 'info');
-        log('Пример: node scripts/update-all-blogs.js /Users/daria/Documents/GitHub/blogru', 'info');
+        log('Usage: node scripts/update-all-blogs.js [project_path]', 'info');
+        log('Example: node scripts/update-all-blogs.js /Users/daria/Documents/GitHub/blogru', 'info');
         process.exit(1);
     }
     
@@ -177,13 +185,13 @@ function main() {
         }
     }
     
-    log(`\nОбновление завершено: ${successCount}/${totalCount} проектов обновлено`, 'info');
+    log(`\nUpdate completed: ${successCount}/${totalCount} projects updated`, 'info');
     
     if (successCount > 0) {
-        log('🎉 Теперь во всех проектах:', 'success');
-        log('  ✅ Правильная версия core-maugli', 'success');
-        log('  ✅ Актуальные скрипты сборки', 'success');
-        log('  ✅ Оптимизация изображений работает', 'success');
+        log('🎉 Now all projects have:', 'success');
+        log('  ✅ Correct core-maugli version', 'success');
+        log('  ✅ Up-to-date build scripts', 'success');
+        log('  ✅ Working image optimization', 'success');
     }
 }
 

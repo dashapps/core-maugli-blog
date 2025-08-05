@@ -22,8 +22,9 @@
         "dev": "node resize-all.cjs && node scripts/generate-previews.js && astro dev",
         "prestart": "node resize-all.cjs && node scripts/generate-previews.js",
         "start": "astro dev",
-        "build": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build": "node scripts/check-version.js && node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "build:fast": "node resize-all.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build:no-check": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "optimize": "node scripts/optimize-images.cjs",
         "optimize:squoosh": "node scripts/squoosh-optimize.js",
         "test": "node tests/examplesFilter.test.ts",
@@ -35,6 +36,9 @@
         "update-components": "node scripts/update-components.js",
         "backup-update": "node scripts/update-with-backup.js",
         "update-all-blogs": "node scripts/update-all-blogs.js",
+        "check-version": "node scripts/check-version.js",
+        "auto-update": "node scripts/auto-update.js",
+        "build:ci": "SKIP_VERSION_CHECK=true npm run build",
         "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
         "generate-previews": "node scripts/generate-previews.js"
     },
@@ -80,7 +84,8 @@
         "public/flags/",
         "public/blackbox*.webp",
         "scripts",
-        "bin"
+        "bin",
+        ".gitignore"
     ],
     "bin": {
         "core-maugli": "bin/index.js"
