@@ -19,3 +19,12 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# Кеш типографа
+.typograf-cache.json
+
+# Игнорировать ресайзы изображений и превью
+public/img/**/*-400.webp
+public/img/**/*-800.webp
+public/img/**/*-1200.webp
+public/img/**/previews/*.webp

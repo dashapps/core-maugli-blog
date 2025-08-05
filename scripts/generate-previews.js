@@ -103,6 +103,8 @@ function extractImagePaths() {
     const items = fs.readdirSync(defaultDir);
     for (const item of items) {
       if (item.match(/\.(webp|jpg|jpeg|png)$/i)) {
+        // Исключаем изображения авторов и рубрик
+        if (item.includes('autor') || item.includes('author') || item.includes('rubric')) continue;
         imagePaths.add(`/img/default/${item}`);
       }
     }
@@ -141,42 +143,44 @@ function cleanupExistingPreviews() {
 // Функция для создания превьюшки
 async function createPreview(imagePath) {
   const fullImagePath = path.join(rootDir, 'public', imagePath.replace(/^\//, ''));
-  
+
   if (!fs.existsSync(fullImagePath)) {
     console.warn(`Image not found: ${fullImagePath}`);
     return;
   }
-  
+
   const dir = path.dirname(fullImagePath);
   const ext = path.extname(fullImagePath);
   const name = path.basename(fullImagePath, ext);
   const previewPath = path.join(dir, 'previews', `${name}${ext}`);
-  
+
   // Определяем размер превью в зависимости от типа изображения
   let previewWidth, previewHeight;
   if (imagePath.includes('/img/default/') && (name.includes('rubric') || name.includes('tag'))) {
-    // Для изображений рубрик используем меньший размер
     previewWidth = rubricPreviewWidth;
     previewHeight = rubricPreviewHeight;
     console.log(`Creating rubric preview (${previewWidth}x${previewHeight}): ${name}`);
   } else {
-    // Для блог-постов и других изображений используем стандартный размер
     previewWidth = blogPreviewWidth;
     previewHeight = blogPreviewHeight;
     console.log(`Creating blog preview (${previewWidth}x${previewHeight}): ${name}`);
   }
-  
+
   // Создаем папку previews если её нет
   const previewDir = path.dirname(previewPath);
   if (!fs.existsSync(previewDir)) {
     fs.mkdirSync(previewDir, { recursive: true });
   }
-  
+
+  // Если превью уже существует — пропускаем генерацию
+  if (fs.existsSync(previewPath)) {
+    // console.log(`Preview already exists: ${previewPath}`);
+    return;
+  }
   try {
     await sharp(fullImagePath)
       .resize(previewWidth, previewHeight, { fit: 'cover' })
       .toFile(previewPath);
-    
     console.log(`Preview created: ${previewPath}`);
   } catch (error) {
     console.error(`Error processing ${fullImagePath}:`, error.message);
@@ -185,18 +189,22 @@ async function createPreview(imagePath) {
 
 // Основная функция
 async function generatePreviews() {
-  console.log('Cleaning up existing previews...');
-  cleanupExistingPreviews();
-  
+  // Очистка превью только если явно указано (например, через переменную)
+  const CLEAN_PREVIEWS = process.env.CLEAN_PREVIEWS === '1';
+  if (CLEAN_PREVIEWS) {
+    console.log('Cleaning up existing previews...');
+    cleanupExistingPreviews();
+  }
+
   console.log('Scanning content for images...');
   const imagePaths = extractImagePaths();
-  
+
   console.log(`Found ${imagePaths.length} images to process`);
-  
+
   for (const imagePath of imagePaths) {
     await createPreview(imagePath);
   }
-  
+
   console.log('Preview generation completed!');
 }
 

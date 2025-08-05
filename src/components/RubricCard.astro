@@ -112,14 +112,77 @@ function getPreviewImageSrc(imageSrc: string): string {
     return absolutePreviewPath;
 }
 
-const imageSrc = image?.src || maugliConfig.defaultRubricImage;
-const previewImageSrc = getPreviewImageSrc(imageSrc);
+// Если указано своё изображение — показываем его превью, иначе дефолтное
+const previewImageSrc = getPreviewImageSrc(image?.src || maugliConfig.defaultRubricImage);
+
+// Список стоп-слов (предлоги, союзы, знаки)
+const stopWords = [
+    'и',
+    'в',
+    'на',
+    'с',
+    'по',
+    'от',
+    'до',
+    'за',
+    'над',
+    'под',
+    'о',
+    'об',
+    'у',
+    'для',
+    'к',
+    'ко',
+    'из',
+    'без',
+    'при',
+    'а',
+    'но',
+    'или',
+    'да',
+    'же',
+    'ли',
+    'бы',
+    'не',
+    'то',
+    'же',
+    'the',
+    'of',
+    'to',
+    'in',
+    'on',
+    'at',
+    'by',
+    'for',
+    'with',
+    'from',
+    'as',
+    'an',
+    'or',
+    'but',
+    '&'
+];
+
+function getRubricInitials(title: string): string {
+    if (!title) return '';
+    // Удаляем лишние символы
+    const clean = title.replace(/[^\wа-яА-ЯёЁ\s]/gi, ' ');
+    const words = clean.split(/\s+/).filter(Boolean);
+    // Берём первые буквы каждого слова, кроме стоп-слов
+    const initials = words
+        .filter((word) => !stopWords.includes(word.toLowerCase()))
+        .slice(0, 2)
+        .map((word) => word[0]?.toUpperCase() || '')
+        .join('');
+    return initials;
+}
+
+const rubricInitials = getRubricInitials(title);
 
 // Debug информация только в development режиме
 if (import.meta.env.DEV) {
     console.log('RubricCard Debug:', {
         title,
-        originalImageSrc: imageSrc,
         previewImageSrc,
         defaultRubricImage: maugliConfig.defaultRubricImage
     });
@@ -131,48 +194,58 @@ if (import.meta.env.DEV) {
         class={`w-full h-[195px] border border-[var(--border-main)] rounded-custom card-bg hover:card-shadow hover:-translate-y-1 transition-all duration-300 p-6 flex flex-row gap-4 items-start ${className}`}
     >
         <!-- Левая часть: картинка и дата -->
+        <<<<<<< HEAD
         <div class="flex flex-col items-end gap-2 w-[105px] h-[147px]">
-            <img
-                src={previewImageSrc}
-                alt={image?.alt || title}
-                class="w-[105px] h-[107px] object-cover rounded-custom"
-                loading="lazy"
-                decoding="async"
-            />
-            <div class="flex flex-col items-end gap-1 w-[74px] h-[32px]">
-                <span class={`flex items-center gap-1 text-[12px] text-right ${isBrandDate ? 'text-[var(--brand-color)]' : 'text-[var(--text-muted)]'}`}>
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        style="display:inline-block;vertical-align:middle;opacity:0.6; color: var(--text-muted);"
-                    >
-                        <path
-                            d="M17.7909 6.12232C14.9505 3.32362 10.5815 3.00989 7.39551 5.15377L7.38659 3.92302C7.38509 3.71587 7.21589 3.54914 7.00866 3.55079L6.25874 3.55664C6.05166 3.55822 5.88516 3.72734 5.88666 3.93434L5.90736 6.74122C5.91029 7.15357 6.24576 7.48537 6.65736 7.48537C6.65886 7.48537 6.66104 7.48537 6.66321 7.48537L9.47046 7.46467C9.67761 7.46317 9.84426 7.29389 9.84269 7.08674L9.83684 6.33667C9.83526 6.12959 9.66614 5.96309 9.45914 5.96459L8.98199 5.96804C11.4928 4.71464 14.6299 5.11372 16.7377 7.19017C18.7606 9.18427 19.3134 12.182 18.1639 14.7525C18.082 14.9355 18.1491 15.1487 18.3276 15.24L18.997 15.582C19.1866 15.6789 19.4265 15.6008 19.5145 15.4069C20.9445 12.2567 20.2743 8.57039 17.7909 6.12232ZM17.3434 16.5132C17.3419 16.5132 17.3397 16.5132 17.3375 16.5132L14.5303 16.5338C14.3231 16.5354 14.1565 16.7046 14.158 16.9117L14.1639 17.6618C14.1655 17.8688 14.3346 18.0353 14.5416 18.0339L15.0183 18.0304C12.5073 19.2835 9.37079 18.8841 7.26299 16.8083C5.24009 14.8142 4.68734 11.8164 5.83686 9.24599C5.91869 9.06299 5.85164 8.84977 5.67314 8.75849L5.00376 8.41649C4.81409 8.31959 4.57424 8.39767 4.48619 8.59154C3.05609 11.7417 3.72636 15.428 6.20969 17.8762C7.81439 19.4575 9.90771 20.2456 11.9995 20.2456C13.6101 20.2456 15.2191 19.7767 16.605 18.8438L16.6139 20.0754C16.6154 20.2825 16.7846 20.4493 16.9918 20.4477L17.7418 20.4418C17.9488 20.4402 18.1153 20.2711 18.1138 20.0641L18.0931 17.2573C18.0904 16.8449 17.755 16.5132 17.3434 16.5132Z"
-                            fill="currentColor"></path>
-                    </svg>
-                    {formattedDate}
-                </span>
+            <img src={previewImageSrc} alt={image?.alt || title} class="w-[105px] h-[107px] object-cover rounded-custom" loading="lazy" decoding="async" />
+            =======
+            <div class="flex flex-col items-end gap-2 w-[105px] h-[147px] relative">
+                <img src={previewImageSrc} alt={title} class="w-[105px] h-[107px] object-cover rounded-custom" loading="lazy" />
+                {
+                    rubricInitials && (
+                        <span style="position:absolute;left:0;top:0;width:105px;height:107px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2;">
+                            <span style="position:absolute;left:0;top:0;width:105px;height:107px;background:rgba(0,0,0,0.10);border-radius:inherit;z-index:1;" />
+                            <span style="position:relative;z-index:2;font-size:48px;font-weight:700;font-family:inherit;color:var(--brand-color);letter-spacing:2px;">
+                                {rubricInitials}
+                            </span>
+                        </span>
+                    )
+                }
+                >>>>>>> 41e6ca2 (fix: always use default rubric image from config, initials overlay, preview logic)
+                <div class="flex flex-col items-end gap-1 w-[74px] h-[32px]">
+                    <span class={`flex items-center gap-1 text-[12px] text-right ${isBrandDate ? 'text-[var(--brand-color)]' : 'text-[var(--text-muted)]'}`}>
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style="display:inline-block;vertical-align:middle;opacity:0.6; color: var(--text-muted);"
+                        >
+                            <path
+                                d="M17.7909 6.12232C14.9505 3.32362 10.5815 3.00989 7.39551 5.15377L7.38659 3.92302C7.38509 3.71587 7.21589 3.54914 7.00866 3.55079L6.25874 3.55664C6.05166 3.55822 5.88516 3.72734 5.88666 3.93434L5.90736 6.74122C5.91029 7.15357 6.24576 7.48537 6.65736 7.48537C6.65886 7.48537 6.66104 7.48537 6.66321 7.48537L9.47046 7.46467C9.67761 7.46317 9.84426 7.29389 9.84269 7.08674L9.83684 6.33667C9.83526 6.12959 9.66614 5.96309 9.45914 5.96459L8.98199 5.96804C11.4928 4.71464 14.6299 5.11372 16.7377 7.19017C18.7606 9.18427 19.3134 12.182 18.1639 14.7525C18.082 14.9355 18.1491 15.1487 18.3276 15.24L18.997 15.582C19.1866 15.6789 19.4265 15.6008 19.5145 15.4069C20.9445 12.2567 20.2743 8.57039 17.7909 6.12232ZM17.3434 16.5132C17.3419 16.5132 17.3397 16.5132 17.3375 16.5132L14.5303 16.5338C14.3231 16.5354 14.1565 16.7046 14.158 16.9117L14.1639 17.6618C14.1655 17.8688 14.3346 18.0353 14.5416 18.0339L15.0183 18.0304C12.5073 19.2835 9.37079 18.8841 7.26299 16.8083C5.24009 14.8142 4.68734 11.8164 5.83686 9.24599C5.91869 9.06299 5.85164 8.84977 5.67314 8.75849L5.00376 8.41649C4.81409 8.31959 4.57424 8.39767 4.48619 8.59154C3.05609 11.7417 3.72636 15.428 6.20969 17.8762C7.81439 19.4575 9.90771 20.2456 11.9995 20.2456C13.6101 20.2456 15.2191 19.7767 16.605 18.8438L16.6139 20.0754C16.6154 20.2825 16.7846 20.4493 16.9918 20.4477L17.7418 20.4418C17.9488 20.4402 18.1153 20.2711 18.1138 20.0641L18.0931 17.2573C18.0904 16.8449 17.755 16.5132 17.3434 16.5132Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        {formattedDate}
+                    </span>
+                </div>
             </div>
-        </div>
-        <!-- Правая часть: контент -->
-        <div class="flex flex-col justify-start items-start h-[147px] flex-1 min-w-0">
-            <div class="flex flex-row items-start gap-2 w-full">
-                <h3 class="font-serif font-[700] text-[22px] text-[var(--text-heading)] leading-[1] truncate">{title}</h3>
-                <CountBadge count={postCount} />
-            </div>
-            <div class="mt-2 text-[14px] text-[var(--text-main)] leading-[1.3] line-clamp-6 opacity-80">
-                {description}
+            <!-- Правая часть: контент -->
+            <div class="flex flex-col justify-start items-start h-[147px] flex-1 min-w-0">
+                <div class="flex flex-row items-start gap-2 w-full">
+                    <h3 class="font-serif font-[700] text-[22px] text-[var(--text-heading)] leading-[1] truncate">{title}</h3>
+                    <CountBadge count={postCount} />
+                </div>
+                <div class="mt-2 text-[14px] text-[var(--text-main)] leading-[1.3] line-clamp-6 opacity-80">
+                    {description}
+                </div>
             </div>
         </div>
     </article>
-</a>
 
-<style>
-    article:hover {
-        box-shadow: var(--card-shadow);
-    }
-    /* Карточка всегда двухколоночная, контент сверху, текст description не прижат к низу */
-</style>
+    <style>
+        article:hover {
+            box-shadow: var(--card-shadow);
+        }
+        /* Карточка всегда двухколоночная, контент сверху, текст description не прижат к низу */
+    </style>
+</a>
