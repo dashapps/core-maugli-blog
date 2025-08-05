@@ -17,6 +17,9 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
         label: d?.nav?.[link.key] || link.label
     };
 });
+
+const openMenuLabel = (dict as any).openMenu || 'Open menu';
+const closeMenuLabel = (dict as any).closeMenu || 'Close menu';
 ---
 
 <nav class="fixed top-0 left-0 w-full z-50 bg-[var(--bg-main)] opacity-95 backdrop-blur-lg flex items-center justify-between pt-4 pb-4">
@@ -57,6 +60,7 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
             class="menu-toggle cursor-pointer w-8 h-8 flex items-center justify-center relative z-30 md:hidden ml-auto text-[var(--text-heading)] order-3"
             aria-expanded="false"
             aria-controls="menu-items"
+            aria-label={openMenuLabel}
         >
             <span class="menu-toggle-icon w-6 h-px relative bg-current"></span>
         </button>
@@ -121,6 +125,9 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
 </style>
 
 <script>
+    const openLabel = ${JSON.stringify(openMenuLabel)};
+    const closeLabel = ${JSON.stringify(closeMenuLabel)};
+
     function menuToggle() {
         const menu = document.querySelector('.menu');
         const menuToggleBtn = document.querySelector('.menu-toggle');
@@ -129,6 +136,7 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
             const isMenuExpanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
             menuToggleBtn.classList.toggle('is-active');
             menuToggleBtn.setAttribute('aria-expanded', isMenuExpanded ? 'false' : 'true');
+            menuToggleBtn.setAttribute('aria-label', isMenuExpanded ? openLabel : closeLabel);
             menu.classList.toggle('is-visible');
         });
         // Закрытие при клике вне меню
@@ -136,6 +144,7 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
             if (!menuToggleBtn.contains(e.target as Node) && !menu.contains(e.target as Node)) {
                 menuToggleBtn.classList.remove('is-active');
                 menuToggleBtn.setAttribute('aria-expanded', 'false');
+                menuToggleBtn.setAttribute('aria-label', openLabel);
                 menu.classList.remove('is-visible');
             }
         });
@@ -143,6 +152,7 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
         window.addEventListener('scroll', () => {
             menuToggleBtn.classList.remove('is-active');
             menuToggleBtn.setAttribute('aria-expanded', 'false');
+            menuToggleBtn.setAttribute('aria-label', openLabel);
             menu.classList.remove('is-visible');
         });
         // Закрытие при выборе пункта меню
@@ -150,6 +160,7 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
             item.addEventListener('click', () => {
                 menuToggleBtn.classList.remove('is-active');
                 menuToggleBtn.setAttribute('aria-expanded', 'false');
+                menuToggleBtn.setAttribute('aria-label', openLabel);
                 menu.classList.remove('is-visible');
             });
         });
