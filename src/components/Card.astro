@@ -20,8 +20,8 @@ const { href, title, image, seo, publishDate, excerpt, description, headingLevel
 
 const TitleTag = headingLevel;
 
-// Определяем изображение для карточки
-const cardImage =
+// Определяем базовое изображение для карточки
+const baseImage =
     seo?.image?.src ||
     (image && typeof image.src === 'string' && image.src.length > 0 ? image.src : undefined) ||
     (type === 'blog'
@@ -31,6 +31,20 @@ const cardImage =
           : type === 'product'
             ? maugliConfig.defaultProductImage
             : maugliConfig.seo.defaultImage);
+
+// Генерируем адаптивные версии изображений
+function getResponsiveImages(imagePath: string) {
+    const basePath = imagePath.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+    const extension = imagePath.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
+
+    return {
+        src: imagePath,
+        srcset: [`${basePath}-400${extension} 400w`, `${basePath}-800${extension} 800w`, `${basePath}-1200${extension} 1200w`, `${imagePath} 1200w`].join(', '),
+        sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px'
+    };
+}
+
+const cardImage = getResponsiveImages(baseImage);
 const cardImageAlt = seo?.image?.alt || image?.alt || title || 'Изображение';
 
 // Определяем контент для отображения
@@ -48,9 +62,13 @@ const content = excerpt || description;
         <!-- Изображение -->
         <div class="w-full aspect-[1200/630] bg-[var(--bg-muted)] overflow-hidden relative">
             <img
-                src={cardImage}
+                src={cardImage.src}
+                srcset={cardImage.srcset}
+                sizes={cardImage.sizes}
                 alt={cardImageAlt}
                 loading="lazy"
+                width="1200"
+                height="630"
                 class="w-full h-full object-cover rounded-custom transition-transform duration-300 group-hover:scale-105"
             />
 
