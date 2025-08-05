@@ -28,6 +28,9 @@ const FORCE_UPDATE_PATHS = [
   'src/scripts',
   'src/icons',
   'src/i18n',
+  'scripts', // Скрипты в корне проекта (включая generate-previews.js)
+  'typograf-batch.js', // Отдельный файл
+  'resize-all.cjs', // Отдельный файл для ресайза
   'public/flags',
   'public/img/default'
   // Исключили src/styles - может содержать пользовательские стили
@@ -41,7 +44,8 @@ const PRESERVE_PATHS = [
   'package.json',
   'astro.config.mjs',
   'tailwind.config.js',
-  'tsconfig.json'
+  'tsconfig.json',
+  'scripts/custom-*' // Пользовательские скрипты с префиксом custom-
 ];
 
 async function updateConfigVersion() {
@@ -60,9 +64,9 @@ async function updateConfigVersion() {
       const userPackageContent = await fs.readFile(userPackageJsonPath, 'utf-8');
       const userPackageData = JSON.parse(userPackageContent);
       
-      // Проверяем, есть ли core-maugli в зависимостях
       let updated = false;
       
+      // Обновляем версию зависимости
       if (userPackageData.dependencies && userPackageData.dependencies['core-maugli']) {
         const currentVersion = userPackageData.dependencies['core-maugli'];
         if (currentVersion !== `^${newVersion}`) {
@@ -79,11 +83,30 @@ async function updateConfigVersion() {
         }
       }
       
+      // Обновляем build скрипт для включения генерации превью
+      if (userPackageData.scripts) {
+        const expectedBuildScript = "node typograf-batch.js && node scripts/generate-previews.js && node scripts/verify-assets.js && astro build";
+        const currentBuildScript = userPackageData.scripts.build;
+        
+        // Проверяем, содержит ли build скрипт генерацию превью
+        if (currentBuildScript && !currentBuildScript.includes('generate-previews.js')) {
+          // Добавляем генерацию превью в build процесс
+          if (currentBuildScript.includes('astro build')) {
+            userPackageData.scripts.build = currentBuildScript.replace(
+              'astro build',
+              'node scripts/generate-previews.js && astro build'
+            );
+            updated = true;
+            console.log('📦 Added generate-previews.js to build script');
+          }
+        }
+      }
+      
       if (updated) {
         await fs.writeFile(userPackageJsonPath, JSON.stringify(userPackageData, null, 2) + '\n', 'utf-8');
-        console.log(`📦 Updated package.json dependency version to ^${newVersion}`);
+        console.log(`📦 Updated package.json with version ^${newVersion}`);
       } else {
-        console.log(`📦 Package.json dependency already up to date`);
+        console.log(`📦 Package.json already up to date`);
       }
     } catch (error) {
       if (error.code === 'ENOENT') {
