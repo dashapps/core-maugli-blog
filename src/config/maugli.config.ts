@@ -24,6 +24,24 @@ export interface MaugliConfig {
     url?: string; // User's repository URL for Netlify deployment button
     netlifyEnabled?: boolean; // Enable Netlify deployment button (default: true)
   };
+  // Netlify deployment configuration
+  netlify?: {
+    autoUpdate?: boolean; // Enable auto-update on Netlify (default: true)
+    plugins?: string[]; // Netlify plugins to install
+    buildCommand?: string; // Custom build command for Netlify
+    publishDir?: string; // Publish directory (default: "dist")
+    environment?: Record<string, string>; // Environment variables for Netlify
+    redirects?: Array<{
+      from: string;
+      to: string;
+      status?: number;
+      force?: boolean;
+    }>; // Custom redirects
+    headers?: Array<{
+      for: string;
+      values: Record<string, string>;
+    }>; // Custom headers
+  };
   // Brand and logo settings
   brand: {
     name: string; // Brand name
@@ -121,6 +139,54 @@ export const maugliConfig: MaugliConfig = {
   repository: {
     url: 'https://github.com/dashapps/core-maugli-blog', // User's repository URL for Netlify deployment button
     netlifyEnabled: true, // Enable Netlify deployment button (default: true)
+  },
+  // Netlify deployment configuration
+  netlify: {
+    autoUpdate: true, // Enable auto-update on Netlify (default: true)
+    plugins: [
+      '@netlify/plugin-lighthouse',     // Lighthouse performance audits
+      'netlify-plugin-submit-sitemap',  // Auto-submit sitemap to search engines
+      'netlify-plugin-checklinks',      // Check for broken links
+      'netlify-plugin-image-optim',     // Image optimization
+      'netlify-plugin-minify-html',     // HTML minification
+      'netlify-plugin-inline-critical-css', // Inline critical CSS
+      'netlify-plugin-hashfiles'        // Cache optimization with file hashing
+    ], // Recommended Netlify plugins from UI
+    buildCommand: 'npm run build', // Default build command
+    publishDir: 'dist', // Astro output directory
+    environment: {
+      NODE_VERSION: '18',
+      NPM_FLAGS: '--legacy-peer-deps'
+    }, // Default environment variables
+    redirects: [
+      {
+        from: '/blog/feed.xml',
+        to: '/rss.xml',
+        status: 301
+      }
+    ], // Common redirects
+    headers: [
+      {
+        for: '/*',
+        values: {
+          'X-Frame-Options': 'DENY',
+          'X-Content-Type-Options': 'nosniff',
+          'Referrer-Policy': 'strict-origin-when-cross-origin'
+        }
+      },
+      {
+        for: '/img/*',
+        values: {
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        }
+      },
+      {
+        for: '/*.webp',
+        values: {
+          'Cache-Control': 'public, max-age=31536000, immutable'
+        }
+      }
+    ] // Security and performance headers
   },
   enableThemeSwitcher: true, // Enable theme switcher (true by default)
   defaultTheme: 'dark', // Default theme (dark by default)

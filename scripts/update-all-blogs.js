@@ -14,7 +14,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const CURRENT_VERSION = '1.2.39';
+const CURRENT_VERSION = '1.2.41';
 
 // Правильные скрипты для package.json
 const CORRECT_SCRIPTS = {
@@ -39,6 +39,7 @@ const CORRECT_SCRIPTS = {
     "check-version": "node scripts/check-version.js",
     "auto-update": "node scripts/auto-update.js",
     "build:ci": "SKIP_VERSION_CHECK=true npm run build",
+    "generate-netlify": "node scripts/generate-netlify-config.js",
     "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
     "generate-previews": "node scripts/generate-previews.js"
 };
@@ -56,7 +57,9 @@ const REQUIRED_SCRIPTS = [
     'scripts/update-with-backup.js',
     'scripts/check-version.js',
     'scripts/auto-update.js',
-    '.gitignore'
+    'scripts/generate-netlify-config.js',
+    '.gitignore',
+    'netlify.toml'
 ];
 
 function log(message, type = 'info') {
