@@ -26,45 +26,18 @@ const {
     ...rest
 } = Astro.props;
 
-// Генерируем оптимизированные URL для разных размеров
-const generateImageURL = (baseSrc: string, width: number, quality: number, format: string) => {
-    // Если это внешний URL, возвращаем как есть
-    if (baseSrc.startsWith('http')) {
-        return baseSrc;
-    }
-    
-    // Для карточек проверяем наличие preview версии
-    const previewSrc = baseSrc.replace(/\/([^\/]+)$/, '/previews/$1');
-    
-    // Возвращаем базовое изображение (preview будет проверен в build time)
-    return baseSrc;
-};
+// Простая стратегия - используем базовое изображение и не генерируем srcset для несуществующих файлов
+const optimizedSrc = src;
 
-const optimizedSrc = generateImageURL(src, width, quality, format);
-
-// Генерируем srcset для адаптивности (используем готовые варианты)
+// Генерируем srcset только если есть базовое изображение
 const generateSrcSet = (baseSrc: string) => {
     if (baseSrc.startsWith('http')) {
         return baseSrc;
     }
     
-    const baseUrl = baseSrc.replace(/\.[^.]+$/, '');
-    const ext = '.webp';
-    
-    // Используем существующие responsive варианты
-    const variants = [
-        { width: 400, suffix: '-400' },
-        { width: 800, suffix: '-800' },
-        { width: 1200, suffix: '-1200' }
-    ];
-    
-    const srcsetItems = variants
-        .map(({ width, suffix }) => `${baseUrl}${suffix}${ext} ${width}w`);
-    
-    // Добавляем оригинал как fallback
-    srcsetItems.push(`${baseSrc} 1200w`);
-    
-    return srcsetItems.join(', ');
+    // Возвращаем только базовое изображение без попыток создания srcset
+    // Responsive варианты будут обработаны build процессом
+    return baseSrc;
 };
 
 const srcSet = generateSrcSet(src);
@@ -72,7 +45,6 @@ const srcSet = generateSrcSet(src);
 
 <img
     src={optimizedSrc}
-    srcset={srcSet}
     alt={alt}
     width={width}
     height={height}
