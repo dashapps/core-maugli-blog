@@ -94,14 +94,22 @@ const isBrandDate = isToday || isYesterday;
 function getPreviewImageSrc(imageSrc: string): string {
     if (!imageSrc) return maugliConfig.defaultRubricImage;
 
-    // Проверяем, есть ли превью для этого изображения
+    // Если это изображение по умолчанию, возвращаем его превью напрямую
+    if (imageSrc === maugliConfig.defaultRubricImage) {
+        return '/img/default/previews/rubric_default.webp';
+    }
+
+    // Для кастомных изображений проверяем, есть ли превью
     const pathParts = imageSrc.split('/');
     const fileName = pathParts.pop();
     const directory = pathParts.join('/');
     const previewPath = `${directory}/previews/${fileName}`;
 
+    // Убеждаемся, что путь абсолютный (начинается с /)
+    const absolutePreviewPath = previewPath.startsWith('/') ? previewPath : `/${previewPath}`;
+
     // Возвращаем путь к превью (браузер покажет оригинал, если превью не найдено)
-    return previewPath;
+    return absolutePreviewPath;
 }
 
 const imageSrc = image?.src || maugliConfig.defaultRubricImage;
