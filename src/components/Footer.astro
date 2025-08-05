@@ -55,7 +55,7 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
                 <div class="flex flex-wrap gap-x-6 gap-y-1 items-center">
                     {lang === 'ru' ? (
                         <a
-                            class="footer-link flex items-center text-muted mr-2"
+                            class="footer-link flex items-center text-muted mr-2 min-w-12 min-h-12 sm:min-w-0 sm:min-h-0"
                             href="/rss.xml"
                             target="_blank"
                             rel="noopener"
@@ -64,7 +64,13 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
                             RSS
                         </a>
                     ) : (
-                        <a class="footer-link flex items-center mr-2" href="/rss.xml" aria-label="RSS" target="_blank" rel="noopener">
+                        <a
+                            class="footer-link flex items-center mr-2 min-w-12 min-h-12 sm:min-w-0 sm:min-h-0"
+                            href="/rss.xml"
+                            aria-label="RSS"
+                            target="_blank"
+                            rel="noopener"
+                        >
                             <svg
                                 width="20"
                                 height="20"
@@ -83,7 +89,7 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
                         </a>
                     )}
                     {navLinks.map((link) => (
-                        <a class="footer-link font-serif text-heading" href={link.href}>
+                        <a class="footer-link font-serif text-heading min-w-12 min-h-12 sm:min-w-0 sm:min-h-0 flex items-center" href={link.href}>
                             {link.label}
                         </a>
                     ))}
@@ -111,15 +117,6 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
         <div class="flex flex-row justify-between items-end w-full mt-2">
             <a href="https://www.npmjs.com/package/core-maugli" target="_blank" rel="noopener" aria-label="Core Maugli на NPM">
                 <img src="/footerlabel.svg" alt="Maugli Label" style="height:32px;width:auto;" loading="lazy" decoding="async" width="184" height="68" />
-            </a>
-            <a
-                href="https://www.npmjs.com/package/core-maugli"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="footer-link text-xs opacity-60 hover:opacity-100"
-                style="color:var(--text-muted);font-family:var(--font-sans);margin-left:8px;"
-            >
-                npm package
             </a>
             {
                 Object.values(maugliConfig.links || {}).some(Boolean) && (

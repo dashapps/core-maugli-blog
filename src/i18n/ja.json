@@ -13,7 +13,9 @@
     "emailLabel": "メール",
     "subscribeAriaLabel": "購読フォーム"
   },
-
+  "ui": {
+    "authorAvatar": "著者のアバター"
+  },
   "nav": {
     "blog": "ブログ",
     "products": "製品",

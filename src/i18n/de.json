@@ -13,7 +13,9 @@
     "emailLabel": "E-Mail",
     "subscribeAriaLabel": "Abonnement-Formular"
   },
-
+  "ui": {
+    "authorAvatar": "Autor-Avatar"
+  },
   "nav": {
     "blog": "Blog",
     "products": "Produkte",

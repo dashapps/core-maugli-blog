@@ -5,6 +5,7 @@ import PostPreview from '../../components/PostPreview.astro';
 import Subscribe from '../../components/Subscribe.astro';
 import TagsSection from '../../components/TagsSection.astro';
 import { maugliConfig } from '../../config/maugli.config';
+import { LANGUAGES } from '../../i18n/languages';
 import BlueskyIcon from '../../icons/socials/BlueskyIcon.astro';
 import EmailIcon from '../../icons/socials/EmailIcon.astro';
 import LinkedinIcon from '../../icons/socials/LinkedinIcon.astro';
@@ -32,6 +33,16 @@ const { name, position, description, avatar: rawAvatar, socials, seo } = author.
 // Приводим путь к аватару к public/img/authors/...
 const avatar = rawAvatar ? rawAvatar.replace('/img/examples/authors/', '/img/authors/') : undefined;
 const { Content } = await render(author);
+
+// Универсальный импорт словарей по доступным языкам
+const dicts: Record<string, any> = {};
+for (const lang of LANGUAGES) {
+    try {
+        dicts[lang.code] = await import(`../../i18n/${lang.code}.json`).then((m) => m.default);
+    } catch {}
+}
+const lang = maugliConfig.defaultLang || 'en';
+const dict = dicts[lang] || dicts['en'] || {};
 
 // Получаем все статьи блога
 let allPosts = await getFilteredCollection('blog');
@@ -80,7 +91,7 @@ const pageTitle = seo?.title || `${name} - ${position} | Maugli Content Farm`;
 const pageDescription = seo?.description || description;
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} image={{ src: avatar || '/img/default/autor_default.webp', alt: `Фото ${name}` }} showHeader={false} fullWidth={true}>
+<BaseLayout title={pageTitle} description={pageDescription} image={{ src: avatar || '/img/default/autor_default.webp', alt: dict.ui?.authorAvatar || 'Author avatar' }} showHeader={false} fullWidth={true}>
     <div class="max-w-[1280px] mx-auto">
         <!-- Хлебные крошки -->
         <Breadcrumbs />
@@ -91,7 +102,7 @@ const pageDescription = seo?.description || description;
                 <div class="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
                     <!-- Аватар -->
                     <div class="w-32 h-32 sm:w-40 sm:h-40 bg-[var(--bg-main)] rounded-full overflow-hidden flex-shrink-0">
-                        <img src={avatar || '/img/default/autor_default.webp'} alt={`Фото ${name}`} class="w-full h-full object-cover" decoding="async" />
+                        <img src={avatar || '/img/default/autor_default.webp'} alt={dict.ui?.authorAvatar || 'Author avatar'} class="w-full h-full object-cover" decoding="async" />
                     </div>
 
                     <!-- Информация -->

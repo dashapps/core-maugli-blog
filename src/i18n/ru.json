@@ -13,7 +13,9 @@
     "emailLabel": "Почта",
     "subscribeAriaLabel": "Форма подписки"
   },
-
+  "ui": {
+    "authorAvatar": "Аватар автора"
+  },
   "nav": {
     "blog": "Блог",
     "products": "Продукты",
