@@ -2,12 +2,12 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import remarkSlug from 'remark-slug';
 import { imagetools } from 'vite-imagetools';
 import { VitePWA } from 'vite-plugin-pwa';
-import siteConfig from './src/data/site-config';
-import remarkSlug from 'remark-slug';
-import customSlugify from './src/utils/remark-slugify';
 import { maugliConfig } from './src/config/maugli.config';
+import siteConfig from './src/data/site-config';
+import customSlugify from './src/utils/remark-slugify';
 
 export const pwaOptions = {
     registerType: 'autoUpdate',
@@ -82,7 +82,29 @@ export default defineConfig({
             tailwindcss(),
             imagetools(),
             VitePWA(pwaOptions)
-        ]
+        ],
+        build: {
+            cssCodeSplit: true,
+            rollupOptions: {
+                output: {
+                    // Separate CSS chunks for better caching
+                    assetFileNames: (assetInfo) => {
+                        if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+                            return 'assets/css/[name].[hash][extname]';
+                        }
+                        return 'assets/[name].[hash][extname]';
+                    }
+                }
+            }
+        },
+        css: {
+            // Optimize CSS processing
+            preprocessorOptions: {
+                scss: {
+                    // Additional SCSS options if needed
+                }
+            }
+        }
     },
     markdown: {
         remarkPlugins: [

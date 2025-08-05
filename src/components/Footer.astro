@@ -109,7 +109,18 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
         ]}
     >
         <div class="flex flex-row justify-between items-end w-full mt-2">
-            <img src="/footerlabel.svg" alt="Maugli Label" style="height:32px;width:auto;" loading="lazy" decoding="async" />
+            <div class="flex flex-col items-start gap-1">
+                <img src="/footerlabel.svg" alt="Maugli Label" style="height:32px;width:auto;" loading="lazy" decoding="async" />
+                <a
+                    href="https://www.npmjs.com/package/core-maugli"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="footer-link text-xs opacity-60 hover:opacity-100"
+                    style="color:var(--text-muted);font-family:var(--font-sans);"
+                >
+                    npm package
+                </a>
+            </div>
             {
                 Object.values(maugliConfig.links || {}).some(Boolean) && (
                     <div class="flex flex-row items-center gap-2 ml-4">
