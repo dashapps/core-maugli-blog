@@ -89,16 +89,51 @@ Your blog will be available at `http://localhost:4321/`
 
 ## Component Updates & Customization
 
-**Important**: Maugli Blog is designed for centralized component updates. All components (`src/components/`, `src/layouts/`, `src/pages/`, etc.) are automatically updated to the latest version when you update the package with `npm install --save core-maugli@latest`. This ensures you always receive the latest features, bug fixes, and improvements.
+⸻
+
+**Important**: Maugli Blog is designed for centralized component updates. All core components (`src/components/`, `src/layouts/`, `src/pages/`, etc.) are automatically updated to the latest version when you run:
+
+```bash
+npm install --save core-maugli@latest
+```
+
+This ensures that you always receive the latest:
+- **Features**
+- **Bug fixes** 
+- **Performance improvements**
+- **Accessibility enhancements**
+- **Lighthouse-validated optimizations**
+
+### Why Centralized Updates?
+
+**1. Automation First**  
+Manual component maintenance is time-consuming and error-prone. Centralized updates free you from technical debt, allowing you to focus on content creation and business growth instead of code maintenance.
+
+**2. Lighthouse & Performance Excellence**  
+All Maugli components are crafted to comply with strict Lighthouse, Web Vitals, and AI-indexability guidelines. Every component update includes:
+- **Mobile UX optimization** (48px touch targets, responsive design)
+- **Performance optimization** (proper image loading, minimal layout shift)
+- **SEO compliance** (structured data, semantic HTML, accessibility)
+- **Core Web Vitals** (LCP, FID, CLS optimization)
+
+Manual changes may negatively affect your site's score in:
+- **SEO**
+- **Performance** 
+- **Accessibility**
+- **Best Practices**
+
+⚠️ **We do not recommend editing core components manually.** If you do, re-test your site with Lighthouse and search engine validators after every change.
+
+⸻
 
 This centralized update approach **does not affect**:
 
 - Your content (`src/content/`)
-- Your Maugli configuration (`src/config/maugli.config.ts`)
-- Your custom styles (`src/styles/global.css` - preserved if customized)
-- Your project settings (`package.json`, `astro.config.mjs`, etc.)
+- Your configuration (`src/config/maugli.config.ts`)
+- Your styles (`src/styles/global.css`) — preserved if customized
+- Your project files (`package.json`, `astro.config.mjs`, etc.)
 
-Only the core blog components are updated, while your customizations and settings remain intact.
+⸻
 
 `npm run build` runs [`scripts/verify-assets.js`](scripts/verify-assets.js)
 before the Astro build. This script checks the SHA-256 hashes of the
