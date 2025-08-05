@@ -35,8 +35,30 @@ npm run update-all-blogs /path/to/blog    # Обновить один блог
 ## ⚙️ Переменные окружения
 
 ```bash
-export SKIP_VERSION_CHECK=true    # Пропустить проверку версий
-export CI=true                    # Активировать CI режим
+export SKIP_VERSION_CHECK=true      # Пропустить проверку версий
+export DISABLE_AUTO_UPDATE=true     # Отключить автообновления в CI/CD
+export CI=true                      # Активировать CI режим
+```
+
+## 🌐 Netlify / Vercel Configuration
+
+### Автоматическое обновление (рекомендуется)
+```toml
+# netlify.toml
+[build]
+  command = "npm run build"  # Автоматически обновится при сборке
+  publish = "dist"
+```
+
+### Отключение автообновлений
+```toml
+# netlify.toml
+[build.environment]
+  DISABLE_AUTO_UPDATE = "true"
+
+[build]
+  command = "npm run build:ci"  # Сборка без проверки версий
+  publish = "dist"
 ```
 
 ## 🎯 Результат

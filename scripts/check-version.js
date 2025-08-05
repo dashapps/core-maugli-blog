@@ -78,10 +78,18 @@ async function getUpdateContent(version) {
 
 async function promptUpdate() {
     return new Promise((resolve) => {
-        // Check if running in non-interactive mode
-        if (!process.stdin.isTTY) {
-            console.log(colorize('\n⚠️  Non-interactive mode detected. Skipping update prompt.', 'yellow'));
-            resolve(false);
+        // Check for CI/CD environments
+        const isCI = process.env.CI === 'true' || 
+                    process.env.NETLIFY === 'true' || 
+                    process.env.VERCEL === '1' || 
+                    process.env.GITHUB_ACTIONS === 'true' ||
+                    process.env.BUILD_ID || // Netlify
+                    process.env.VERCEL_ENV || // Vercel
+                    !process.stdin.isTTY; // Non-interactive terminal
+        
+        if (isCI) {
+            console.log(colorize('\n🤖 CI/CD environment detected. Auto-updating...', 'cyan'));
+            resolve(true);
             return;
         }
         
@@ -177,24 +185,44 @@ async function main() {
     console.log(colorize(`\n⚠️  Your current version (${currentVersion}) is outdated.`, 'yellow'));
     console.log(colorize('To ensure optimal performance and security, updating is recommended.', 'yellow'));
     
-    process.stdout.write(colorize('\n🔄 Would you like to update now? (Y/n): ', 'bold'));
+    // Check for CI/CD environments before prompting
+    const isCI = process.env.CI === 'true' || 
+                process.env.NETLIFY === 'true' || 
+                process.env.VERCEL === '1' || 
+                process.env.GITHUB_ACTIONS === 'true' ||
+                process.env.BUILD_ID || // Netlify
+                process.env.VERCEL_ENV || // Vercel
+                !process.stdin.isTTY; // Non-interactive terminal
+    
+    if (!isCI) {
+        process.stdout.write(colorize('\n🔄 Would you like to update now? (Y/n): ', 'bold'));
+    }
     
     const shouldUpdate = await promptUpdate();
     
     if (shouldUpdate) {
         const success = await performUpdate();
         if (!success) {
-            console.log(colorize('\n⚠️  Update failed. You can continue with the build, but some features may not work correctly.', 'yellow'));
-            process.stdout.write(colorize('Continue anyway? (Y/n): ', 'yellow'));
-            const continueAnyway = await promptUpdate();
-            if (!continueAnyway) {
-                console.log(colorize('\n❌ Build cancelled. Please update manually and try again.', 'red'));
+            if (isCI) {
+                console.log(colorize('\n❌ Auto-update failed in CI/CD environment. Build cancelled.', 'red'));
                 process.exit(1);
+            } else {
+                console.log(colorize('\n⚠️  Update failed. You can continue with the build, but some features may not work correctly.', 'yellow'));
+                process.stdout.write(colorize('Continue anyway? (Y/n): ', 'yellow'));
+                const continueAnyway = await promptUpdate();
+                if (!continueAnyway) {
+                    console.log(colorize('\n❌ Build cancelled. Please update manually and try again.', 'red'));
+                    process.exit(1);
+                }
             }
         }
     } else {
-        console.log(colorize('\n⚠️  Continuing without update. Some features may not work correctly.', 'yellow'));
-        console.log(colorize('💡 You can update later by running: npm run update-all-blogs', 'cyan'));
+        if (isCI) {
+            console.log(colorize('\n⚠️  CI/CD auto-update disabled. Continuing with build...', 'yellow'));
+        } else {
+            console.log(colorize('\n⚠️  Continuing without update. Some features may not work correctly.', 'yellow'));
+            console.log(colorize('💡 You can update later by running: npm run update-all-blogs', 'cyan'));
+        }
     }
     
     console.log(colorize('\n✅ Proceeding with build...\n', 'green'));
@@ -202,7 +230,9 @@ async function main() {
 
 // Handle CLI arguments
 const args = process.argv.slice(2);
-if (args.includes('--skip-check') || process.env.SKIP_VERSION_CHECK === 'true') {
+if (args.includes('--skip-check') || 
+    process.env.SKIP_VERSION_CHECK === 'true' ||
+    process.env.DISABLE_AUTO_UPDATE === 'true') {
     console.log(colorize('⏭️  Version check skipped', 'yellow'));
     process.exit(0);
 }
