@@ -1,5 +1,5 @@
 // MAUGLI_CONFIG_VERSION — config version for CLI/automation compatibility
-export const MAUGLI_CONFIG_VERSION = '0.3';
+export const MAUGLI_CONFIG_VERSION = '0.4';
 // Main configuration interface for the Maugli project
 export interface MaugliConfig {
   // Show example/demo content (for CLI/empty blog setup)
@@ -63,6 +63,7 @@ export interface MaugliConfig {
   // Control display of tags/rubrics
   // Theme switcher
   enableThemeSwitcher?: boolean; // Enable theme switcher (true by default)
+  defaultTheme?: 'light' | 'dark' | 'auto'; // Default theme (light, dark, or auto based on system preference)
   // Social and contact links (displayed in the footer)
   links?: Record<string, string>; // Social/contact links for footer
   navLinks?: Array<{ key: string; label: string; href: string }>; // Navigation links
@@ -93,7 +94,7 @@ export interface MaugliConfig {
 }
 // Main exported configuration object for the Maugli project
 export const maugliConfig: MaugliConfig = {
-  configVersion: MAUGLI_CONFIG_VERSION, // Config version for CLI/automation compatibility
+  configVersion: MAUGLI_CONFIG_VERSION, // Config version for CLI/automation compatibility (0.4)
   showExamples: true, // Show example/demo content (set false to hide all demo content)
   brand: {
     name: 'Maugli', // Brand name
@@ -122,6 +123,7 @@ export const maugliConfig: MaugliConfig = {
     netlifyEnabled: true, // Enable Netlify deployment button (default: true)
   },
   enableThemeSwitcher: true, // Enable theme switcher (true by default)
+  defaultTheme: 'dark', // Default theme (dark by default)
   seo: {
     titleSuffix: ' — Maugli', // Suffix for page titles
     defaultImage: '/default-image.webp', // Default image for SEO

@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import MaugliFloatingLabel from '../components/MaugliFloatingLabel.astro';
 import Header from '../components/Header.astro';
 import Nav from '../components/Nav.astro';
+import { maugliConfig } from '../config/maugli.config';
 
 export type Props = HeadProps & { showHeader?: boolean; fullWidth?: boolean };
 
@@ -15,11 +16,27 @@ const { showHeader = true, fullWidth = false, ...head } = Astro.props;
 <html lang="ru" class="antialiased break-words bg-main">
     <head>
         <BaseHead {...head} />
-        <script>
+        <script define:vars={{ defaultTheme: maugliConfig.defaultTheme || 'auto' }}>
             // Инициализация темы до загрузки DOM
             function initTheme() {
-                const theme = localStorage.getItem('theme');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                const savedTheme = localStorage.getItem('theme');
+                let appliedTheme;
+
+                if (savedTheme) {
+                    // Если есть сохранённая тема, используем её
+                    appliedTheme = savedTheme;
+                } else {
+                    // Если нет сохранённой темы, используем значение из конфигурации
+                    if (defaultTheme === 'auto') {
+                        // Автоматический выбор на основе системных настроек
+                        appliedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else {
+                        // Используем тему из конфигурации
+                        appliedTheme = defaultTheme;
+                    }
+                }
+
+                if (appliedTheme === 'dark') {
                     document.documentElement.classList.add('dark');
                     localStorage.setItem('theme', 'dark');
                 } else {
@@ -43,12 +60,25 @@ const { showHeader = true, fullWidth = false, ...head } = Astro.props;
             <MaugliFloatingLabel />
         </div>
 
-        <script>
+        <script define:vars={{ defaultTheme: maugliConfig.defaultTheme || 'auto' }}>
             // Сохранение темы при переходах между страницами
             document.addEventListener('astro:page-load', () => {
                 // Переинициализируем тему на каждой новой странице
-                const theme = localStorage.getItem('theme');
-                if (theme === 'dark') {
+                const savedTheme = localStorage.getItem('theme');
+                let appliedTheme;
+
+                if (savedTheme) {
+                    appliedTheme = savedTheme;
+                } else {
+                    // Если нет сохранённой темы, используем значение из конфигурации
+                    if (defaultTheme === 'auto') {
+                        appliedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else {
+                        appliedTheme = defaultTheme;
+                    }
+                }
+
+                if (appliedTheme === 'dark') {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
