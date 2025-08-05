@@ -31,7 +31,7 @@
         "upgrade": "node scripts/upgrade-config.js",
         "update-components": "node scripts/update-components.js",
         "backup-update": "node scripts/update-with-backup.js",
-        "postinstall": "node scripts/upgrade-config.js",
+        "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
         "generate-previews": "node scripts/generate-previews.js"
     },
     "dependencies": {
@@ -63,7 +63,17 @@
     },
     "files": [
         "src",
-        "public",
+        "public/favicon.svg",
+        "public/icon-192.png", 
+        "public/icon-512.png",
+        "public/manifest.webmanifest",
+        "public/logo-icon.svg",
+        "public/logoblog-icon.svg",
+        "public/maugli_for_animation.svg",
+        "public/mauglilabel.svg",
+        "public/footerlabel.svg",
+        "public/flags/",
+        "public/blackbox*.webp",
         "scripts",
         "bin"
     ],

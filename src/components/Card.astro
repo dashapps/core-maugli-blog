@@ -1,6 +1,12 @@
 ---
 import { maugliConfig } from '../config/maugli.config';
 import FormattedDate from './FormattedDate.astro';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const projectRoot = path.resolve(path.dirname(__filename), '../..');
 
 type Props = {
     href: string;
@@ -36,6 +42,42 @@ const cardImageAlt = seo?.image?.alt || image?.alt || title || 'Изображе
 
 // Определяем контент для отображения
 const content = excerpt || description;
+
+// Функция для создания responsive изображений
+function getResponsiveImages(imagePath: string) {
+    const basePath = imagePath.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+    const extension = imagePath.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
+
+    const variants = [
+        { suffix: '-400', width: '400w' },
+        { suffix: '-800', width: '800w' },
+        { suffix: '-1200', width: '1200w' }
+    ];
+
+    const srcsetItems = [];
+
+    // Добавляем адаптивные версии, если они существуют
+    for (const variant of variants) {
+        const variantPath = `${basePath}${variant.suffix}${extension}`;
+        const filePath = path.join(projectRoot, 'public', variantPath.replace(/^\//, ''));
+
+        if (fs.existsSync(filePath)) {
+            srcsetItems.push(`${variantPath} ${variant.width}`);
+        }
+    }
+
+    // Всегда добавляем оригинальное изображение
+    srcsetItems.push(`${imagePath} 1200w`);
+
+    return {
+        src: imagePath,
+        srcset: srcsetItems.join(', '),
+        sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px'
+    };
+}
+
+// Генерируем responsive изображения для карточки
+const imageData = getResponsiveImages(baseImage);
 ---
 
 <article
@@ -49,11 +91,13 @@ const content = excerpt || description;
         <!-- Изображение -->
         <div class="w-full aspect-[1200/630] bg-[var(--bg-muted)] overflow-hidden relative">
             <img
-                src={baseImage}
+                src={imageData.src}
                 alt={cardImageAlt}
                 loading="eager"
                 width="1200"
                 height="630"
+                srcset={imageData.srcset}
+                sizes={imageData.sizes}
                 class="w-full h-full object-cover rounded-custom transition-transform duration-300 group-hover:scale-105"
             />
 

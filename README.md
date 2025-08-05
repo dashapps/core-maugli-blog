@@ -87,6 +87,44 @@ Your blog will be available at `http://localhost:4321/`
  npm run build
 ```
 
+## 🖼️ Image Management
+
+Maugli Blog uses a **smart image management system** that separates user content from system assets:
+
+### Your Images Are Protected ✅
+
+During npm updates, **your images are preserved**:
+- `public/img/blog/` - Your blog post images
+- `public/img/authors/` - Your author photos  
+- `public/img/uploads/` - Your uploaded content
+- `public/img/products/` - Your product images
+- `public/img/projects/` - Your project images
+
+### System Assets Are Updated 🔄
+
+These are managed automatically by npm updates:
+- `public/favicon.svg`, logos, icons
+- `public/flags/` - Country flags
+- `public/img/default/` - Default fallback images
+
+### Automatic Image Optimization
+
+The system automatically generates responsive versions:
+```bash
+# From: my-post.webp
+# Creates: my-post-400.webp (mobile)
+#         my-post-800.webp (tablet)  
+#         my-post-1200.webp (desktop)
+#         previews/my-post.webp (thumbnail)
+```
+
+**Best practices:**
+- Use WebP format for better performance
+- Blog images: max 1200px width
+- Author avatars: 400x400px recommended
+
+See [detailed image management guide](docs/USER-IMAGES.md) for more information.
+
 ## Component Updates & Customization
 
 ⸻

@@ -23,8 +23,13 @@ pnpm-debug.log*
 # Кеш типографа
 .typograf-cache.json
 
-# Игнорировать ресайзы изображений и превью
+# Игнорировать только автогенерируемые ресайзы, но сохранять оригиналы
 public/img/**/*-400.webp
-public/img/**/*-800.webp
+public/img/**/*-800.webp  
 public/img/**/*-1200.webp
 public/img/**/previews/*.webp
+
+# НЕ игнорировать пользовательские оригинальные изображения:
+# public/img/blog/my-post.webp - СОХРАНЯЕТСЯ
+# public/img/authors/john.webp - СОХРАНЯЕТСЯ  
+# public/img/uploads/ - СОХРАНЯЕТСЯ
