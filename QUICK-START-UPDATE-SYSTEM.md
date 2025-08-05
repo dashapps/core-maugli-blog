@@ -12,6 +12,7 @@
 ## 📋 Команды
 
 ### Для разработчиков
+
 ```bash
 npm run build          # Сборка с проверкой версий
 npm run build:fast     # Быстрая сборка без проверки
@@ -19,12 +20,14 @@ npm run check-version  # Принудительная проверка верс�
 ```
 
 ### Для CI/CD
+
 ```bash
 npm run auto-update    # Автообновление без запросов
 npm run build:ci       # Сборка для CI/CD
 ```
 
 ### Для управления блогами
+
 ```bash
 npm run update-all-blogs /path/to/blog    # Обновить один блог
 ```
@@ -56,7 +59,7 @@ export CI=true                    # Активировать CI режим
 
 📋 What's new in v1.2.39:
 • Enhanced image optimization pipeline
-• Improved build performance  
+• Improved build performance
 • Better asset management
 • Centralized update system
 
