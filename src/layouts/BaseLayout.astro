@@ -46,21 +46,7 @@ const { showHeader = true, fullWidth = false, ...head } = Astro.props;
             }
 
             initTheme();
-        </script>
-        <ClientRouter />
-    </head>
-    <body class="bg-main text-main">
-        <div class="flex flex-col min-h-screen px-4 md:px-8 w-full">
-            <Nav />
-            {showHeader && <Header />}
-            <main class:list={['grow w-full mx-auto', fullWidth ? 'max-w-none' : 'max-w-3xl', 'pt-24']}>
-                <slot />
-            </main>
-            <Footer />
-            <MaugliFloatingLabel />
-        </div>
 
-        <script define:vars={{ defaultTheme: maugliConfig.defaultTheme || 'auto' }}>
             // Сохранение темы при переходах между страницами
             document.addEventListener('astro:page-load', () => {
                 // Переинициализируем тему на каждой новой странице
@@ -85,5 +71,17 @@ const { showHeader = true, fullWidth = false, ...head } = Astro.props;
                 }
             });
         </script>
+        <ClientRouter />
+    </head>
+    <body class="bg-main text-main">
+        <div class="flex flex-col min-h-screen px-4 md:px-8 w-full">
+            <Nav />
+            {showHeader && <Header />}
+            <main class:list={['grow w-full mx-auto', fullWidth ? 'max-w-none' : 'max-w-3xl', 'pt-24']}>
+                <slot />
+            </main>
+            <Footer />
+            <MaugliFloatingLabel />
+        </div>
     </body>
 </html>

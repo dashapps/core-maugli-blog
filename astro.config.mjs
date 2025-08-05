@@ -129,8 +129,7 @@ export default defineConfig({
                     },
                     chunkFileNames: 'assets/js/[name].[hash].js',
                     manualChunks: {
-                        // Split vendor code for better caching
-                        vendor: ['astro']
+                        // Split vendor code for better caching - removed astro from manual chunks
                     }
                 },
                 // Remove problematic external configuration
@@ -148,8 +147,7 @@ export default defineConfig({
             }
         },
         optimizeDeps: {
-            // Improve dev performance - remove problematic includes
-            exclude: ['astro']
+            // Improve dev performance - astro should not be excluded
         }
     },
     markdown: {

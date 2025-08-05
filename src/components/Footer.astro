@@ -94,7 +94,7 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
                         </a>
                     ))}
                 </div>
-                <div class="hidden sm:block text-sm font-serif" style="color:var(--text-muted);text-align:right;opacity:0.6;">
+                <div class="hidden sm:block text-sm font-serif" style="color:var(--text-muted);text-align:right;opacity:0.95;">
                     {maugliConfig.brand.name} © {copyrightYears}. {dict.footer.allRightsReserved}
                 </div>
             </div>
@@ -102,7 +102,7 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
     }
     {
         navLinks.length > 0 && (
-            <div class="block sm:hidden w-full mt-2 text-sm font-serif" style="color:var(--text-muted);text-align:left;opacity:0.6;">
+            <div class="block sm:hidden w-full mt-2 text-sm font-serif" style="color:var(--text-muted);text-align:left;opacity:0.95;">
                 {maugliConfig.brand.name} © {copyrightYears}. {dict.footer.allRightsReserved}
             </div>
         )
