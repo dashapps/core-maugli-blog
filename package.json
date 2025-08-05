@@ -21,7 +21,7 @@
         "typograf": "node typograf-batch.js",
         "dev": "astro dev",
         "start": "astro dev",
-        "build": "node typograf-batch.js && node scripts/generate-previews.js && node scripts/verify-assets.js && astro build",
+        "build": "node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "test": "node tests/examplesFilter.test.ts",
         "astro": "astro",
         "featured:add": "node scripts/featured.js add",

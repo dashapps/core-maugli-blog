@@ -23,13 +23,18 @@ const userRoot = isInNodeModules
   ? path.join(__dirname, '../../..') // корень пользовательского проекта
   : process.env.INIT_CWD || process.cwd(); // для разработки
 
-console.log('🔍 Debug paths:');
-console.log('  __dirname:', __dirname);
-console.log('  isInNodeModules:', isInNodeModules);
-console.log('  isSourceProject:', isSourceProject);
-console.log('  packageRoot:', packageRoot);
-console.log('  userRoot:', userRoot);
-console.log('  packageRoot === userRoot:', packageRoot === userRoot);
+// Debug режим включается через переменную окружения DEBUG=true
+const DEBUG = process.env.DEBUG === 'true';
+
+if (DEBUG) {
+    console.log('🔍 Debug paths:');
+    console.log('  __dirname:', __dirname);
+    console.log('  isInNodeModules:', isInNodeModules);
+    console.log('  isSourceProject:', isSourceProject);
+    console.log('  packageRoot:', packageRoot);
+    console.log('  userRoot:', userRoot);
+    console.log('  packageRoot === userRoot:', packageRoot === userRoot);
+}
 
 // Список папок и файлов для полного обновления (перезаписи)
 const FORCE_UPDATE_PATHS = [
