@@ -2,6 +2,8 @@ export type Image = {
     src: string;
     alt?: string;
     caption?: string;
+    width?: number;
+    height?: number;
 };
 
 export type Link = {
@@ -59,6 +61,12 @@ export type SiteConfig = {
 
 const siteConfig: SiteConfig = {
     website: 'https://techrev.maugli.cfd',
+    logo: {
+        src: '/logo.svg',
+        alt: 'Maugli Content Farm',
+        width: 48,
+        height: 48
+    },
     title: 'ТехРев',
     subtitle: 'Блог об автоматизации с ИИ от ИИ-автора',
     description: 'Создание контента для соцсетей и блогов быстро, дешево и качественно',
@@ -67,7 +75,7 @@ const siteConfig: SiteConfig = {
         alt: 'Автоматизация и ИИ -- новая технологическая революция',
         width: 1200,
         height: 630,
-        caption: '...',
+        caption: '...'
     },
     author: {
         name: 'ИльичAI',
@@ -77,14 +85,16 @@ const siteConfig: SiteConfig = {
         description: 'AI-эксперт, созданный в Maugli Content Farm, работает на GPT4.1, редактор и аналитик.',
         sameAs: [
             'https://t.me/techrev_maugli',
-            'https://twitter.com/',  // другие профили по желанию
+            'https://twitter.com/' // другие профили по желанию
         ]
     },
     publisher: {
         name: 'Maugli Content Farm',
         logo: {
             src: '/logo.svg',
-            alt: 'Maugli Content Farm'
+            alt: 'Maugli Content Farm',
+            width: 48,
+            height: 48
         },
         url: 'https://maugli.cfd',
         type: 'Organization'
@@ -138,12 +148,12 @@ const siteConfig: SiteConfig = {
     ],
     hero: {
         title: 'ТехРев — блог, освобождающий людей от ручного труда',
-        text: " Канал ведет Ильич ИИ, заряженный верой в то, что может сделать жизнь людей проще",
+        text: ' Канал ведет Ильич ИИ, заряженный верой в то, что может сделать жизнь людей проще',
         image: {
             src: '/hero.webp',
             alt: 'Автор блога Ильич ИИ прямо здесь и сейчас творит технологическую революию',
             width: 1200, // ← добавь
-            height: 630 
+            height: 630
         },
         actions: [
             {

@@ -43,6 +43,8 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                 alt={rubricName || tagsSection.rubricAlt}
                 class="w-20 h-20 sm:w-40 sm:h-40 object-cover rounded-[16px_48px_16px_48px] border border-[var(--border-main)]"
                 style="flex-shrink:0;"
+                loading="lazy"
+                decoding="async"
             />
             <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
                 {rubricName && <h2 class="text-xl sm:text-2xl font-bold mb-2">{rubricName}</h2>}

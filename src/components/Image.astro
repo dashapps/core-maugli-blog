@@ -1,13 +1,33 @@
 ---
-export let src = '';
-export let alt = '';
-export let width = undefined;
-export let height = undefined;
-export let className = '';
-export let loading = 'lazy';
-export let style = '';
+export interface Props {
+    src: string;
+    alt?: string;
+    width?: number | string;
+    height?: number | string;
+    className?: string;
+    loading?: 'lazy' | 'eager';
+    style?: string;
+}
+
+const {
+    src,
+    alt = '',
+    width,
+    height,
+    className = '',
+    loading = 'lazy',
+    style = ''
+} = Astro.props as Props;
 ---
 
-export let height = undefined; export let className = ''; export let loading = 'lazy'; export let style = ''; ---
+<img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={loading}
+    decoding="async"
+    style={style}
+/>
 
-<img src={src} alt={alt} width={width} height={height} class={className} loading={loading} style={style} />

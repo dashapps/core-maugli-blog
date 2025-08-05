@@ -70,6 +70,7 @@ const content = excerpt || description;
                 src={finalImage}
                 alt={cardImageAlt}
                 loading="lazy"
+                decoding="async"
                 width={previewImage ? 400 : undefined}
                 height={previewImage ? 210 : undefined}
                 class="w-full h-full object-cover rounded-custom transition-transform duration-300 group-hover:scale-105"

@@ -24,7 +24,13 @@ const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
 ---
 
 <div class="product-banner-card relative aspect-[1200/630] overflow-hidden bg-[var(--card-bg)] rounded-custom flex flex-col justify-end">
-    <img src={bannerImage} alt={seo?.image?.alt || image?.alt || title || 'Product'} class="absolute inset-0 w-full h-full object-cover rounded-custom z-0" />
+    <img
+        src={bannerImage}
+        alt={seo?.image?.alt || image?.alt || title || 'Product'}
+        class="absolute inset-0 w-full h-full object-cover rounded-custom z-0"
+        loading="lazy"
+        decoding="async"
+    />
     {
         buttonHref ? (
             <a

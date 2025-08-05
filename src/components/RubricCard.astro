@@ -132,7 +132,13 @@ if (import.meta.env.DEV) {
     >
         <!-- Левая часть: картинка и дата -->
         <div class="flex flex-col items-end gap-2 w-[105px] h-[147px]">
-            <img src={previewImageSrc} alt={image?.alt || title} class="w-[105px] h-[107px] object-cover rounded-custom" loading="lazy" />
+            <img
+                src={previewImageSrc}
+                alt={image?.alt || title}
+                class="w-[105px] h-[107px] object-cover rounded-custom"
+                loading="lazy"
+                decoding="async"
+            />
             <div class="flex flex-col items-end gap-1 w-[74px] h-[32px]">
                 <span class={`flex items-center gap-1 text-[12px] text-right ${isBrandDate ? 'text-[var(--brand-color)]' : 'text-[var(--text-muted)]'}`}>
                     <svg
