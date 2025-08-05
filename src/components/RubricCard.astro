@@ -106,6 +106,14 @@ function getPreviewImageSrc(imageSrc: string): string {
 
 const imageSrc = image?.src || maugliConfig.defaultRubricImage;
 const previewImageSrc = getPreviewImageSrc(imageSrc);
+
+// Debug информация для разработки
+console.log('RubricCard Debug:', {
+    title,
+    originalImageSrc: imageSrc,
+    previewImageSrc,
+    defaultRubricImage: maugliConfig.defaultRubricImage
+});
 ---
 
 <a href={`/tags/${slug}/`} class="block w-full">

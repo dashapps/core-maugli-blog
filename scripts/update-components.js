@@ -9,7 +9,11 @@ const __dirname = path.dirname(__filename);
 
 // Определяем корневые папки
 const isInNodeModules = __dirname.includes('node_modules');
-const isSourceProject = !isInNodeModules && (__dirname.includes('core-maugli-blog') || process.cwd().includes('core-maugli-blog'));
+const isSourceProject = !isInNodeModules && (
+  __dirname.includes('core-maugli-blog') || 
+  process.cwd().includes('core-maugli-blog') ||
+  __dirname.includes('core-maugli')
+);
 
 const packageRoot = isInNodeModules 
   ? path.join(__dirname, '../../..', 'node_modules', 'core-maugli') // из node_modules
@@ -18,6 +22,14 @@ const packageRoot = isInNodeModules
 const userRoot = isInNodeModules
   ? path.join(__dirname, '../../..') // корень пользовательского проекта
   : process.env.INIT_CWD || process.cwd(); // для разработки
+
+console.log('🔍 Debug paths:');
+console.log('  __dirname:', __dirname);
+console.log('  isInNodeModules:', isInNodeModules);
+console.log('  isSourceProject:', isSourceProject);
+console.log('  packageRoot:', packageRoot);
+console.log('  userRoot:', userRoot);
+console.log('  packageRoot === userRoot:', packageRoot === userRoot);
 
 // Список папок и файлов для полного обновления (перезаписи)
 const FORCE_UPDATE_PATHS = [
