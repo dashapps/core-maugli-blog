@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # Кеш типографа
 .typograf-cache.json
+
+# Сгенерированные превью и ресайзы
+public/img/**/*-400.webp
+public/img/**/*-800.webp
+public/img/**/*-1200.webp
