@@ -12,7 +12,7 @@ import zh from './zh.json';
 
 export const LANGUAGES = [
   { code: 'ru', label: 'РУ ВЕРСИЯ', flag: '🇷🇺', icon: '/flags/russia.svg', dict: ru },
-  { code: 'en', label: 'EN USA EDITION', flag: '🇺🇸', icon: '/flags/united states.svg', dict: en },
+  { code: 'en', label: 'EN USA EDITION', flag: '🇺🇸', icon: '/flags/unitedstates.svg', dict: en },
   { code: 'es', label: 'ES LATAM', flag: '🇪🇸', icon: '/flags/spain.svg', dict: es },
   { code: 'de', label: 'DE VERSION', flag: '🇩🇪', icon: '/flags/germany.svg', dict: de },
   { code: 'pt', label: 'PT BRASIL', flag: '🇧🇷', icon: '/flags/brazil.svg', dict: pt },
