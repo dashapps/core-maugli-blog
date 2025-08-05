@@ -34,7 +34,7 @@ const generateSrcSet = (baseSrc: string) => {
     if (baseSrc.startsWith('http')) {
         return baseSrc;
     }
-    
+
     // Возвращаем только базовое изображение без попыток создания srcset
     // Responsive варианты будут обработаны build процессом
     return baseSrc;
@@ -43,14 +43,4 @@ const generateSrcSet = (baseSrc: string) => {
 const srcSet = generateSrcSet(src);
 ---
 
-<img
-    src={optimizedSrc}
-    alt={alt}
-    width={width}
-    height={height}
-    class={className}
-    loading={loading}
-    decoding={decoding}
-    sizes={sizes}
-    {...rest}
-/>
+<img src={optimizedSrc} alt={alt} width={width} height={height} class={className} loading={loading} decoding={decoding} sizes={sizes} {...rest} />

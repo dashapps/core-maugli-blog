@@ -12,34 +12,20 @@ export interface Props {
     quality?: number;
 }
 
-const {
-    src,
-    alt,
-    width,
-    height,
-    class: className = '',
-    loading = 'lazy',
-    decoding = 'async',
-    sizes,
-    priority = false,
-    quality = 75,
-    ...rest
-} = Astro.props;
+const { src, alt, width, height, class: className = '', loading = 'lazy', decoding = 'async', sizes, priority = false, quality = 75, ...rest } = Astro.props;
 
 // Generate responsive image variations with quality optimization
 const generateSrcSet = (baseSrc: string) => {
     const baseUrl = baseSrc.replace(/\.[^.]+$/, '');
     const ext = 'webp'; // Always use WebP for better compression
-    
+
     const variations = [
         { width: 400, suffix: '-400' },
         { width: 800, suffix: '-800' },
         { width: 1200, suffix: '-1200' }
     ];
-    
-    return variations
-        .map(({ width, suffix }) => `${baseUrl}${suffix}.${ext} ${width}w`)
-        .join(', ');
+
+    return variations.map(({ width, suffix }) => `${baseUrl}${suffix}.${ext} ${width}w`).join(', ');
 };
 
 const srcSet = generateSrcSet(src);
@@ -62,6 +48,4 @@ const shouldPreload = priority && loading === 'eager';
     {...rest}
 />
 
-{priority && (
-    <link rel="preload" as="image" href={src} type="image/webp" />
-)}
+{priority && <link rel="preload" as="image" href={src} type="image/webp" />}
