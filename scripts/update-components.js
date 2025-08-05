@@ -44,6 +44,59 @@ const PRESERVE_PATHS = [
   'tsconfig.json'
 ];
 
+async function updateConfigVersion() {
+  try {
+    // Получаем версию из package.json пакета
+    const packageJsonPath = path.join(packageRoot, 'package.json');
+    const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
+    const packageData = JSON.parse(packageJsonContent);
+    const newVersion = packageData.version;
+
+    // Путь к package.json пользователя
+    const userPackageJsonPath = path.join(userRoot, 'package.json');
+    
+    try {
+      // Читаем package.json пользователя
+      const userPackageContent = await fs.readFile(userPackageJsonPath, 'utf-8');
+      const userPackageData = JSON.parse(userPackageContent);
+      
+      // Проверяем, есть ли core-maugli в зависимостях
+      let updated = false;
+      
+      if (userPackageData.dependencies && userPackageData.dependencies['core-maugli']) {
+        const currentVersion = userPackageData.dependencies['core-maugli'];
+        if (currentVersion !== `^${newVersion}`) {
+          userPackageData.dependencies['core-maugli'] = `^${newVersion}`;
+          updated = true;
+        }
+      }
+      
+      if (userPackageData.devDependencies && userPackageData.devDependencies['core-maugli']) {
+        const currentVersion = userPackageData.devDependencies['core-maugli'];
+        if (currentVersion !== `^${newVersion}`) {
+          userPackageData.devDependencies['core-maugli'] = `^${newVersion}`;
+          updated = true;
+        }
+      }
+      
+      if (updated) {
+        await fs.writeFile(userPackageJsonPath, JSON.stringify(userPackageData, null, 2) + '\n', 'utf-8');
+        console.log(`📦 Updated package.json dependency version to ^${newVersion}`);
+      } else {
+        console.log(`📦 Package.json dependency already up to date`);
+      }
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        console.log('📦 User package.json not found, skipping version update');
+      } else {
+        console.warn('Warning: Could not update package.json version:', error.message);
+      }
+    }
+  } catch (error) {
+    console.warn('Warning: Could not read package version:', error.message);
+  }
+}
+
 async function copyDirectory(src, dest) {
   try {
     await fs.mkdir(dest, { recursive: true });
@@ -153,6 +206,9 @@ async function updateComponents() {
   
   // Обрабатываем стили отдельно
   await updateStyles();
+  
+  // Обновляем версию в конфиге
+  await updateConfigVersion();
   
   console.log(`✅ Updated ${updatedCount} component directories/files`);
 }

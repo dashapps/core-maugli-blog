@@ -93,7 +93,7 @@ async function main() {
     const defText = await fs.readFile(defaultConfigPath, 'utf8');
     const headerEnd = defText.indexOf('export const maugliConfig');
     let header = defText.slice(0, headerEnd);
-    header = header.replace(/MAUGLI_CONFIG_VERSION\s*=\s*['\"][^'\"]*['\"]/, `MAUGLI_CONFIG_VERSION = '${newVersion}'`);
+    // Не обновляем MAUGLI_CONFIG_VERSION автоматически - только вручную при добавлении новых полей
     let bracePos = defText.indexOf('{', headerEnd);
     let count = 0,
         i = bracePos;
