@@ -1,9 +1,7 @@
 ---
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { maugliConfig } from '../config/maugli.config';
 import FormattedDate from './FormattedDate.astro';
+import ResponsiveImage from './ResponsiveImage.astro';
 
 type Props = {
     href: string;
@@ -16,7 +14,7 @@ type Props = {
     headingLevel?: 'h2' | 'h3';
     isFeatured?: boolean;
     class?: string;
-    type?: string; // добавлен тип
+    type?: string;
 };
 
 const { href, title, image, seo, publishDate, excerpt, description, headingLevel = 'h2', isFeatured = false, class: className, type } = Astro.props;
@@ -35,61 +33,7 @@ const baseImage =
             ? maugliConfig.defaultProductImage
             : maugliConfig.seo.defaultImage);
 
-// Генерируем адаптивные версии изображений
-function getResponsiveImages(imagePath: string) {
-    const basePath = imagePath.replace(/\.(webp|jpg|jpeg|png)$/i, '');
-    const extension = imagePath.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
-
-    // Проверяем существование адаптивных версий
-    const __filename = fileURLToPath(import.meta.url);
-    const projectRoot = path.resolve(path.dirname(__filename), '../..');
-
-    const variants = [
-        { suffix: '-400', width: '400w' },
-        { suffix: '-800', width: '800w' },
-        { suffix: '-1200', width: '1200w' }
-    ];
-
-    const srcsetItems = [];
-
-    // Добавляем адаптивные версии, если они существуют
-    for (const variant of variants) {
-        const variantPath = `${basePath}${variant.suffix}${extension}`;
-        const filePath = path.join(projectRoot, 'public', variantPath.replace(/^\//, ''));
-
-        if (fs.existsSync(filePath)) {
-            srcsetItems.push(`${variantPath} ${variant.width}`);
-        }
-    }
-
-    // Всегда добавляем оригинальное изображение
-    srcsetItems.push(`${imagePath} 1200w`);
-
-    return {
-        src: imagePath,
-        srcset: srcsetItems.join(', '),
-        sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px'
-    };
-}
-
-const cardImage = getResponsiveImages(baseImage);
 const cardImageAlt = seo?.image?.alt || image?.alt || title || 'Изображение';
-
-// Используем уменьшенное превью, если оно существует
-let previewImage;
-if (cardImage.src) {
-    previewImage = cardImage.src.replace(/\/([^\/]+)$/, '/previews/$1');
-
-    const __filename = fileURLToPath(import.meta.url);
-    const projectRoot = path.resolve(path.dirname(__filename), '../..');
-    const previewFilePath = path.join(projectRoot, 'public', previewImage.replace(/^\//, ''));
-
-    if (!fs.existsSync(previewFilePath)) {
-        previewImage = undefined;
-    }
-}
-
-const finalImage = previewImage || cardImage.src;
 
 // Определяем контент для отображения
 const content = excerpt || description;
@@ -105,15 +49,16 @@ const content = excerpt || description;
     <a href={href} class="block w-full h-full">
         <!-- Изображение -->
         <div class="w-full aspect-[1200/630] bg-[var(--bg-muted)] overflow-hidden relative">
-            <img
-                src={finalImage}
-                srcset={cardImage.srcset}
-                sizes={cardImage.sizes}
+            <ResponsiveImage
+                src={baseImage}
                 alt={cardImageAlt}
+                width={1200}
+                height={630}
                 loading="lazy"
-                width="1200"
-                height="630"
                 class="w-full h-full object-cover rounded-custom transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+                quality={75}
+                format="webp"
             />
 
             <!-- Звездочка featured в правом верхнем углу -->

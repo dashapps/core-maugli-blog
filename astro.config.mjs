@@ -73,6 +73,19 @@ export const pwaOptions = {
 // https://astro.build/config
 export default defineConfig({
     site: siteConfig.website,
+    image: {
+        service: {
+            entrypoint: 'astro/assets/services/sharp',
+            config: {
+                limitInputPixels: false,
+                // Aggressive optimization for better performance
+                jpeg: { quality: 75, progressive: true },
+                webp: { quality: 75, effort: 6 },
+                avif: { quality: 65, effort: 6 },
+                png: { quality: 75, compressionLevel: 9 },
+            }
+        }
+    },
     integrations: [
         mdx(),
         sitemap()

@@ -1,0 +1,84 @@
+---
+export interface Props {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+    class?: string;
+    loading?: 'lazy' | 'eager';
+    decoding?: 'async' | 'sync' | 'auto';
+    sizes?: string;
+    quality?: number;
+    format?: 'webp' | 'avif' | 'jpeg' | 'png';
+}
+
+const {
+    src,
+    alt,
+    width = 1200,
+    height = 630,
+    class: className = '',
+    loading = 'lazy',
+    decoding = 'async',
+    sizes = '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px',
+    quality = 75,
+    format = 'webp',
+    ...rest
+} = Astro.props;
+
+// Генерируем оптимизированные URL для разных размеров
+const generateImageURL = (baseSrc: string, width: number, quality: number, format: string) => {
+    // Если это внешний URL, возвращаем как есть
+    if (baseSrc.startsWith('http')) {
+        return baseSrc;
+    }
+    
+    // Для карточек проверяем наличие preview версии
+    const previewSrc = baseSrc.replace(/\/([^\/]+)$/, '/previews/$1');
+    
+    // Возвращаем базовое изображение (preview будет проверен в build time)
+    return baseSrc;
+};
+
+const optimizedSrc = generateImageURL(src, width, quality, format);
+
+// Генерируем srcset для адаптивности (используем готовые варианты)
+const generateSrcSet = (baseSrc: string) => {
+    if (baseSrc.startsWith('http')) {
+        return baseSrc;
+    }
+    
+    const baseUrl = baseSrc.replace(/\.[^.]+$/, '');
+    const ext = '.webp';
+    
+    // Используем существующие responsive варианты
+    const variants = [
+        { width: 400, suffix: '-400' },
+        { width: 800, suffix: '-800' },
+        { width: 1200, suffix: '-1200' }
+    ];
+    
+    const srcsetItems = variants
+        .map(({ width, suffix }) => `${baseUrl}${suffix}${ext} ${width}w`);
+    
+    // Добавляем оригинал как fallback
+    srcsetItems.push(`${baseSrc} 1200w`);
+    
+    return srcsetItems.join(', ');
+};
+
+const srcSet = generateSrcSet(src);
+---
+
+<img
+    src={optimizedSrc}
+    srcset={srcSet}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={loading}
+    decoding={decoding}
+    sizes={sizes}
+    {...rest}
+/>
