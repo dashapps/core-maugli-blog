@@ -1,13 +1,24 @@
 #!/usr/bin/env node
 
 import fs from 'fs/promises';
-import path from 'path';
 import os from 'os';
-import { fileURLToPath, pathToFileURL } from 'url';
+import path from 'path';
 import ts from 'typescript';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Импортируем функцию обновления компонентов
+async function importUpdateComponents() {
+  try {
+    const { updateComponents } = await import('./update-components.js');
+    return updateComponents;
+  } catch (error) {
+    console.warn('Could not load update-components.js:', error.message);
+    return null;
+  }
+}
 
 const defaultConfigPath = path.join(__dirname, '../src/config/maugli.config.ts');
 const userRoot = process.env.INIT_CWD || process.cwd();
@@ -43,6 +54,15 @@ function mergeMissing(target, source) {
 }
 
 async function main() {
+    console.log('🔄 Starting Maugli upgrade process...');
+    
+    // Сначала обновляем компоненты
+    const updateComponents = await importUpdateComponents();
+    if (updateComponents) {
+        await updateComponents();
+    }
+    
+    // Затем обновляем конфиг
     const pkg = await loadTsModule(defaultConfigPath);
     const defCfg = pkg.maugliConfig;
     const newVersion = pkg.MAUGLI_CONFIG_VERSION || defCfg.configVersion;
@@ -50,7 +70,7 @@ async function main() {
     try {
         await fs.access(userConfigPath);
     } catch {
-        console.warn(`User config not found at ${userConfigPath}, skipping upgrade`);
+        console.warn(`User config not found at ${userConfigPath}, skipping config upgrade`);
         return;
     }
 

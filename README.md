@@ -87,6 +87,19 @@ Your blog will be available at `http://localhost:4321/`
  npm run build
 ```
 
+## Component Updates & Customization
+
+**Important**: Maugli Blog is designed for centralized component updates. All components (`src/components/`, `src/layouts/`, `src/pages/`, etc.) are automatically updated to the latest version when you update the package with `npm install --save core-maugli@latest`. This ensures you always receive the latest features, bug fixes, and improvements.
+
+This centralized update approach **does not affect**:
+
+- Your content (`src/content/`)
+- Your Maugli configuration (`src/config/maugli.config.ts`)
+- Your custom styles (`src/styles/global.css` - preserved if customized)
+- Your project settings (`package.json`, `astro.config.mjs`, etc.)
+
+Only the core blog components are updated, while your customizations and settings remain intact.
+
 `npm run build` runs [`scripts/verify-assets.js`](scripts/verify-assets.js)
 before the Astro build. This script checks the SHA-256 hashes of the
 floating label component and footer badge to ensure they haven't been
