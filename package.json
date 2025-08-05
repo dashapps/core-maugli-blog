@@ -22,7 +22,7 @@
         "dev": "node resize-all.cjs && node scripts/generate-previews.js && astro dev",
         "prestart": "node resize-all.cjs && node scripts/generate-previews.js",
         "start": "astro dev",
-        "build": "node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "build:fast": "node resize-all.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "optimize": "node scripts/optimize-images.cjs",
         "optimize:squoosh": "node scripts/squoosh-optimize.js",

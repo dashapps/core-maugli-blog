@@ -18,8 +18,8 @@
 
         /* Light Theme */
         --text-main: #111c2d;
-        --text-heading: #2d3e5b;
-        --text-muted: #585e6a;
+        --text-heading: #1c273b;
+        --text-muted: #464b56;
         --bg-main: #ffffff;
         --bg-main-40: rgba(255, 255, 255, 0.3);
         --bg-muted: rgba(245, 247, 249, 0.94);
@@ -51,8 +51,8 @@
 
         /* Dark Theme */
         --text-main: #ffffff;
-        --text-heading: rgba(202, 252, 254, 0.7);
-        --text-muted: #9ca3af;
+        --text-heading: rgba(202, 252, 254, 0.85);
+        --text-muted: #a6afbe;
         --bg-main: #0b131e;
         --bg-main-40: rgba(11, 19, 30, 0.4);
         --bg-muted: #131d2cde;
