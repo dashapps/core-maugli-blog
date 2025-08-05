@@ -1,6 +1,6 @@
 ---
-import { getFilteredCollection } from '../utils/content-loader';
 import { maugliConfig } from '../config/maugli.config';
+import { getFilteredCollection } from '../utils/content-loader';
 import { getPostsByAuthor } from '../utils/data-utils';
 import AuthorLinksGroup from './AuthorLinksGroup.astro';
 import Avatar from './Avatar.astro';
@@ -25,10 +25,21 @@ export interface Props {
         slug: string;
     };
     class?: string;
+    authorsList?: Array<{ slug: string }>;
 }
 
-const { author, class: className } = Astro.props;
-const { name, position, description, avatar, socials, slug } = author;
+const { author, class: className, authorsList = [] } = Astro.props;
+let currentAuthor = author;
+// Проверяем, есть ли автор среди списка авторов
+if (!authorsList.some((a) => a.slug === author.slug)) {
+    // Если нет — используем дефолтного автора
+    // Здесь предполагается, что authorsList содержит дефолтного автора
+    const defaultAuthor = authorsList.find((a) => a.slug === maugliConfig.defaultAuthorId);
+    if (defaultAuthor) {
+        currentAuthor = defaultAuthor;
+    }
+}
+const { name, position, description, avatar, socials, slug } = currentAuthor;
 
 // Получаем количество статей автора через getPostsByAuthor
 let posts: import('astro:content').CollectionEntry<'blog'>[] = [];

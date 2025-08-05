@@ -39,8 +39,27 @@ export function getPostsByTag(posts: CollectionEntry<'blog'>[], tagId: string) {
 }
 
 // Получение автора поста с fallback на дефолтного автора из конфига
+
+// Получение автора поста с fallback на дефолтного автора из конфига
+// Если автор не найден среди авторов, возвращаем дефолтного
+import fs from 'fs';
+import path from 'path';
+
+function getAuthorSlugs() {
+    try {
+        const authorsDir = path.join(process.cwd(), 'src/content/authors');
+        return fs.readdirSync(authorsDir)
+            .filter(f => f.endsWith('.md'))
+            .map(f => f.replace('.md', ''));
+    } catch {
+        return [];
+    }
+}
+
 export function getPostAuthor(post: CollectionEntry<'blog'>): string {
-    return post.data.author || maugliConfig.defaultAuthorId || 'unknown-author';
+    const author = post.data.author || maugliConfig.defaultAuthorId || 'unknown-author';
+    const authorSlugs = getAuthorSlugs();
+    return authorSlugs.includes(author) ? author : (maugliConfig.defaultAuthorId || 'unknown-author');
 }
 
 // Получение постов по автору с учетом дефолтного автора

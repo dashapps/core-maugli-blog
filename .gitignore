@@ -23,8 +23,15 @@ pnpm-debug.log*
 # Кеш типографа
 .typograf-cache.json
 
+<<<<<<< HEAD
 # Игнорировать ресайзы изображений и превью
 public/img/**/*-400.webp
 public/img/**/*-800.webp
 public/img/**/*-1200.webp
 public/img/**/previews/*.webp
+=======
+# Сгенерированные превью и ресайзы
+public/img/**/*-400.webp
+public/img/**/*-800.webp
+public/img/**/*-1200.webp
+>>>>>>> e837e40 (fix: корректный подсчет статей для дефолтного автора)
