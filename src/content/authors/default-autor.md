@@ -21,7 +21,7 @@ seo:
     - AI content
     - SEO
   image:
-    src: '/img/default/autor_default.webp'
+    src: '/assets/examples/authors/default_autor.webpp'
     alt: 'Default Author'
     caption: 'Default editor of Maugli Blog'
 jsonld:

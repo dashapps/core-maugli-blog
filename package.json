@@ -29,7 +29,8 @@
         "featured:list": "node scripts/featured.js list",
         "upgrade": "node scripts/upgrade-config.js",
         "backup-update": "node scripts/update-with-backup.js",
-        "postinstall": "node scripts/upgrade-config.js"
+        "postinstall": "node scripts/upgrade-config.js",
+        "generate-previews": "node scripts/generate-previews.js"
     },
     "dependencies": {
         "@astrojs/mdx": "^4.3.0",
@@ -61,17 +62,8 @@
     "files": [
         "src",
         "public",
-        "scripts",
-        "typograf-batch.js",
-        "resize-all.cjs",
-        "bin",
-        "astro.config.mjs",
-        "tsconfig.json",
-        "vite.config.js",
-        "LICENSE",
-        "README.md"
+        "scripts"
     ],
-    "main": "bin/index.js",
     "bin": {
         "core-maugli": "bin/index.js"
     }

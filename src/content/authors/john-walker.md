@@ -16,7 +16,7 @@ seo:
     - GPT SEO
     - editorial strategy
   image:
-    src: '/img/examples/authors/john.webp'
+    src: '/assets/examples/authors/john.webp'
     alt: 'John Walker'
     caption: 'Editor at Maugli AI Editorial System'
 jsonld:

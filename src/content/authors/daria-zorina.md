@@ -32,7 +32,7 @@ jsonld:
   name: 'Дарья Зорина'
   jobTitle: 'Founder, CEO'
   url: 'https://maugli.cfd'
-  image: '/img/examples/authors/daria.webp'
+  image: '/assets/examples/authors/daria.webp'
   sameAs:
     - 'https://www.linkedin.com/in/dariazorina'
 

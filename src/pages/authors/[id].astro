@@ -28,7 +28,9 @@ export async function getStaticPaths() {
 type Props = { author: CollectionEntry<'authors'> };
 
 const { author } = Astro.props;
-const { name, position, description, avatar, socials, seo } = author.data;
+const { name, position, description, avatar: rawAvatar, socials, seo } = author.data;
+// Приводим путь к аватару к public/img/authors/...
+const avatar = rawAvatar ? rawAvatar.replace('/img/examples/authors/', '/img/authors/') : undefined;
 const { Content } = await render(author);
 
 // Получаем все статьи блога
