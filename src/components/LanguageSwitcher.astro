@@ -24,7 +24,17 @@ const current = availableLanguages.find((l) => l.code === currentLang) || availa
                     class="flag-box flex items-center justify-center w-7 h-7 rounded-[var(--radius-main)] shadow-[var(--shadow-main)]"
                     style="min-width:28px; min-height:28px; max-width:28px; max-height:28px;"
                 >
-                    {current && <img src={current.icon} alt={current.code.toUpperCase()} width="28" height="28" style="pointer-events:none;" />}
+                    {current && (
+                        <img
+                            src={current.icon}
+                            alt={current.code.toUpperCase()}
+                            width="28"
+                            height="28"
+                            style="pointer-events:none;"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    )}
                 </span>
                 <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
                     <path
@@ -57,7 +67,15 @@ const current = availableLanguages.find((l) => l.code === currentLang) || availa
                                 class="flag-box flex items-center justify-center w-7 h-7 rounded-[var(--radius-main)] shadow-[var(--shadow-main)]"
                                 style="min-width:28px; min-height:28px; max-width:28px; max-height:28px;"
                             >
-                                <img src={lang.icon} alt={lang.code.toUpperCase()} width="28" height="28" style="pointer-events:none;" />
+                                <img
+                                    src={lang.icon}
+                                    alt={lang.code.toUpperCase()}
+                                    width="28"
+                                    height="28"
+                                    style="pointer-events:none;"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
                             </span>
                             <span class="text-heading">{lang.label}</span>
                         </a>

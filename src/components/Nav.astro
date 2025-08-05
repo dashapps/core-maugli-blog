@@ -24,7 +24,15 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
         <a href={maugliConfig.brand.logoHref && maugliConfig.brand.logoHref.trim() ? maugliConfig.brand.logoHref : '/'} class="ml-6 flex-shrink-0 card-blur">
             <picture>
                 <source srcset={maugliConfig.brand.logoDark} media="(prefers-color-scheme: dark)" />
-                <img src={maugliConfig.brand.logoLight} alt="Логотип" width="48" height="48" class="w-12 h-12" />
+                <img
+                    src={maugliConfig.brand.logoLight}
+                    alt="Логотип"
+                    width="48"
+                    height="48"
+                    class="w-12 h-12"
+                    loading="eager"
+                    decoding="async"
+                />
             </picture>
         </a>
         <ul

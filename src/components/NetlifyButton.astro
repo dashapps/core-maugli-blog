@@ -16,7 +16,7 @@ const netlifyUrl = `https://app.netlify.com/start/deploy?repository=${repository
 {
     netlifyEnabled && (
         <a href={netlifyUrl} target="_blank" rel="noopener noreferrer" class={className}>
-            <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />
+            <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" loading="lazy" decoding="async" />
         </a>
     )
 }

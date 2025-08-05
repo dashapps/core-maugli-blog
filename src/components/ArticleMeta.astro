@@ -72,12 +72,12 @@ let authorImg = authorData.data.avatar || '/img/default/autor_default.webp';
                     data-astro-reload
                     style="text-decoration: none; color: inherit; z-index: 10; position: relative;"
                 >
-                    <img src={authorImg} alt={authorName} class="w-8 h-8 rounded-full" />
+                    <img src={authorImg} alt={authorName} class="w-8 h-8 rounded-full" loading="lazy" decoding="async" />
                     <span class="font-medium hover:text-[var(--brand-color)] transition-colors duration-200">{authorName}</span>
                 </a>
             ) : (
                 <>
-                    <img src={authorImg} alt={authorName} class="w-8 h-8 rounded-full" />
+                    <img src={authorImg} alt={authorName} class="w-8 h-8 rounded-full" loading="lazy" decoding="async" />
                     <span class="font-medium">{authorName}</span>
                 </>
             )

@@ -13,7 +13,13 @@ const avatarSize = typeof size === 'number' ? `${size}px` : size;
 ---
 
 <div class:list={['avatar-container', className]} style={`width: ${avatarSize}; height: ${avatarSize};`}>
-    <img src={src || '/img/default/autor_default.webp'} alt={alt} loading="lazy" class="w-full h-full object-cover" />
+    <img
+        src={src || '/img/default/autor_default.webp'}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover"
+    />
 </div>
 
 <style>
