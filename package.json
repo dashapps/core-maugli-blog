@@ -22,7 +22,10 @@
         "dev": "node resize-all.cjs && node scripts/generate-previews.js && astro dev",
         "prestart": "node resize-all.cjs && node scripts/generate-previews.js",
         "start": "astro dev",
-        "build": "node resize-all.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build": "node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build:fast": "node resize-all.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "optimize": "node scripts/optimize-images.cjs",
+        "optimize:squoosh": "node scripts/squoosh-optimize.js",
         "test": "node tests/examplesFilter.test.ts",
         "astro": "astro",
         "featured:add": "node scripts/featured.js add",
@@ -55,6 +58,7 @@
         "typograf": "^7.4.4"
     },
     "devDependencies": {
+        "@squoosh/cli": "^0.7.1",
         "@tailwindcss/typography": "^0.5.16",
         "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "^0.6.11",
