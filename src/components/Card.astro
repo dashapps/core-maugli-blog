@@ -52,8 +52,8 @@ const cardImageAlt = seo?.image?.alt || image?.alt || title || 'Изображе
 
 // Используем уменьшенное превью, если оно существует
 let previewImage;
-if (cardImage) {
-    previewImage = cardImage.replace(/\/([^\/]+)$/, '/previews/$1');
+if (cardImage.src) {
+    previewImage = cardImage.src.replace(/\/([^\/]+)$/, '/previews/$1');
 
     const __filename = fileURLToPath(import.meta.url);
     const projectRoot = path.resolve(path.dirname(__filename), '../..');
@@ -64,7 +64,7 @@ if (cardImage) {
     }
 }
 
-const finalImage = previewImage || cardImage;
+const finalImage = previewImage || cardImage.src;
 
 // Определяем контент для отображения
 const content = excerpt || description;
