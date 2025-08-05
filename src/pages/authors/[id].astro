@@ -91,7 +91,7 @@ const pageDescription = seo?.description || description;
                 <div class="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
                     <!-- Аватар -->
                     <div class="w-32 h-32 sm:w-40 sm:h-40 bg-[var(--bg-main)] rounded-full overflow-hidden flex-shrink-0">
-                        <img src={avatar || '/img/default/autor_default.webp'} alt={`Фото ${name}`} class="w-full h-full object-cover" />
+                        <img src={avatar || '/img/default/autor_default.webp'} alt={`Фото ${name}`} class="w-full h-full object-cover" decoding="async" />
                     </div>
 
                     <!-- Информация -->

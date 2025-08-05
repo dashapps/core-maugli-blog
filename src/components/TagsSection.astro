@@ -43,7 +43,6 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                 alt={rubricName || tagsSection.rubricAlt}
                 class="w-20 h-20 sm:w-40 sm:h-40 object-cover rounded-[16px_48px_16px_48px] border border-[var(--border-main)]"
                 style="flex-shrink:0;"
-                loading="lazy"
                 decoding="async"
             />
             <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
@@ -105,7 +104,7 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                     <a
                         href={allHref}
                         aria-label={allLabel + ` (${totalCount})`}
-                        class="inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)]"
+                        class="inline-flex items-center justify-center min-w-12 min-h-12 px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)]"
                     >
                         {allLabel} ({totalCount})
                     </a>
@@ -120,7 +119,7 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                                 <a
                                     href={`${tagsBasePath}/${tag.id}`}
                                     aria-label={ariaLabel}
-                                    class="inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)]"
+                                    class="inline-flex items-center justify-center min-w-12 min-h-12 px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)]"
                                 >
                                     {tag.name}
                                     <span style="color: inherit; opacity: 0.6;"> ({tag.count})</span>
@@ -170,11 +169,11 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                 }
             </style>
         </div>
-        <div class="tags-mobile-list flex-wrap gap-2 py-4 mb-6" style="margin-top: 8px;">
+        <div class="tags-mobile-list flex gap-3 gap-y-3 py-4 mb-4" style="margin-top: 8px; flex-wrap: wrap;">
             <a
                 href={allHref}
                 class:list={[
-                    'inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl',
+                    'inline-flex items-center justify-center min-w-12 min-h-12 px-3 py-2 text-base leading-tight font-inter font-normal whitespace-nowrap no-underline rounded-3xl',
                     isAllActive
                         ? 'bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)] hover:bg-[var(--brand-color-60)]'
                         : 'border border-[var(--border-main)] text-[var(--text-heading)] hover:bg-[var(--bg-muted)]'
@@ -187,7 +186,7 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                     <a
                         href={`${tagsBasePath}/${tag.id}`}
                         class:list={[
-                            'inline-flex items-center justify-center px-4 py-1.5 text-lg leading-[22px] font-inter font-normal whitespace-nowrap no-underline rounded-3xl',
+                            'inline-flex items-center justify-center min-w-12 min-h-12 px-3 py-2 text-base leading-tight font-inter font-normal whitespace-nowrap no-underline rounded-3xl',
                             activeTagId === tag.id
                                 ? 'bg-[var(--brand-color-20)] border border-[var(--brand-color)] text-[var(--brand-color)] hover:bg-[var(--brand-color-60)]'
                                 : tag.isRubric
@@ -196,7 +195,7 @@ const rubricImageFinal = rubricImage && rubricImage.length > 0 ? rubricImage : m
                         ]}
                     >
                         {tag.name}
-                        <span style="color: inherit; opacity: 0.6;"> ({tag.count})</span>
+                        <span style="color: inherit; opacity: 0.8;"> ({tag.count})</span>
                     </a>
                 ))
             }

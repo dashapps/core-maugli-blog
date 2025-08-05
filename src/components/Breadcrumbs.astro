@@ -16,6 +16,7 @@ export interface Props {
 const { class: className = '' } = Astro.props;
 const lang: string = maugliConfig.defaultLang || 'en';
 const dict = dicts[lang] || dicts['en'] || {};
+const en = dicts['en'] || {};
 const navLinks = maugliConfig.navLinks || [];
 const currentUrl = Astro.url.pathname;
 
@@ -61,7 +62,7 @@ const isTagPage = currentUrl.startsWith('/tags/') && pathParts.length === 1;
             idx === 0 ? (
                 <a href={crumb.href} class="flex-shrink-0" target="_blank" rel="noopener noreferrer">
                     <picture>
-                        <img src={crumb.icon} alt="Maugli" class="w-9 h-9" loading="lazy" decoding="async" />
+                        <img src={crumb.icon} alt="Maugli" class="w-9 h-9" decoding="async" />
                     </picture>
                 </a>
             ) : (
