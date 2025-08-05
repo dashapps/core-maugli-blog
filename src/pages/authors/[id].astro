@@ -1,6 +1,5 @@
 ---
 import { type CollectionEntry, render } from 'astro:content';
-import { getFilteredCollection } from '../../utils/content-loader';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import Subscribe from '../../components/Subscribe.astro';
@@ -15,6 +14,7 @@ import RedditIcon from '../../icons/socials/RedditIcon.astro';
 import TelegramIcon from '../../icons/socials/TelegramIcon.astro';
 import TwitterIcon from '../../icons/socials/TwitterIcon.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getFilteredCollection } from '../../utils/content-loader';
 import { getAllTags, getPostsByTag, sortItemsWithFeaturedFirst } from '../../utils/data-utils';
 
 export async function getStaticPaths() {
@@ -101,8 +101,16 @@ const pageDescription = seo?.description || description;
                             {position}
                         </p>
                         <p class="text-lg text-[var(--text-main)] leading-[1.35] mb-6">
-                            {description}
+                            <span style="opacity:0.7;">
+                                {description}
+                            </span>
                         </p>
+                        <!-- Основной текст автора (после фронтматтера) -->
+                        {Content && (
+                            <div class="prose prose-lg max-w-none mb-6 text-[var(--text-main)]">
+                                <Content />
+                            </div>
+                        )}
 
                         <!-- Соцсети -->
                         {
