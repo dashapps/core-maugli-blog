@@ -1,29 +1,61 @@
-// resize-all.js
+// resize-all.cjs - рекурсивный ресайз изображений
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-// Какие размеры тебе нужны
+// Размеры для генерации
 const sizes = [400, 800, 1200];
 
-const inputDir = './public';   // свои пути
-const outputDir = './public';
+const inputDir = './public';
+const processedFiles = new Set(); // Отслеживаем обработанные файлы
 
-// Перебираем все файлы в исходной папке
-fs.readdirSync(inputDir).forEach(file => {
-  const ext = path.extname(file);
-  const base = path.basename(file, ext);
-  if (!['.jpg', '.jpeg', '.png', '.webp'].includes(ext.toLowerCase())) return;
+// Рекурсивная функция для обхода папок
+function processDirectory(dir) {
+  if (!fs.existsSync(dir)) {
+    console.log(`Папка ${dir} не существует`);
+    return;
+  }
 
-  sizes.forEach(width => {
-    sharp(path.join(inputDir, file))
-      .resize(width)
-      .toFile(path.join(outputDir, `${base}-${width}${ext}`), (err) => {
-        if (err) console.error(`Ошибка на ${base}-${width}${ext}:`, err);
-        else console.log(`Сделан: ${base}-${width}${ext}`);
-      });
+  const items = fs.readdirSync(dir);
+  
+  items.forEach(item => {
+    const itemPath = path.join(dir, item);
+    const stat = fs.statSync(itemPath);
+    
+    if (stat.isDirectory()) {
+      // Рекурсивно обрабатываем подпапки
+      processDirectory(itemPath);
+    } else if (stat.isFile()) {
+      const ext = path.extname(item).toLowerCase();
+      const baseName = path.basename(item, ext);
+      
+      // Проверяем, что это изображение и не содержит размер в названии
+      if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+        // Пропускаем файлы, которые уже содержат размер (например, image-400.webp)
+        if (!/-\d+$/.test(baseName) && !processedFiles.has(itemPath)) {
+          processedFiles.add(itemPath);
+          
+          console.log(`Обрабатываем: ${itemPath}`);
+          
+          sizes.forEach(width => {
+            const outputPath = path.join(path.dirname(itemPath), `${baseName}-${width}${ext}`);
+            
+            sharp(itemPath)
+              .resize(width)
+              .toFile(outputPath, (err) => {
+                if (err) {
+                  console.error(`Ошибка при создании ${outputPath}:`, err.message);
+                } else {
+                  console.log(`✅ Создан: ${path.relative('./public', outputPath)}`);
+                }
+              });
+          });
+        }
+      }
+    }
   });
+}
 
-  // Копируем оригинал тоже (максимальный)
-  fs.copyFileSync(path.join(inputDir, file), path.join(outputDir, `${base}${ext}`));
-});
+console.log('🔄 Начинаем ресайз всех изображений...');
+processDirectory(inputDir);
+console.log('✅ Обработка завершена!');

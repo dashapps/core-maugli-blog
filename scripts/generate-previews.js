@@ -11,8 +11,11 @@ const rootDir = __dirname.includes('node_modules')
   ? path.join(__dirname, '../../..')
   : path.join(__dirname, '..');
 
-const previewWidth = 400;
-const previewHeight = 210;
+// Размеры для разных типов контента
+const blogPreviewWidth = 400;
+const blogPreviewHeight = 210;
+const rubricPreviewWidth = 210; // Увеличенный размер для качества на retina дисплеях (105px * 2)
+const rubricPreviewHeight = 214; // Увеличенный размер для качества на retina дисплеях (107px * 2)
 
 // Функция для извлечения путей изображений из markdown файлов
 function extractImagePaths() {
@@ -94,6 +97,17 @@ function extractImagePaths() {
     addExampleImages(examplesDir);
   }
   
+  // Добавляем дефолтные изображения (включая изображения рубрик)
+  const defaultDir = path.join(rootDir, 'public/img/default');
+  if (fs.existsSync(defaultDir)) {
+    const items = fs.readdirSync(defaultDir);
+    for (const item of items) {
+      if (item.match(/\.(webp|jpg|jpeg|png)$/i)) {
+        imagePaths.add(`/img/default/${item}`);
+      }
+    }
+  }
+  
   return Array.from(imagePaths);
 }
 
@@ -137,6 +151,20 @@ async function createPreview(imagePath) {
   const ext = path.extname(fullImagePath);
   const name = path.basename(fullImagePath, ext);
   const previewPath = path.join(dir, 'previews', `${name}${ext}`);
+  
+  // Определяем размер превью в зависимости от типа изображения
+  let previewWidth, previewHeight;
+  if (imagePath.includes('/img/default/') && (name.includes('rubric') || name.includes('tag'))) {
+    // Для изображений рубрик используем меньший размер
+    previewWidth = rubricPreviewWidth;
+    previewHeight = rubricPreviewHeight;
+    console.log(`Creating rubric preview (${previewWidth}x${previewHeight}): ${name}`);
+  } else {
+    // Для блог-постов и других изображений используем стандартный размер
+    previewWidth = blogPreviewWidth;
+    previewHeight = blogPreviewHeight;
+    console.log(`Creating blog preview (${previewWidth}x${previewHeight}): ${name}`);
+  }
   
   // Создаем папку previews если её нет
   const previewDir = path.dirname(previewPath);

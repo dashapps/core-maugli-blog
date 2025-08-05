@@ -1,7 +1,7 @@
 ---
-import { getFilteredCollection } from '../utils/content-loader';
 import { maugliConfig } from '../config/maugli.config';
 import { slugify } from '../utils/common-utils';
+import { getFilteredCollection } from '../utils/content-loader';
 import { getPostsByTag } from '../utils/data-utils';
 import CountBadge from './CountBadge.astro';
 
@@ -89,6 +89,23 @@ const yesterday = new Date(now);
 yesterday.setDate(now.getDate() - 1);
 const isYesterday = dateObj && dateObj.toDateString() === yesterday.toDateString();
 const isBrandDate = isToday || isYesterday;
+
+// Функция для получения пути к превью изображения
+function getPreviewImageSrc(imageSrc: string): string {
+    if (!imageSrc) return maugliConfig.defaultRubricImage;
+
+    // Проверяем, есть ли превью для этого изображения
+    const pathParts = imageSrc.split('/');
+    const fileName = pathParts.pop();
+    const directory = pathParts.join('/');
+    const previewPath = `${directory}/previews/${fileName}`;
+
+    // Возвращаем путь к превью (браузер покажет оригинал, если превью не найдено)
+    return previewPath;
+}
+
+const imageSrc = image?.src || maugliConfig.defaultRubricImage;
+const previewImageSrc = getPreviewImageSrc(imageSrc);
 ---
 
 <a href={`/tags/${slug}/`} class="block w-full">
@@ -97,12 +114,7 @@ const isBrandDate = isToday || isYesterday;
     >
         <!-- Левая часть: картинка и дата -->
         <div class="flex flex-col items-end gap-2 w-[105px] h-[147px]">
-            <img
-                src={image?.src ? image.src : maugliConfig.defaultRubricImage}
-                alt={image?.alt || title}
-                class="w-[105px] h-[107px] object-cover rounded-custom"
-                loading="lazy"
-            />
+            <img src={previewImageSrc} alt={image?.alt || title} class="w-[105px] h-[107px] object-cover rounded-custom" loading="lazy" />
             <div class="flex flex-col items-end gap-1 w-[74px] h-[32px]">
                 <span class={`flex items-center gap-1 text-[12px] text-right ${isBrandDate ? 'text-[var(--brand-color)]' : 'text-[var(--text-muted)]'}`}>
                     <svg
