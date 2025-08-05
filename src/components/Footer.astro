@@ -9,7 +9,7 @@ for (const lang of LANGUAGES) {
         dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
     } catch {}
 }
-const lang = maugliConfig.lang || maugliConfig.defaultLang || 'en';
+const lang = maugliConfig.defaultLang || 'en';
 const dict = dicts[lang] || dicts['en'] || {};
 
 const navLinks = (maugliConfig.navLinks || []).map((link) => ({
@@ -110,7 +110,16 @@ const copyrightYears = yearStart === yearEnd ? `${yearStart}` : `${yearStart}–
     >
         <div class="flex flex-row justify-between items-end w-full mt-2">
             <a href="https://www.npmjs.com/package/core-maugli" target="_blank" rel="noopener" aria-label="Core Maugli на NPM">
-                <img src="/footerlabel.svg" alt="Maugli Label" style="height:32px;width:auto;" loading="lazy" decoding="async" />
+                <img src="/footerlabel.svg" alt="Maugli Label" style="height:32px;width:auto;" loading="lazy" decoding="async" width="184" height="68" />
+            </a>
+            <a
+                href="https://www.npmjs.com/package/core-maugli"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-link text-xs opacity-60 hover:opacity-100"
+                style="color:var(--text-muted);font-family:var(--font-sans);margin-left:8px;"
+            >
+                npm package
             </a>
             {
                 Object.values(maugliConfig.links || {}).some(Boolean) && (

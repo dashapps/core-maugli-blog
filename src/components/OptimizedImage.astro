@@ -1,0 +1,51 @@
+---
+export interface Props {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+    class?: string;
+    loading?: 'lazy' | 'eager';
+    decoding?: 'async' | 'sync' | 'auto';
+    sizes?: string;
+    priority?: boolean;
+    quality?: number;
+}
+
+const { src, alt, width, height, class: className = '', loading = 'lazy', decoding = 'async', sizes, priority = false, quality = 75, ...rest } = Astro.props;
+
+// Generate responsive image variations with quality optimization
+const generateSrcSet = (baseSrc: string) => {
+    const baseUrl = baseSrc.replace(/\.[^.]+$/, '');
+    const ext = 'webp'; // Always use WebP for better compression
+
+    const variations = [
+        { width: 400, suffix: '-400' },
+        { width: 800, suffix: '-800' },
+        { width: 1200, suffix: '-1200' }
+    ];
+
+    return variations.map(({ width, suffix }) => `${baseUrl}${suffix}.${ext} ${width}w`).join(', ');
+};
+
+const srcSet = generateSrcSet(src);
+const defaultSizes = sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
+
+// For priority images, we'll preload them
+const shouldPreload = priority && loading === 'eager';
+---
+
+<img
+    src={src}
+    srcset={srcSet}
+    sizes={defaultSizes}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={priority ? 'eager' : loading}
+    decoding={decoding}
+    {...rest}
+/>
+
+{priority && <link rel="preload" as="image" href={src} type="image/webp" />}

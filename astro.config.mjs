@@ -2,12 +2,12 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import remarkSlug from 'remark-slug';
 import { imagetools } from 'vite-imagetools';
 import { VitePWA } from 'vite-plugin-pwa';
-import siteConfig from './src/data/site-config';
-import remarkSlug from 'remark-slug';
-import customSlugify from './src/utils/remark-slugify';
 import { maugliConfig } from './src/config/maugli.config';
+import siteConfig from './src/data/site-config';
+import customSlugify from './src/utils/remark-slugify';
 
 export const pwaOptions = {
     registerType: 'autoUpdate',
@@ -73,6 +73,19 @@ export const pwaOptions = {
 // https://astro.build/config
 export default defineConfig({
     site: siteConfig.website,
+    image: {
+        service: {
+            entrypoint: 'astro/assets/services/sharp',
+            config: {
+                limitInputPixels: false,
+                // Aggressive optimization for better performance
+                jpeg: { quality: 75, progressive: true },
+                webp: { quality: 75, effort: 6 },
+                avif: { quality: 65, effort: 6 },
+                png: { quality: 75, compressionLevel: 9 },
+            }
+        }
+    },
     integrations: [
         mdx(),
         sitemap()
@@ -80,9 +93,64 @@ export default defineConfig({
     vite: {
         plugins: [
             tailwindcss(),
-            imagetools(),
+            imagetools({
+                // Aggressive image optimization
+                defaultDirectives: () => {
+                    return new URLSearchParams({
+                        format: 'webp',
+                        quality: '75',
+                        progressive: 'true',
+                        // Enable compression
+                        effort: '6'
+                    });
+                },
+                // Additional formats for fallback
+                formats: ['webp', 'avif'],
+                // Disable for development to speed up build
+                disabled: process.env.NODE_ENV === 'development'
+            }),
             VitePWA(pwaOptions)
-        ]
+        ],
+        build: {
+            cssCodeSplit: true,
+            minify: 'esbuild',
+            target: 'es2020',
+            rollupOptions: {
+                output: {
+                    // Separate CSS chunks for better caching
+                    assetFileNames: (assetInfo) => {
+                        if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+                            return 'assets/css/[name].[hash][extname]';
+                        }
+                        if (assetInfo.name && /\.(png|jpe?g|svg|gif|webp|avif)$/.test(assetInfo.name)) {
+                            return 'assets/img/[name].[hash][extname]';
+                        }
+                        return 'assets/[name].[hash][extname]';
+                    },
+                    chunkFileNames: 'assets/js/[name].[hash].js',
+                    manualChunks: {
+                        // Split vendor code for better caching
+                        vendor: ['astro']
+                    }
+                },
+                // Remove problematic external configuration
+            },
+            // Additional optimization settings
+            reportCompressedSize: false, // Faster build
+            chunkSizeWarningLimit: 1000
+        },
+        css: {
+            // Optimize CSS processing
+            preprocessorOptions: {
+                scss: {
+                    // Additional SCSS options if needed
+                }
+            }
+        },
+        optimizeDeps: {
+            // Improve dev performance - remove problematic includes
+            exclude: ['astro']
+        }
     },
     markdown: {
         remarkPlugins: [

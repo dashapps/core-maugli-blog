@@ -28,7 +28,7 @@ const buttons = (dict as any).buttons || (fallbackDict as any).buttons || {};
         src={bannerImage}
         alt={seo?.image?.alt || image?.alt || title || 'Product'}
         class="absolute inset-0 w-full h-full object-cover rounded-custom z-0"
-        loading="lazy"
+        loading="eager"
         decoding="async"
     />
     {

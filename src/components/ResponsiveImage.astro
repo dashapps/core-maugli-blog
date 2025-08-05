@@ -1,0 +1,46 @@
+---
+export interface Props {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+    class?: string;
+    loading?: 'lazy' | 'eager';
+    decoding?: 'async' | 'sync' | 'auto';
+    sizes?: string;
+    quality?: number;
+    format?: 'webp' | 'avif' | 'jpeg' | 'png';
+}
+
+const {
+    src,
+    alt,
+    width = 1200,
+    height = 630,
+    class: className = '',
+    loading = 'lazy',
+    decoding = 'async',
+    sizes = '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px',
+    quality = 75,
+    format = 'webp',
+    ...rest
+} = Astro.props;
+
+// Простая стратегия - используем базовое изображение и не генерируем srcset для несуществующих файлов
+const optimizedSrc = src;
+
+// Генерируем srcset только если есть базовое изображение
+const generateSrcSet = (baseSrc: string) => {
+    if (baseSrc.startsWith('http')) {
+        return baseSrc;
+    }
+
+    // Возвращаем только базовое изображение без попыток создания srcset
+    // Responsive варианты будут обработаны build процессом
+    return baseSrc;
+};
+
+const srcSet = generateSrcSet(src);
+---
+
+<img src={optimizedSrc} alt={alt} width={width} height={height} class={className} loading={loading} decoding={decoding} sizes={sizes} {...rest} />

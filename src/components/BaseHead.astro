@@ -1,7 +1,9 @@
 ---
-import { getFilteredCollection } from '../utils/content-loader';
-import siteConfig from '../data/site-config.ts';
+import type { CollectionEntry } from 'astro:content';
 import '../styles/global.css';
+import { getFilteredCollection } from '../utils/content-loader';
+import siteConfig from '../data/site-config';
+import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from 'astro:i18n';
 // Определи тип выше:
 export type ImageMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
 
@@ -86,6 +88,72 @@ let defaultAuthorName = defaultAuthor.data.name;
 <meta name="robots" content="index, follow" />
 <meta name="generator" content={Astro.generator} />
 
+<!-- Critical CSS Inline for Performance -->
+<style>
+    :root {
+        --brand-color-rgb: 12, 191, 17;
+        --brand-color: rgb(var(--brand-color-rgb));
+        --text-main: #111c2d;
+        --text-heading: #3b5174;
+        --text-muted: #6b7280;
+        --bg-main: #ffffff;
+        --bg-muted: rgba(237, 241, 247, 0.621);
+        --border-main: rgba(17, 28, 44, 0.13);
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-serif: 'Geologica', Georgia, 'Times New Roman', serif;
+    }
+    html.dark {
+        --brand-color-rgb: 13, 211, 18;
+        --brand-color: rgb(var(--brand-color-rgb));
+        --text-main: #ffffff;
+        --text-heading: rgba(202, 252, 254, 0.7);
+        --text-muted: #9ca3af;
+        --bg-main: #0b131e;
+        --bg-muted: #131d2cde;
+        --border-main: rgba(51, 66, 66, 0.6);
+    }
+    body {
+        font-family: var(--font-sans);
+        color: var(--text-main);
+        background-color: var(--bg-main);
+        margin: 0;
+        line-height: 1.5;
+    }
+    * {
+        box-sizing: border-box;
+    }
+</style>
+
+<!-- Critical Resource Preloading for Performance -->
+<link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="/footerlabel.svg" as="image" type="image/svg+xml" />
+<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<!-- Image Optimization Hints -->
+<meta name="format-detection" content="telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+<!-- Font Loading Strategy - Non-blocking -->
+<link
+    rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+/>
+<link
+    rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&display=swap"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+/>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&display=swap" />
+</noscript>
+
 <!-- SEO -->
 <meta name="description" content={seoDescription} />
 <meta name="keywords" content={seoKeywords} />
@@ -108,8 +176,8 @@ let defaultAuthorName = defaultAuthor.data.name;
 <meta property="og:description" content={seoDescription} />
 {resolvedImage?.src && <meta property="og:image" content={resolvedImage.src} />}
 {resolvedImage?.alt && <meta property="og:image:alt" content={resolvedImage.alt} />}
-{typeof resolvedImage?.width !== 'undefined' && <meta property="og:image:width" content={resolvedImage.width} />}
-{typeof resolvedImage?.height !== 'undefined' && <meta property="og:image:height" content={resolvedImage.height} />}
+{typeof resolvedImage?.width !== 'undefined' && <meta property="og:image:width" content={resolvedImage.width.toString()} />}
+{typeof resolvedImage?.height !== 'undefined' && <meta property="og:image:height" content={resolvedImage.height.toString()} />}
 {resolvedImage?.type && <meta property="og:image:type" content={resolvedImage.type} />}
 
 <!-- X/Twitter -->
