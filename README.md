@@ -94,8 +94,9 @@ Maugli Blog uses a **smart image management system** that separates user content
 ### Your Images Are Protected ✅
 
 During npm updates, **your images are preserved**:
+
 - `public/img/blog/` - Your blog post images
-- `public/img/authors/` - Your author photos  
+- `public/img/authors/` - Your author photos
 - `public/img/uploads/` - Your uploaded content
 - `public/img/products/` - Your product images
 - `public/img/projects/` - Your project images
@@ -103,6 +104,7 @@ During npm updates, **your images are preserved**:
 ### System Assets Are Updated 🔄
 
 These are managed automatically by npm updates:
+
 - `public/favicon.svg`, logos, icons
 - `public/flags/` - Country flags
 - `public/img/default/` - Default fallback images
@@ -123,22 +125,25 @@ npm run optimize
 ```
 
 **Automatic processing:**
+
 ```bash
 # From: my-post.webp
 # Creates: my-post-400.webp (mobile, optimized)
-#         my-post-800.webp (tablet, optimized)  
+#         my-post-800.webp (tablet, optimized)
 #         my-post-1200.webp (desktop, optimized)
 #         previews/my-post.webp (thumbnail)
 ```
 
 **Optimization benefits:**
+
 - ✅ **10-30% file size reduction** with no quality loss
 - ✅ **WebP format optimization** (quality 80, max compression)
 - ✅ **Progressive JPEG** for faster loading
-- ✅ **Lighthouse performance boost** 
+- ✅ **Lighthouse performance boost**
 - ✅ **Proper responsive images** with srcset
 
 **Best practices:**
+
 - Use WebP format for better performance
 - Blog images: max 1200px width
 - Author avatars: 400x400px recommended
@@ -156,8 +161,9 @@ npm install --save core-maugli@latest
 ```
 
 This ensures that you always receive the latest:
+
 - **Features**
-- **Bug fixes** 
+- **Bug fixes**
 - **Performance improvements**
 - **Accessibility enhancements**
 - **Lighthouse-validated optimizations**
@@ -169,14 +175,16 @@ Manual component maintenance is time-consuming and error-prone. Centralized upda
 
 **2. Lighthouse & Performance Excellence**  
 All Maugli components are crafted to comply with strict Lighthouse, Web Vitals, and AI-indexability guidelines. Every component update includes:
+
 - **Mobile UX optimization** (48px touch targets, responsive design)
 - **Performance optimization** (proper image loading, minimal layout shift)
 - **SEO compliance** (structured data, semantic HTML, accessibility)
 - **Core Web Vitals** (LCP, FID, CLS optimization)
 
 Manual changes may negatively affect your site's score in:
+
 - **SEO**
-- **Performance** 
+- **Performance**
 - **Accessibility**
 - **Best Practices**
 

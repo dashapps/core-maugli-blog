@@ -5,8 +5,8 @@
  * Handles user images separately from core system assets
  */
 
-import { existsSync, mkdirSync, copyFileSync, readdirSync, statSync } from 'fs';
-import { join, dirname } from 'path';
+import { existsSync, mkdirSync } from 'fs';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);

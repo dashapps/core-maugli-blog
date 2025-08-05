@@ -6,7 +6,7 @@
 public/
 ├── img/
 │   ├── uploads/         # Your uploaded images (preserved)
-│   ├── blog/           # Blog post images (preserved)  
+│   ├── blog/           # Blog post images (preserved)
 │   ├── authors/        # Author avatars (preserved)
 │   ├── products/       # Product images (preserved)
 │   ├── projects/       # Project images (preserved)
@@ -20,6 +20,7 @@ public/
 ## What's Protected During Updates
 
 ✅ **Your content is SAFE during npm updates:**
+
 - `public/img/uploads/` - Your uploaded images
 - `public/img/blog/` - Your blog post images
 - `public/img/authors/` - Your author photos
@@ -27,6 +28,7 @@ public/
 - `public/img/projects/` - Your project images
 
 ❌ **System files are UPDATED automatically:**
+
 - `public/favicon.svg`, `public/logo-icon.svg` - System icons
 - `public/flags/` - Country flags
 - `public/img/default/` - Default fallback images
@@ -35,6 +37,7 @@ public/
 ## Best Practices
 
 1. **Use descriptive names:**
+
    ```
    ✅ public/img/blog/my-awesome-post.webp
    ✅ public/img/authors/john-smith.webp
@@ -42,6 +45,7 @@ public/
    ```
 
 2. **Use WebP format for better performance:**
+
    ```bash
    # Convert to WebP
    cwebp input.jpg -o output.webp -q 80
@@ -55,8 +59,9 @@ public/
 ## Automatic Image Processing
 
 The system automatically generates:
+
 - `image-400.webp` (mobile)
-- `image-800.webp` (tablet) 
+- `image-800.webp` (tablet)
 - `image-1200.webp` (desktop)
 - `previews/image.webp` (thumbnails)
 

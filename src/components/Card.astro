@@ -1,9 +1,9 @@
 ---
-import { maugliConfig } from '../config/maugli.config';
-import FormattedDate from './FormattedDate.astro';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { maugliConfig } from '../config/maugli.config';
+import FormattedDate from './FormattedDate.astro';
 
 const __filename = fileURLToPath(import.meta.url);
 const projectRoot = path.resolve(path.dirname(__filename), '../..');
