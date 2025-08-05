@@ -34,6 +34,7 @@
         "upgrade": "node scripts/upgrade-config.js",
         "update-components": "node scripts/update-components.js",
         "backup-update": "node scripts/update-with-backup.js",
+        "update-all-blogs": "node scripts/update-all-blogs.js",
         "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
         "generate-previews": "node scripts/generate-previews.js"
     },
