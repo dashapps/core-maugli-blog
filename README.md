@@ -193,18 +193,18 @@ npx core-maugli init .
 
 ### Useful npm scripts
 
-| Script                           | Description                                 |
-| -------------------------------- | ------------------------------------------- |
-| `npm run dev`                    | Start local dev server                      |
-| `npm start`                      | Alias for `npm run dev`                     |
+| Script                           | Description                                                 |
+| -------------------------------- | ----------------------------------------------------------- |
+| `npm run dev`                    | Start local dev server                                      |
+| `npm start`                      | Alias for `npm run dev`                                     |
 | `npm run build`                  | Format content, verify assets, then create production build |
-| `npm run typograf`               | Run typograf on all posts                   |
-| `npm run astro`                  | Access the Astro CLI                        |
-| `npm run featured:add <slug>`    | Mark a post as featured                     |
-| `npm run featured:remove <slug>` | Remove featured mark from a post            |
-| `npm run featured:list`          | List all featured posts                     |
-| `npm run upgrade`                | Manually update `maugli.config.ts`          |
-| `npm run backup-update`          | Backup key files then run `npm update`      |
+| `npm run typograf`               | Run typograf on all posts                                   |
+| `npm run astro`                  | Access the Astro CLI                                        |
+| `npm run featured:add <slug>`    | Mark a post as featured                                     |
+| `npm run featured:remove <slug>` | Remove featured mark from a post                            |
+| `npm run featured:list`          | List all featured posts                                     |
+| `npm run upgrade`                | Manually update `maugli.config.ts`                          |
+| `npm run backup-update`          | Backup key files then run `npm update`                      |
 
 ## Checking installed version
 
@@ -214,13 +214,15 @@ See which version of the theme is installed:
 npm list core-maugli
 ```
 
-## Updating
+## Updating the theme
 
-Upgrade to the latest release:
+To update to the latest version of core-maugli, use:
 
 ```bash
-npm update
+npm install core-maugli@latest --save
 ```
+
+If you just run `npm install core-maugli`, it will install the version specified in your package.json. Only with `--save` (или вручную обновив package.json) вы получите самую свежую версию.
 
 To back up key files and then update, run:
 
@@ -244,4 +246,3 @@ commercial license.
 
 Contact <licensing@maugli.cfd> or visit
 <https://maugli.cfd/licensing> for more information.
-
