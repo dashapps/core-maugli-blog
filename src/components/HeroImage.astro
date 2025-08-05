@@ -1,5 +1,9 @@
 ---
 // src/components/HeroImage.astro
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 export interface Props {
     src: string;
     alt?: string;
@@ -9,11 +13,12 @@ export interface Props {
     className?: string;
     srcset?: string;
 }
-const defaultWidth = 800;
-const { src, alt = '', caption, width = defaultWidth, height, className = '', srcset = '' } = Astro.props;
+const defaultWidth = 1200;
+const defaultHeight = 630;
+const { src, alt = '', caption, width = defaultWidth, height = defaultHeight, className = '', srcset = '' } = Astro.props;
 
-// Вариант aspect-ratio: если есть оба размера, рассчитываем; иначе не пишем!
-const aspectRatio = width && height ? `${width} / ${height}` : undefined;
+// Фиксированные пропорции 1200:630
+const aspectRatio = '1200 / 630';
 
 // Генерируем адаптивные версии изображений
 function getResponsiveImages(imagePath: string) {
@@ -39,17 +44,33 @@ if (srcset) {
     // Генерируем адаптивные изображения
     imageData = getResponsiveImages(src);
 }
+
+// Используем уменьшенное превью, если оно существует
+let previewImage;
+if (imageData.src) {
+    previewImage = imageData.src.replace(/\/([^\/]+)$/, '/previews/$1');
+
+    const __filename = fileURLToPath(import.meta.url);
+    const projectRoot = path.resolve(path.dirname(__filename), '../..');
+    const previewFilePath = path.join(projectRoot, 'public', previewImage.replace(/^\//, ''));
+
+    if (!fs.existsSync(previewFilePath)) {
+        previewImage = undefined;
+    }
+}
+
+const finalImage = previewImage || imageData.src;
 ---
 
 <figure class={`w-full max-w-[${width}px] mx-auto rounded-custom overflow-hidden bg-[var(--bg-muted)] ${className}`}>
     <img
-        src={imageData.src}
+        src={finalImage}
         srcset={imageData.srcset}
         sizes={imageData.sizes}
         alt={alt}
         width={width}
         height={height}
-        style={aspectRatio ? `aspect-ratio: ${aspectRatio}; width: 100%; height: auto;` : 'width: 100%; height: auto;'}
+        style={`aspect-ratio: ${aspectRatio}; width: 100%; height: auto;`}
         class="block rounded-custom object-cover"
         loading="eager"
         decoding="async"
