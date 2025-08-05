@@ -9,6 +9,7 @@ import { LANGUAGES } from '../i18n/languages';
 const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
 const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
 const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const langLabel = languageObj?.label || lang;
 
 const navLinks = (maugliConfig.navLinks || []).map((link) => {
     const d = dict as any;
@@ -18,8 +19,8 @@ const navLinks = (maugliConfig.navLinks || []).map((link) => {
     };
 });
 
-const openMenuLabel = (dict as any).openMenu || 'Open menu';
-const closeMenuLabel = (dict as any).closeMenu || 'Close menu';
+const openMenuLabel = dict.nav?.openMenu || 'Open menu';
+const closeMenuLabel = dict.nav?.closeMenu || 'Close menu';
 ---
 
 <nav class="fixed top-0 left-0 w-full z-50 bg-[var(--bg-main)] opacity-95 backdrop-blur-lg flex items-center justify-between pt-4 pb-4">
@@ -27,15 +28,7 @@ const closeMenuLabel = (dict as any).closeMenu || 'Close menu';
         <a href={maugliConfig.brand.logoHref && maugliConfig.brand.logoHref.trim() ? maugliConfig.brand.logoHref : '/'} class="ml-6 flex-shrink-0 card-blur">
             <picture>
                 <source srcset={maugliConfig.brand.logoDark} media="(prefers-color-scheme: dark)" />
-                <img
-                    src={maugliConfig.brand.logoLight}
-                    alt="Логотип"
-                    width="48"
-                    height="48"
-                    class="w-12 h-12"
-                    loading="eager"
-                    decoding="async"
-                />
+                <img src={maugliConfig.brand.logoLight} alt="Логотип" width="48" height="48" class="w-12 h-12" loading="eager" decoding="async" />
             </picture>
         </a>
         <ul
@@ -125,8 +118,8 @@ const closeMenuLabel = (dict as any).closeMenu || 'Close menu';
 </style>
 
 <script>
-    const openLabel = ${JSON.stringify(openMenuLabel)};
-    const closeLabel = ${JSON.stringify(closeMenuLabel)};
+    const openLabel = '{openMenuLabel}';
+    const closeLabel = '{closeMenuLabel}';
 
     function menuToggle() {
         const menu = document.querySelector('.menu');
