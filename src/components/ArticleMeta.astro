@@ -1,8 +1,8 @@
 ---
 import { type CollectionEntry } from 'astro:content';
-import { getFilteredCollection } from '../utils/content-loader';
 import { maugliConfig } from '../config/maugli.config';
 import { LANGUAGES } from '../i18n/languages';
+import { getFilteredCollection } from '../utils/content-loader';
 import FormattedDate from './FormattedDate.astro';
 // Универсальный импорт словарей по доступным языкам
 const dicts: Record<string, any> = {};
