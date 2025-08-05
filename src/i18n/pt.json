@@ -122,5 +122,9 @@
     "title": "Página não encontrada",
     "description": "Desculpe, esta página não existe ou foi removida.",
     "button": "Página principal"
-  }
+  },
+  
+  "stopWords": [
+    "o", "a", "de", "e", "do", "da", "em", "um", "para", "é", "com", "não", "uma", "os", "no", "se", "na", "por", "mais", "as", "dos", "como", "mas", "foi", "ao", "ele", "das", "tem", "à", "seu", "sua", "ou", "ser", "quando", "muito", "há", "nos", "já", "está", "eu", "também", "só", "pelo", "pela", "até", "isso", "ela", "entre", "era", "depois", "sem", "mesmo", "aos", "ter", "seus", "suas", "numa", "pelos", "pelas", "esse", "esses", "essa", "essas", "num", "onde", "bem", "te", "então", "foram", "teu", "tua", "teus", "tuas", "nosso", "nossa", "nossos", "nossas", "dele", "dela", "deles", "delas", "este", "esta", "estes", "estas", "aquele", "aquela", "aqueles", "aquelas", "isto", "isso", "aquilo", "todo", "toda", "todos", "todas", "outro", "outra", "outros", "outras", "qual", "quais", "quanto", "quanta", "quantos", "quantas", "algum", "alguma", "alguns", "algumas", "nenhum", "nenhuma", "nenhuns", "nenhumas", "muito", "muita", "muitos", "muitas", "pouco", "pouca", "poucos", "poucas", "tanto", "tanta", "tantos", "tantas", "primeiro", "primeira", "primeiros", "primeiras", "último", "última", "últimos", "últimas", "grande", "grandes", "pequeno", "pequena", "pequenos", "pequenas", "novo", "nova", "novos", "novas", "velho", "velha", "velhos", "velhas", "bom", "boa", "bons", "boas", "mau", "má", "maus", "más", "melhor", "melhores", "pior", "piores", "maior", "maiores", "menor", "menores", "aqui", "aí", "ali", "lá", "cá", "onde", "aonde", "donde", "quando", "enquanto", "como", "porque", "porquê", "para", "que", "conforme", "segundo", "consoante", "salvo", "exceto", "menos", "através", "desde", "durante", "antes", "depois", "contra", "sobre", "sob", "perante", "ante", "segundo", "conforme", "mediante", "durante", "excepto", "fora", "tirante", "afora", "além", "aquém", "dentro", "fora", "perto", "longe", "acima", "abaixo", "adiante", "atrás", "diante", "&"
+  ]
 }

@@ -40,9 +40,34 @@ function getResponsiveImages(imagePath: string) {
     const basePath = imagePath.replace(/\.(webp|jpg|jpeg|png)$/i, '');
     const extension = imagePath.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
 
+    // Проверяем существование адаптивных версий
+    const __filename = fileURLToPath(import.meta.url);
+    const projectRoot = path.resolve(path.dirname(__filename), '../..');
+
+    const variants = [
+        { suffix: '-400', width: '400w' },
+        { suffix: '-800', width: '800w' },
+        { suffix: '-1200', width: '1200w' }
+    ];
+
+    const srcsetItems = [];
+
+    // Добавляем адаптивные версии, если они существуют
+    for (const variant of variants) {
+        const variantPath = `${basePath}${variant.suffix}${extension}`;
+        const filePath = path.join(projectRoot, 'public', variantPath.replace(/^\//, ''));
+
+        if (fs.existsSync(filePath)) {
+            srcsetItems.push(`${variantPath} ${variant.width}`);
+        }
+    }
+
+    // Всегда добавляем оригинальное изображение
+    srcsetItems.push(`${imagePath} 1200w`);
+
     return {
         src: imagePath,
-        srcset: [`${basePath}-400${extension} 400w`, `${basePath}-800${extension} 800w`, `${basePath}-1200${extension} 1200w`, `${imagePath} 1200w`].join(', '),
+        srcset: srcsetItems.join(', '),
         sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px'
     };
 }

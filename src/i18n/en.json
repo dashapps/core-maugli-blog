@@ -122,5 +122,9 @@
     "title": "Page not found",
     "description": "Sorry, this page does not exist or has been removed.",
     "button": "Go to main page"
-  }
+  },
+  
+  "stopWords": [
+    "the", "of", "to", "in", "on", "at", "by", "for", "with", "from", "as", "an", "or", "but", "and", "is", "are", "was", "were", "be", "been", "have", "has", "had", "do", "does", "did", "will", "would", "could", "should", "may", "might", "can", "must", "shall", "ought", "this", "that", "these", "those", "a", "about", "above", "after", "again", "against", "all", "any", "before", "below", "between", "both", "during", "each", "few", "if", "into", "more", "most", "no", "nor", "not", "only", "other", "out", "over", "same", "so", "some", "such", "than", "too", "very", "what", "when", "where", "which", "who", "why", "how", "up", "down", "off", "through", "until", "while", "&"
+  ]
 }

@@ -26,8 +26,8 @@
   "pages": {
     "authors": {
       "title": "Auteurs",
-      "description": "Rencontrez notre équipe d'experts écrivant pour {brand}",
-      "goToAuthor": "Voir l'auteur",
+      "description": "Rencontrez notre équipe d'experts qui écrivent pour {brand}",
+      "goToAuthor": "Aller à l'auteur",
       "avatarAlt": "Avatar",
       "onPlatform": "sur"
     },
@@ -38,7 +38,7 @@
     },
     "index": {
       "title": "<Blog>",
-      "description": "Blog sur l'automatisation vue par l'IA",
+      "description": "Blog sur l'automatisation à travers les yeux de l'IA",
       "articles": "Articles",
       "minutes": "min"
     },
@@ -51,15 +51,15 @@
       "title": "Services"
     },
     "blog": {
-      "moreByTag": "Plus sur ce sujet"
+      "moreByTag": "Plus sur le sujet"
     },
     "productsId": {
-      "articlesByTag": "Articles sur ce sujet",
-      "casesByTag": "Cas sur ce sujet"
+      "articlesByTag": "Articles sur le sujet",
+      "casesByTag": "Cas sur le sujet"
     }
   },
   "socials": {
-    "email": "Email",
+    "email": "email",
     "linkedin": "LinkedIn",
     "twitter": "Twitter",
     "telegram": "Telegram",
@@ -91,8 +91,8 @@
     "faqLabel": "FAQ :"
   },
   "tableOfContents": {
-    "title": "Contenu",
-    "ariaLabel": "Contenu"
+    "title": "Sommaire",
+    "ariaLabel": "Sommaire"
   },
   "tagPill": {
     "ariaLabel": "Tag : {tag}"
@@ -108,19 +108,23 @@
     "tagAriaLabel": "Tag : {name} ({count})"
   },
   "themeToggle": {
-    "ariaLabel": "Changer le thème"
+    "ariaLabel": "Changer le schéma de couleurs"
   },
   "pagination": {
     "goToPage": "Aller à la page {page} sur {lastPage}",
     "pageOf": "Page {currentPage} sur {lastPage}"
   },
   "subscribe": {
-    "heading": "S'abonner aux mises à jour",
-    "mutedText": "Recevez en premier les derniers articles et actualités !"
+    "heading": "Abonnez-vous aux mises à jour",
+    "mutedText": "Recevez les derniers articles et nouvelles en premier !"
   },
   "notFound": {
     "title": "Page non trouvée",
-    "description": "Désolé, cette page n’existe pas ou a été supprimée.",
-    "button": "Page d’accueil"
-  }
+    "description": "Désolé, cette page n'existe pas ou a été supprimée.",
+    "button": "Page d'accueil"
+  },
+  
+  "stopWords": [
+    "le", "de", "et", "à", "un", "il", "être", "en", "avoir", "que", "pour", "dans", "ce", "son", "une", "sur", "avec", "ne", "se", "pas", "tout", "pouvoir", "par", "plus", "comme", "où", "quand", "qui", "quoi", "très", "bien", "beaucoup", "peu", "aussi", "encore", "toujours", "jamais", "ici", "là", "sans", "après", "avant", "depuis", "pendant", "malgré", "selon", "contre", "vers", "chez", "sous", "entre", "parmi", "au", "aux", "du", "des", "la", "les", "cette", "ces", "dont", "lequel", "laquelle", "lesquels", "lesquelles", "auquel", "auxquels", "auxquelles", "duquel", "desquels", "desquelles", "ceci", "cela", "ça", "celui", "celle", "ceux", "celles", "même", "autre", "tel", "chaque", "quelque", "plusieurs", "certain", "aucun", "nul", "assez", "mal", "trop", "moins", "autant", "tant", "si", "partout", "nulle", "part", "ailleurs", "dedans", "dehors", "dessus", "dessous", "devant", "derrière", "près", "loin", "maintenant", "hier", "demain", "bientôt", "tard", "tôt", "&"
+  ]
 }

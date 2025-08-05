@@ -122,5 +122,9 @@
     "title": "Página no encontrada",
     "description": "Lo sentimos, esta página no existe o ha sido eliminada.",
     "button": "A la página principal"
-  }
+  },
+  
+  "stopWords": [
+    "el", "la", "de", "que", "y", "a", "en", "un", "es", "se", "no", "te", "lo", "le", "da", "su", "por", "son", "con", "para", "al", "del", "los", "las", "una", "más", "como", "pero", "sus", "le", "ya", "o", "porque", "cuando", "muy", "sin", "sobre", "también", "me", "hasta", "hay", "donde", "quien", "desde", "todo", "nos", "durante", "todos", "uno", "les", "ni", "contra", "otros", "ese", "eso", "ante", "ellos", "e", "esto", "mí", "antes", "algunos", "qué", "unos", "yo", "otro", "otras", "otra", "él", "tanto", "esa", "estos", "mucho", "quienes", "nada", "muchos", "cual", "poco", "ella", "estar", "estas", "algunas", "algo", "nosotros", "mi", "mis", "tú", "te", "ti", "tu", "tus", "ellas", "nosotras", "vosotros", "vosotras", "os", "mío", "mía", "míos", "mías", "tuyo", "tuya", "tuyos", "tuyas", "suyo", "suya", "suyos", "suyas", "nuestro", "nuestra", "nuestros", "nuestras", "vuestro", "vuestra", "vuestros", "vuestras", "del", "al", "donde", "adonde", "por donde", "en donde", "a donde", "de donde", "hacia donde", "hasta donde", "desde donde", "para donde", "según", "entre", "hacia", "mediante", "durante", "salvo", "excepto", "menos", "incluso", "además", "aparte", "fuera", "dentro", "encima", "debajo", "delante", "detrás", "cerca", "lejos", "alrededor", "&"
+  ]
 }

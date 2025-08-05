@@ -122,5 +122,9 @@
     "title": "Seite nicht gefunden",
     "description": "Entschuldigung, diese Seite existiert nicht oder wurde entfernt.",
     "button": "Zur Hauptseite"
-  }
+  },
+  
+  "stopWords": [
+    "der", "die", "das", "und", "in", "auf", "mit", "von", "zu", "für", "an", "bei", "nach", "vor", "über", "unter", "durch", "ohne", "gegen", "um", "aus", "bis", "seit", "während", "wegen", "trotz", "statt", "anstatt", "außer", "binnen", "dank", "entlang", "entsprechend", "gemäß", "laut", "samt", "zufolge", "zugunsten", "zulasten", "zuliebe", "zuwider", "ist", "sind", "war", "waren", "sein", "haben", "hat", "hatte", "hatten", "wird", "werden", "wurde", "wurden", "kann", "können", "konnte", "konnten", "soll", "sollen", "sollte", "sollten", "will", "wollen", "wollte", "wollten", "muss", "müssen", "musste", "mussten", "darf", "dürfen", "durfte", "durften", "mag", "mögen", "mochte", "mochten", "ein", "eine", "einer", "eines", "einem", "einen", "kein", "keine", "keiner", "keines", "keinem", "keinen", "dieser", "diese", "dieses", "diesem", "diesen", "jener", "jene", "jenes", "jenem", "jenen", "welcher", "welche", "welches", "welchem", "welchen", "alle", "alles", "allen", "aller", "manche", "mancher", "manches", "manchem", "manchen", "einige", "einiger", "einiges", "einigem", "einigen", "viele", "vieler", "vieles", "vielem", "vielen", "wenige", "weniger", "weniges", "wenigem", "wenigen", "andere", "anderer", "anderes", "anderem", "anderen", "nicht", "nichts", "nie", "niemals", "immer", "oft", "manchmal", "selten", "hier", "da", "dort", "wo", "wohin", "woher", "wann", "wie", "warum", "weshalb", "wieso", "was", "wer", "wen", "wem", "wessen", "sehr", "ziemlich", "ganz", "völlig", "etwas", "etwa", "fast", "bereits", "schon", "noch", "nur", "auch", "sogar", "zwar", "aber", "jedoch", "doch", "dennoch", "trotzdem", "sondern", "oder", "entweder", "weder", "sowohl", "als", "wie", "wenn", "falls", "obwohl", "obgleich", "während", "bevor", "nachdem", "seit", "bis", "damit", "dass", "ob", "weil", "da", "falls", "sofern", "solange", "sobald", "&"
+  ]
 }
