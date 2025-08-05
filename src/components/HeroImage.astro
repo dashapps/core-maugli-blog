@@ -15,15 +15,37 @@ const { src, alt = '', caption, width = defaultWidth, height, className = '', sr
 // Вариант aspect-ratio: если есть оба размера, рассчитываем; иначе не пишем!
 const aspectRatio = width && height ? `${width} / ${height}` : undefined;
 
-let realSrcset = srcset;
-if (!srcset && src.includes('default-')) {
-    realSrcset = `${src.replace('800', '800')} 1x, ${src.replace('800', '1200')} 2x`;
+// Генерируем адаптивные версии изображений
+function getResponsiveImages(imagePath: string) {
+    const basePath = imagePath.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+    const extension = imagePath.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
+
+    return {
+        src: imagePath,
+        srcset: [`${basePath}-400${extension} 400w`, `${basePath}-800${extension} 800w`, `${basePath}-1200${extension} 1200w`, `${imagePath} 1200w`].join(', '),
+        sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 1200px'
+    };
+}
+
+let imageData;
+if (srcset) {
+    // Если передан готовый srcset, используем его
+    imageData = {
+        src: src,
+        srcset: srcset,
+        sizes: '100vw'
+    };
+} else {
+    // Генерируем адаптивные изображения
+    imageData = getResponsiveImages(src);
 }
 ---
 
 <figure class={`w-full max-w-[${width}px] mx-auto rounded-custom overflow-hidden bg-[var(--bg-muted)] ${className}`}>
     <img
-        src={src}
+        src={imageData.src}
+        srcset={imageData.srcset}
+        sizes={imageData.sizes}
         alt={alt}
         width={width}
         height={height}
@@ -31,8 +53,6 @@ if (!srcset && src.includes('default-')) {
         class="block rounded-custom object-cover"
         loading="eager"
         decoding="async"
-        srcset={realSrcset}
-        sizes="100vw"
     />
     {caption && <figcaption class="mt-2 text-sm text-[var(--text-main)] opacity-80 text-center px-2">{caption}</figcaption>}
 </figure>
