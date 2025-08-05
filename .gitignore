@@ -23,10 +23,26 @@ pnpm-debug.log*
 # Кеш типографа
 .typograf-cache.json
 
-# Игнорировать только автогенерируемые ресайзы, но сохранять оригиналы
-public/img/**/*-400.webp
-public/img/**/*-800.webp  
-public/img/**/*-1200.webp
+# Игнорировать все автогенерируемые изображения
+# Адаптивные ресайзы
+public/**/*-400.webp
+public/**/*-800.webp  
+public/**/*-1200.webp
+
+# Оптимизированные версии (с суффиксом _optimized)
+public/**/*_optimized.webp
+
+# Вынесенные из подпапок изображения с префиксами
+public/img/authors_*.webp
+public/img/blog_*.webp
+public/img/default_*.webp
+public/img/examples_*.webp
+public/img/page-images_*.webp
+public/img/previews_*.webp
+public/img/products_*.webp
+public/img/projects_*.webp
+
+# Превью изображения
 public/img/**/previews/*.webp
 
 # НЕ игнорировать пользовательские оригинальные изображения:
