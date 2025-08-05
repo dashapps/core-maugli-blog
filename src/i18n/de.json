@@ -1,0 +1,126 @@
+{
+  "buttons": {
+    "share": "Teilen",
+    "subscribe": "Abonnieren",
+    "moreAboutProduct": "Mehr über das Produkt",
+    "copied": "Kopiert!",
+    "copyLink": "Link kopieren",
+    "copyLinkToArticle": "Link zum Artikel kopieren",
+    "morePosts": "Weitere Artikel"
+  },
+  "form": {
+    "emailPlaceholder": "E-Mail",
+    "emailLabel": "E-Mail",
+    "subscribeAriaLabel": "Abonnement-Formular"
+  },
+
+  "nav": {
+    "blog": "Blog",
+    "products": "Produkte",
+    "projects": "Fälle",
+    "authors": "Autoren",
+    "tags": "Kategorien",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
+  "pages": {
+    "authors": {
+      "title": "Autoren",
+      "description": "Lernen Sie unser Expertenteam kennen, das für {brand} schreibt",
+      "goToAuthor": "Zum Autor gehen",
+      "avatarAlt": "Avatar",
+      "onPlatform": "auf"
+    },
+    "tags": {
+      "title": "Kategorien",
+      "description": "Alle Artikel nach Kategorie",
+      "blogRubrics": "Blog-Kategorien"
+    },
+    "index": {
+      "title": "<Blog>",
+      "description": "Blog über Automatisierung aus Sicht der KI",
+      "articles": "Artikel",
+      "minutes": "Min"
+    },
+    "products": {
+      "title": "Produkte",
+      "description": "Alle Maugli-Produkte"
+    },
+    "projects": {
+      "tagTitle": "Services nach Tag",
+      "title": "Services"
+    },
+    "blog": {
+      "moreByTag": "Mehr zum Thema"
+    },
+    "productsId": {
+      "articlesByTag": "Artikel zum Thema",
+      "casesByTag": "Fälle zum Thema"
+    }
+  },
+  "socials": {
+    "email": "E-Mail",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "telegram": "Telegram",
+    "reddit": "Reddit",
+    "medium": "Medium",
+    "mastodon": "Mastodon",
+    "bluesky": "Bluesky"
+  },
+  "footer": {
+    "allRightsReserved": "Alle Rechte vorbehalten"
+  },
+  "shareIconAriaLabel": {
+    "twitter": "Auf Twitter teilen",
+    "copy": "Link kopieren",
+    "telegram": "Auf Telegram teilen",
+    "linkedin": "Auf LinkedIn teilen",
+    "whatsapp": "Auf WhatsApp teilen",
+    "facebook": "Auf Facebook teilen",
+    "copied": "Link kopiert"
+  },
+  "date": {
+    "today": "heute",
+    "yesterday": "gestern"
+  },
+  "sidebarAriaLabel": "Seitenleiste",
+  "summaryFAQCard": {
+    "ariaLabel": "Zusammenfassung und FAQ",
+    "summaryLabel": "Zusammenfassung:",
+    "faqLabel": "FAQ:"
+  },
+  "tableOfContents": {
+    "title": "Inhalt",
+    "ariaLabel": "Inhalt"
+  },
+  "tagPill": {
+    "ariaLabel": "Tag: {tag}"
+  },
+  "tagPills": {
+    "ariaLabel": "Tag: {name} ({count})"
+  },
+  "tagsSection": {
+    "allCases": "Alle Fälle",
+    "allArticles": "Alle Artikel",
+    "allTags": "Alle Tags",
+    "rubricAlt": "Kategorie",
+    "tagAriaLabel": "Tag: {name} ({count})"
+  },
+  "themeToggle": {
+    "ariaLabel": "Farbschema wechseln"
+  },
+  "pagination": {
+    "goToPage": "Gehe zu Seite {page} von {lastPage}",
+    "pageOf": "Seite {currentPage} von {lastPage}"
+  },
+  "subscribe": {
+    "heading": "Abonniere für Updates",
+    "mutedText": "Erhalte die neuesten Artikel und Nachrichten zuerst!"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Entschuldigung, diese Seite existiert nicht oder wurde entfernt.",
+    "button": "Zur Hauptseite"
+  }
+}

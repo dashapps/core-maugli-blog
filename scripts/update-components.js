@@ -8,11 +8,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Определяем корневые папки
-const packageRoot = __dirname.includes('node_modules') 
-  ? path.join(__dirname, '../../..', 'node_modules', 'core-maugli') // из node_modules
-  : path.join(__dirname, '..'); // из исходников (для разработки)
+const isInNodeModules = __dirname.includes('node_modules');
+const isSourceProject = !isInNodeModules && (__dirname.includes('core-maugli-blog') || process.cwd().includes('core-maugli-blog'));
 
-const userRoot = __dirname.includes('node_modules')
+const packageRoot = isInNodeModules 
+  ? path.join(__dirname, '../../..', 'node_modules', 'core-maugli') // из node_modules
+  : path.join(__dirname, '..'); // из исходников
+
+const userRoot = isInNodeModules
   ? path.join(__dirname, '../../..') // корень пользовательского проекта
   : process.env.INIT_CWD || process.cwd(); // для разработки
 
@@ -102,9 +105,15 @@ async function updateStyles() {
 async function updateComponents() {
   console.log('🔄 Updating Maugli components and assets...');
   
-  // Проверяем, что мы не в том же проекте (чтобы не удалить исходники)
-  if (packageRoot === userRoot) {
+  // Проверяем, что мы не в исходном проекте (чтобы не удалить исходники)
+  if (isSourceProject) {
     console.log('⚠️  Skipping component update (running in source project)');
+    return;
+  }
+  
+  // Дополнительная проверка
+  if (packageRoot === userRoot) {
+    console.log('⚠️  Skipping component update (packageRoot equals userRoot)');
     return;
   }
   

@@ -1,0 +1,105 @@
+---
+import type { GetStaticPathsOptions, Page } from 'astro';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
+import AuthorCard from '../../components/AuthorCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import InfoCard from '../../components/InfoCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import { maugliConfig } from '../../config/maugli.config';
+import { LANGUAGES } from '../../i18n/languages';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const dicts: Record<string, any> = Object.fromEntries(LANGUAGES.map((l) => [l.code, l.dict]));
+const lang: string = typeof maugliConfig.defaultLang === 'string' && dicts[maugliConfig.defaultLang] ? maugliConfig.defaultLang : 'en';
+const dict = dicts[lang] || dicts['en'];
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+    const authorsCollection = await getFilteredCollection('authors');
+    // Сортируем авторов по имени в алфавитном порядке
+    const authors = authorsCollection.sort((a, b) => a.data.name.localeCompare(b.data.name, 'ru'));
+    return paginate(authors, { pageSize: 4 }); // 4 автора на страницу для красивой сетки 2x2
+}
+
+type Props = { page: Page<CollectionEntry<'authors'>> };
+
+const { page } = Astro.props;
+let authors = page.data;
+
+// Получаем все статьи
+let allPosts = await getFilteredCollection('blog');
+
+// Фильтрация авторов по наличию статей, если showAuthorsWithoutArticles === false
+if (maugliConfig.showAuthorsWithoutArticles === false) {
+    authors = authors.filter((author) => {
+        const authorId = author.id;
+        // Always show default author
+        if (authorId === maugliConfig.defaultAuthorId) return true;
+        return allPosts.some((post) => {
+            const postAuthor = post.data.author;
+            if (Array.isArray(postAuthor)) {
+                return postAuthor.includes(authorId);
+            }
+            return postAuthor === authorId;
+        });
+    });
+}
+
+// Prepare data for AuthorCard
+const authorsForCards = authors.map((author) => ({
+    name: author.data.name,
+    position: author.data.position,
+    description: author.data.description,
+    avatar: author.data.avatar,
+    socials: author.data.socials,
+    slug: author.id
+}));
+const authorsSection = await getEntry('pages', 'authors');
+
+// Функция для подстановки переменных в строку
+function interpolate(str: string, vars: Record<string, string>) {
+    return str.replace(/\{(\w+)\}/g, (_: string, k: string) => vars[k] ?? '');
+}
+
+const authorsTitle = maugliConfig.pageTitles?.authors?.trim() || dict.pages?.authors?.title || dicts['en'].pages.authors.title;
+const authorsDescription =
+    maugliConfig.authorsDescription?.trim() ||
+    interpolate(dict.pages?.authors?.description || dicts['en'].pages.authors.description, { brand: maugliConfig.brand.name });
+---
+
+<BaseLayout
+    title={authorsTitle}
+    description={authorsDescription}
+    image={{ src: '/img/default/autor_default.webp', alt: 'Команда Maugli Content Farm' }}
+    showHeader={false}
+    fullWidth={true}
+>
+    <div class="max-w-[1280px] mx-auto">
+        <Breadcrumbs />
+
+        <div class="mb-12 sm:mb-16">
+            <h1 class="mb-4 text-3xl leading-tight font-serif font-[800] sm:text-5xl" style="color: var(--text-heading)">{authorsTitle}</h1>
+            <p class="text-lg text-[var(--text-main)] opacity-80 max-w-2xl">{authorsDescription}</p>
+        </div>
+
+        <!-- Сетка карточек авторов (2 колонки для лучшего отображения) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16 justify-center">
+            {
+                authorsForCards.map((author) => (
+                    <div class="flex justify-center">
+                        <AuthorCard author={author} class="max-w-[360px] min-w-[360px]" />
+                    </div>
+                ))
+            }
+        </div>
+
+        <!-- Пагинация (показывается только если больше одной страницы) -->
+        {page.lastPage > 1 && <Pagination page={page} class="my-16 sm:my-24" />}
+
+        {authorsSection && <InfoCard title={authorsSection.data.title} description={authorsSection.body} jsonld={authorsSection.data.jsonld} class="mt-16" />}
+    </div>
+
+    <!-- Подписка -->
+    <Subscribe class="my-16 sm:my-24" />
+</BaseLayout>

@@ -1,0 +1,175 @@
+---
+import { type CollectionEntry, render } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
+import ArticleMeta from '../../components/ArticleMeta.astro';
+import ContentFooter from '../../components/ContentFooter.astro';
+import HeroImage from '../../components/HeroImage.astro';
+import PostPreview from '../../components/PostPreview.astro';
+import ProductBannerCard from '../../components/ProductBannerCard.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import SummaryFAQCard from '../../components/SummaryFAQCard.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import TagsAndShare from '../../components/TagsAndShare.astro';
+import { maugliConfig } from '../../config/maugli.config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortItemsByDateDesc } from '../../utils/data-utils';
+import { calculateReadingTime } from '../../utils/reading-time';
+
+import { LANGUAGES } from '../../i18n/languages';
+const dicts: Record<string, any> = Object.fromEntries(LANGUAGES.map((l) => [l.code, l.dict]));
+const lang: string = typeof maugliConfig.defaultLang === 'string' && dicts[maugliConfig.defaultLang] ? maugliConfig.defaultLang : 'en';
+const dict = dicts[lang] || dicts['en'];
+const morePostsTitle = dict.buttons?.morePosts || dicts['en'].buttons.morePosts;
+
+export async function getStaticPaths() {
+    const posts = (await getFilteredCollection('blog')).sort(sortItemsByDateDesc);
+    const postCount = posts.length;
+    return posts.map((post, index) => ({
+        params: { id: post.id },
+        props: {
+            post,
+            prevPost: index + 1 !== postCount ? posts[index + 1] : null,
+            nextPost: index !== 0 ? posts[index - 1] : null
+        }
+    }));
+}
+
+type Props = { post: CollectionEntry<'blog'>; prevPost: CollectionEntry<'blog'>; nextPost: CollectionEntry<'blog'> };
+
+const { href } = Astro.url;
+const { post, prevPost, nextPost } = Astro.props;
+const { title, publishDate, updatedDate, excerpt, tags = [], seo } = post.data;
+const { Content, headings } = await render(post);
+
+// Вычисляем время чтения на основе контента
+const readingTime = calculateReadingTime(post.body || '');
+
+// Преобразуем встроенные заголовки Astro в нужный формат
+const tocItems = headings
+    .filter((heading) => heading.depth === 2 || heading.depth === 3) // Только H2 и H3
+    .map((heading) => ({
+        title: heading.text,
+        id: heading.slug
+    }));
+
+// Получаем картинку для баннера по productID (если есть)
+let bannerImage = { src: '/default.webp', alt: title };
+if (post.data.productID) {
+    const allProducts = await getFilteredCollection('products');
+    const product = allProducts.find((p) => p.id === post.data.productID);
+    if (product && product.data.image) {
+        bannerImage = {
+            ...product.data.image,
+            alt: product.data.image.alt || product.data.title || 'Product'
+        };
+    } else if (product) {
+        bannerImage = { src: '/default.webp', alt: product.data.title || 'Product' };
+    }
+}
+---
+
+<BaseLayout
+    title={seo?.title ?? title}
+    description={seo?.description ?? excerpt}
+    image={seo?.image || post.data.image || { src: '/default.webp', alt: title }}
+    pageType="article"
+    showHeader={false}
+    fullWidth={true}
+>
+    <!-- Расширяем контейнер для двухколоночной структуры -->
+    <div class="w-full max-w-none lg:max-w-[1280px] mx-auto lg:px-8 -mt-0">
+        <!-- Метаинформация над картинкой -->
+
+        <article class="mb-16 sm:mb-24 max-w-3xl mx-auto lg:max-w-none">
+            <header class="mb-8">
+                {
+                    (post.data.seo?.image?.src || post.data.image?.src) && (
+                        <HeroImage
+                            src={post.data.seo?.image?.src || post.data.image?.src || ''}
+                            alt={post.data.seo?.image?.alt || post.data.image?.alt || title}
+                            caption={post.data.seo?.image?.caption || post.data.image?.caption}
+                            width={post.data.seo?.image?.width || post.data.image?.width || 1200}
+                            height={post.data.seo?.image?.height || post.data.image?.height || 630}
+                        />
+                    )
+                }
+                <div class="px-4 mt-2 md:px-0">
+                    <ArticleMeta publishDate={publishDate} readingTime={readingTime} post={post} />
+                </div>
+                <h1 class="mt-25 text-3xl px-4 md:px-0 font-serif font-[800] sm:text-5xl tracking-tight !leading-[1.05]" style="color: var(--text-heading)">
+                    {title}
+                </h1>
+            </header>
+        </article>
+
+        <!-- 16-колоночная сетка -->
+        <div class="md:grid md:grid-cols-16 md:gap-9">
+            <!-- Боковая панель с Table of Contents -->
+            <aside class="hidden sm:block md:col-span-5 lg:col-span-5 min-h-screen">
+                <div class="sticky top-8">
+                    {tocItems.length > 0 && <TableOfContents headings={tocItems} />}
+                    <TagsAndShare tags={tags} shareUrl={href} title={title} basePath="/blog" />
+                    {/* Баннер продукта, если есть productLink в посте */}
+                    {
+                        post.data.productLink && (
+                            <div class="mt-8">
+                                <ProductBannerCard
+                                    product={{
+                                        data: {
+                                            productLink: post.data.productLink,
+                                            image: bannerImage,
+                                            title: post.data.title || 'Продукт'
+                                        }
+                                    }}
+                                />
+                            </div>
+                        )
+                    }
+                </div>
+            </aside>
+
+            <!-- Основной контент -->
+            <div class="md:col-span-11 px-4 md:px-0 h-auto lg:col-span-11">
+                <!-- Summary/FAQ в начале контента -->
+                {
+                    post.data.generativeEngineOptimization?.generated &&
+                        (post.data.generativeEngineOptimization.generated.summary ||
+                            post.data.generativeEngineOptimization.generated.highlights?.length > 0 ||
+                            post.data.generativeEngineOptimization.generated.faq?.length > 0) && (
+                            <div class="not-prose mb-8">
+                                <SummaryFAQCard
+                                    summary={post.data.generativeEngineOptimization.generated.summary}
+                                    highlights={post.data.generativeEngineOptimization.generated.highlights}
+                                    faq={post.data.generativeEngineOptimization.generated.faq}
+                                />
+                            </div>
+                        )
+                }
+
+                <!-- Контент с prose стилями -->
+                <div class="prose sm:prose-lg lg:prose-xl max-w-none">
+                    <Content />
+                </div>
+
+                <!-- Блок тегов и кнопки поделиться под контентом (только на мобилке) -->
+                <ContentFooter tags={tags} shareUrl={href} title={title} basePath="/blog" productLink={post.data.productLink} />
+
+                {
+                    (prevPost || nextPost) && (
+                        <div class="my-16 sm:my-24">
+                            <h2 class="mb-12 text-xl font-serif sm:mb-16 sm:text-2xl text-heading">{morePostsTitle}</h2>
+                            <div class="max-w-[1280px] mx-auto">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                                    {nextPost && <PostPreview post={nextPost} headingLevel="h3" />}
+                                    {prevPost && <PostPreview post={prevPost} headingLevel="h3" />}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+
+                {maugliConfig.subscribe?.enabled && <Subscribe class="my-16 sm:my-24" />}
+            </div>
+        </div>
+    </div>
+</BaseLayout>

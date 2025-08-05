@@ -1,0 +1,59 @@
+---
+import type { GetStaticPathsOptions, Page } from 'astro';
+import { type CollectionEntry } from 'astro:content';
+import { getFilteredCollection } from '../../utils/content-loader';
+import Pagination from '../../components/Pagination.astro';
+import PostPreview from '../../components/PostPreview.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import TagsSection from '../../components/TagsSection.astro';
+import { maugliConfig } from '../../config/maugli.config';
+import siteConfig from '../../data/site-config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllTags, getPostsByTag, sortItemsWithFeaturedFirst } from '../../utils/data-utils';
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+    let posts = (await getFilteredCollection('blog')).sort(sortItemsWithFeaturedFirst);
+    return paginate(posts, { pageSize: siteConfig.postsPerPage || 4 });
+}
+
+type Props = { page: Page<CollectionEntry<'blog'>> };
+
+const { page } = Astro.props;
+const blog = page.data;
+
+// Получаем все теги с количеством постов и выделяем рубрики
+let allPosts = await getFilteredCollection('blog');
+let allRubrics = await getFilteredCollection('tags');
+const rubricSlugs = allRubrics.map((r) => r.data.slug);
+let tagsWithCount = getAllTags(allPosts).map((tag) => ({
+    id: tag.id,
+    name: tag.name,
+    count: getPostsByTag(allPosts, tag.id).length,
+    isRubric: rubricSlugs.includes(tag.id)
+}));
+if (maugliConfig.showOnlyRubricsTags) {
+    tagsWithCount = tagsWithCount.filter((tag) => tag.isRubric);
+} else {
+    tagsWithCount = [...tagsWithCount.filter((tag) => tag.isRubric), ...tagsWithCount.filter((tag) => !tag.isRubric)];
+}
+---
+
+<BaseLayout
+    title="<Блог>"
+    description="Блог об автоматизации глазами ИИ"
+    image={{ src: '/tr-prewiew.png', alt: 'The preview of the site' }}
+    showHeader={false}
+    fullWidth={true}
+>
+    <div class="max-w-[1280px] mx-auto">
+        <h1 class="mb-12 text-3xl leading-tight font-serif font-[800] sm:mb-16 sm:text-5xl" style="color: var(--text-heading)">Статьи</h1>
+        <TagsSection tags={tagsWithCount} totalCount={allPosts.length} />
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
+            {blog.map((post) => <PostPreview post={post} />)}
+        </div>
+
+        <!-- Пагинация (показывается только если больше одной страницы) -->
+        {page.lastPage > 1 && <Pagination page={page} class="my-16 sm:my-24" />}
+    </div>
+    <Subscribe class="my-16 sm:my-24" />
+</BaseLayout>

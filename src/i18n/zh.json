@@ -1,0 +1,126 @@
+{
+  "buttons": {
+    "share": "分享",
+    "subscribe": "订阅",
+    "moreAboutProduct": "更多产品信息",
+    "copied": "已复制！",
+    "copyLink": "复制链接",
+    "copyLinkToArticle": "复制文章链接",
+    "morePosts": "更多文章"
+  },
+  "form": {
+    "emailPlaceholder": "电子邮件",
+    "emailLabel": "电子邮件",
+    "subscribeAriaLabel": "订阅表单"
+  },
+
+  "nav": {
+    "blog": "博客",
+    "products": "产品",
+    "projects": "案例",
+    "authors": "作者",
+    "tags": "主题",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
+  },
+  "pages": {
+    "authors": {
+      "title": "作者",
+      "description": "认识为 {brand} 撰稿的专家团队",
+      "goToAuthor": "前往作者",
+      "avatarAlt": "头像",
+      "onPlatform": "在"
+    },
+    "tags": {
+      "title": "分类",
+      "description": "按类别查看所有文章",
+      "blogRubrics": "博客分类"
+    },
+    "index": {
+      "title": "<博客>",
+      "description": "关于自动化的 AI 视角博客",
+      "articles": "文章",
+      "minutes": "分钟"
+    },
+    "products": {
+      "title": "产品",
+      "description": "所有 Maugli 产品"
+    },
+    "projects": {
+      "tagTitle": "按标签的服务",
+      "title": "服务"
+    },
+    "blog": {
+      "moreByTag": "更多相关主题"
+    },
+    "productsId": {
+      "articlesByTag": "相关文章",
+      "casesByTag": "相关案例"
+    }
+  },
+  "socials": {
+    "email": "电子邮件",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter",
+    "telegram": "Telegram",
+    "reddit": "Reddit",
+    "medium": "Medium",
+    "mastodon": "Mastodon",
+    "bluesky": "Bluesky"
+  },
+  "footer": {
+    "allRightsReserved": "版权所有"
+  },
+  "shareIconAriaLabel": {
+    "twitter": "分享到 Twitter",
+    "copy": "复制链接",
+    "telegram": "分享到 Telegram",
+    "linkedin": "分享到 LinkedIn",
+    "whatsapp": "分享到 WhatsApp",
+    "facebook": "分享到 Facebook",
+    "copied": "链接已复制"
+  },
+  "date": {
+    "today": "今天",
+    "yesterday": "昨天"
+  },
+  "sidebarAriaLabel": "侧边栏",
+  "summaryFAQCard": {
+    "ariaLabel": "摘要和常见问题",
+    "summaryLabel": "摘要：",
+    "faqLabel": "常见问题："
+  },
+  "tableOfContents": {
+    "title": "目录",
+    "ariaLabel": "目录"
+  },
+  "tagPill": {
+    "ariaLabel": "标签：{tag}"
+  },
+  "tagPills": {
+    "ariaLabel": "标签：{name} ({count})"
+  },
+  "tagsSection": {
+    "allCases": "所有案例",
+    "allArticles": "所有文章",
+    "allTags": "所有标签",
+    "rubricAlt": "分类",
+    "tagAriaLabel": "标签：{name} ({count})"
+  },
+  "themeToggle": {
+    "ariaLabel": "切换颜色模式"
+  },
+  "pagination": {
+    "goToPage": "跳转到第 {page} 页，共 {lastPage} 页",
+    "pageOf": "第 {currentPage} 页，共 {lastPage} 页"
+  },
+  "subscribe": {
+    "heading": "订阅更新",
+    "mutedText": "第一时间获取最新文章和新闻！"
+  },
+  "notFound": {
+    "title": "未找到页面",
+    "description": "抱歉，此页面不存在或已被删除。",
+    "button": "返回首页"
+  }
+}
