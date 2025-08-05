@@ -2,6 +2,7 @@
 import { maugliConfig } from '../config/maugli.config';
 import { LANGUAGES } from '../i18n/languages';
 import AuthorLinksGroup from './AuthorLinksGroup.astro';
+import OptimizedImage from './OptimizedImage.astro';
 // Универсальный импорт словарей по доступным языкам
 const dicts: Record<string, any> = {};
 for (const lang of LANGUAGES) {
@@ -9,7 +10,7 @@ for (const lang of LANGUAGES) {
         dicts[lang.code] = await import(`../i18n/${lang.code}.json`).then((m) => m.default);
     } catch {}
 }
-const lang = maugliConfig.lang || maugliConfig.defaultLang || 'en';
+const lang = maugliConfig.defaultLang || 'en';
 const dict = dicts[lang] || dicts['en'] || {};
 
 const navLinks = (maugliConfig.navLinks || []).map((link) => ({

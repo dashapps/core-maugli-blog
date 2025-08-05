@@ -99,8 +99,8 @@ let defaultAuthorName = defaultAuthor.data.name;
         --bg-main: #ffffff;
         --bg-muted: rgba(237, 241, 247, 0.621);
         --border-main: rgba(17, 28, 44, 0.13);
-        --font-sans: 'Inter Variable', sans-serif;
-        --font-serif: 'Geologica Variable', sans-serif;
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-serif: 'Geologica', Georgia, 'Times New Roman', serif;
     }
     html.dark {
         --brand-color-rgb: 13, 211, 18;
@@ -124,12 +124,34 @@ let defaultAuthorName = defaultAuthor.data.name;
     }
 </style>
 
-<!-- Font Preloading for Performance -->
-<link rel="preload" href="/_astro/inter-wght.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-<link rel="preload" href="/_astro/geologica-wght.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<!-- Critical Resource Preloading for Performance -->
+<link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+<link rel="preload" href="/footerlabel.svg" as="image" type="image/svg+xml" />
+<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<!-- Image Optimization Hints -->
+<meta name="format-detection" content="telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+<!-- Font Loading Strategy - Non-blocking -->
+<link 
+    rel="preload" 
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" 
+    as="style" 
+    onload="this.onload=null;this.rel='stylesheet'" 
+/>
+<link 
+    rel="preload" 
+    href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&display=swap" 
+    as="style" 
+    onload="this.onload=null;this.rel='stylesheet'" 
+/>
 <noscript>
-    <link rel="stylesheet" href="/_astro/inter-wght.css" />
-    <link rel="stylesheet" href="/_astro/geologica-wght.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&display=swap" />
 </noscript>
 
 <!-- SEO -->

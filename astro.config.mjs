@@ -80,11 +80,28 @@ export default defineConfig({
     vite: {
         plugins: [
             tailwindcss(),
-            imagetools(),
+            imagetools({
+                // Aggressive image optimization
+                defaultDirectives: () => {
+                    return new URLSearchParams({
+                        format: 'webp',
+                        quality: '75',
+                        progressive: 'true',
+                        // Enable compression
+                        effort: '6'
+                    });
+                },
+                // Additional formats for fallback
+                formats: ['webp', 'avif'],
+                // Disable for development to speed up build
+                disabled: process.env.NODE_ENV === 'development'
+            }),
             VitePWA(pwaOptions)
         ],
         build: {
             cssCodeSplit: true,
+            minify: 'esbuild',
+            target: 'es2020',
             rollupOptions: {
                 output: {
                     // Separate CSS chunks for better caching
@@ -92,10 +109,22 @@ export default defineConfig({
                         if (assetInfo.name && assetInfo.name.endsWith('.css')) {
                             return 'assets/css/[name].[hash][extname]';
                         }
+                        if (assetInfo.name && /\.(png|jpe?g|svg|gif|webp|avif)$/.test(assetInfo.name)) {
+                            return 'assets/img/[name].[hash][extname]';
+                        }
                         return 'assets/[name].[hash][extname]';
+                    },
+                    chunkFileNames: 'assets/js/[name].[hash].js',
+                    manualChunks: {
+                        // Split vendor code for better caching
+                        vendor: ['astro']
                     }
-                }
-            }
+                },
+                // Remove problematic external configuration
+            },
+            // Additional optimization settings
+            reportCompressedSize: false, // Faster build
+            chunkSizeWarningLimit: 1000
         },
         css: {
             // Optimize CSS processing
@@ -104,6 +133,10 @@ export default defineConfig({
                     // Additional SCSS options if needed
                 }
             }
+        },
+        optimizeDeps: {
+            // Improve dev performance - remove problematic includes
+            exclude: ['astro']
         }
     },
     markdown: {
