@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env nconst CURRENT_VERSION = '1.2.48';onst CURRENT_VERSION = '1.2.46';de
 
 /**
  * Скрипт для централизованного обновления всех блогов до последней версии core-maugli
@@ -10,11 +10,10 @@
  * node scripts/update-all-blogs.js /path/to/blogs/project1 /path/to/blogs/project2
  */
 
-import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const CURRENT_VERSION = '1.2.41';
+const CURRENT_VERSION = '1.2.44';
 
 // Правильные скрипты для package.json
 const CORRECT_SCRIPTS = {
@@ -57,7 +56,8 @@ const REQUIRED_SCRIPTS = [
     'scripts/update-with-backup.js',
     'scripts/check-version.js',
     'scripts/auto-update.js',
-    'scripts/generate-netlify-config.js',
+    'scripts/copy-netlify-config.js',
+    'scripts/set-force-update.js',
     '.gitignore',
     'netlify.toml'
 ];
@@ -155,7 +155,23 @@ function updateBlogProject(projectPath) {
         process.chdir(absolutePath);
         execSync('npm update core-maugli', { stdio: 'pipe' });
         
-        // 8. Результат
+        // 8. Копируем netlify.toml
+        log('Copying netlify.toml configuration...', 'info');
+        const copyNetlifyScript = path.join(process.cwd(), 'scripts/copy-netlify-config.js');
+        if (fs.existsSync(copyNetlifyScript)) {
+            try {
+                const { execSync } = require('child_process');
+                execSync(`node "${copyNetlifyScript}"`, { 
+                    stdio: 'pipe',
+                    cwd: absolutePath 
+                });
+                log('   ✅ netlify.toml copied', 'success');
+            } catch (error) {
+                log(`   ⚠️ netlify.toml copy failed: ${error.message}`, 'warn');
+            }
+        }
+
+        // 9. Результат
         log(`Project updated successfully!`, 'success');
         log(`  Version: ${oldVersion} → ${CURRENT_VERSION}`, 'info');
         log(`  Scripts updated: ${scriptsUpdated ? 'Yes' : 'No'}`, 'info');
@@ -195,6 +211,7 @@ function main() {
         log('  ✅ Correct core-maugli version', 'success');
         log('  ✅ Up-to-date build scripts', 'success');
         log('  ✅ Working image optimization', 'success');
+        log('  ✅ Auto-copied netlify.toml', 'success');
     }
 }
 

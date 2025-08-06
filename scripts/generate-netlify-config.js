@@ -119,8 +119,8 @@ async function main() {
     
     const config = await loadMaugliConfig();
     if (!config) {
-        console.error('❌ Could not load maugli configuration');
-        process.exit(1);
+        console.warn('⚠️  Could not load maugli configuration, skipping netlify.toml generation');
+        return;
     }
     
     const tomlContent = generateNetlifyToml(config);
@@ -128,8 +128,14 @@ async function main() {
     
     // Check if netlify.toml already exists
     if (fs.existsSync(outputPath)) {
-        console.log('⚠️  netlify.toml already exists. Creating backup...');
-        fs.copyFileSync(outputPath, `${outputPath}.backup`);
+        // Read existing content to check if it's auto-generated
+        const existingContent = fs.readFileSync(outputPath, 'utf8');
+        if (existingContent.includes('# Netlify configuration generated from maugli.config.ts')) {
+            console.log('🔄 Updating auto-generated netlify.toml...');
+        } else {
+            console.log('⚠️  Custom netlify.toml detected. Creating backup...');
+            fs.copyFileSync(outputPath, `${outputPath}.backup`);
+        }
     }
     
     fs.writeFileSync(outputPath, tomlContent, 'utf8');
@@ -139,6 +145,26 @@ async function main() {
         console.log('🚫 Auto-update disabled in Netlify configuration');
     } else {
         console.log('🔄 Auto-update enabled for Netlify builds');
+    }
+    
+    // List installed plugins
+    if (config.netlify?.plugins && config.netlify.plugins.length > 0) {
+        console.log('🔌 Netlify plugins configured:');
+        
+        const manualSetupPlugins = [
+            'netlify-plugin-bluesky-custom-domain',
+            'netlify-plugin-supabase'
+        ];
+        
+        config.netlify.plugins.forEach(plugin => {
+            const needsManualSetup = manualSetupPlugins.includes(plugin);
+            const indicator = needsManualSetup ? '⚙️ ' : '✅ ';
+            console.log(`   ${indicator}${plugin}`);
+        });
+        
+        console.log('\n📋 Manual setup required for:');
+        console.log('   🌐 Bluesky: https://app.netlify.com/extensions/bluesky-custom-domain');
+        console.log('   🗄️  Supabase: https://app.netlify.com/extensions/supabase');
     }
     
     console.log('📁 File location:', outputPath);

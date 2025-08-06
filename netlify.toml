@@ -1,22 +1,26 @@
-# Netlify configuration generated from maugli.config.ts
+# Netlify configuration for Maugli Blog
+# Auto-copied from core-maugli package
+# 
+# 🔧 CUSTOMIZATION GUIDE:
+# - Add "# CUSTOMIZED" comment anywhere to prevent auto-updates
+# - Uncomment Bluesky/Supabase plugins after setup in Netlify UI
+# - Add your own plugins and they'll be preserved automatically
+#
 
 [build]
-  command = "npm run build"
   publish = "dist"
+  command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "20"
 
-# Netlify plugins
+# Обязательные плагины для Astro
+[[plugins]]
+  package = "netlify-plugin-astro"
+
+# Рекомендуемые плагины для оптимизации
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
-
-[[plugins]]
-  package = "netlify-plugin-submit-sitemap"
-
-[[plugins]]
-  package = "netlify-plugin-checklinks"
 
 [[plugins]]
   package = "netlify-plugin-image-optim"
@@ -25,10 +29,21 @@
   package = "netlify-plugin-minify-html"
 
 [[plugins]]
-  package = "netlify-plugin-inline-critical-css"
+  package = "netlify-plugin-submit-sitemap"
 
-[[plugins]]
-  package = "netlify-plugin-hashfiles"
+# Плагины для интеграций (требуют ручной настройки)
+# Раскомментируйте после настройки в Netlify UI:
+# ⚠️  После раскомментирования этот файл не будет автоматически обновляться
+
+# Bluesky Custom Domain
+# Инструкция: https://app.netlify.com/extensions/bluesky-custom-domain
+# [[plugins]]
+#   package = "netlify-plugin-bluesky"
+
+# Supabase Integration  
+# Инструкция: https://app.netlify.com/extensions/supabase
+# [[plugins]]
+#   package = "@supabase/netlify-integration"
 
 # Redirects
 [[redirects]]
@@ -36,16 +51,16 @@
   to = "/rss.xml"
   status = 301
 
-# Headers
+# Headers для безопасности
 [[headers]]
   for = "/*"
   [headers.values]
     "X-Frame-Options" = "DENY"
-  [headers.values]
+    "X-XSS-Protection" = "1; mode=block"
     "X-Content-Type-Options" = "nosniff"
-  [headers.values]
     "Referrer-Policy" = "strict-origin-when-cross-origin"
 
+# Кэширование изображений
 [[headers]]
   for = "/img/*"
   [headers.values]

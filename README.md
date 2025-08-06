@@ -30,6 +30,39 @@ netlify init
 netlify deploy --prod
 ```
 
+## 🔌 Netlify Plugins & Integrations
+
+Maugli Blog automatically includes recommended Netlify plugins for optimal performance and functionality. The `netlify.toml` configuration is auto-generated during installation.
+
+### 🔄 Auto-Configured Plugins
+
+The following plugins are automatically included:
+
+- **@netlify/plugin-lighthouse** - Performance audits
+- **netlify-plugin-submit-sitemap** - SEO optimization
+- **netlify-plugin-checklinks** - Link validation
+- **netlify-plugin-image-optim** - Image optimization
+- **netlify-plugin-minify-html** - HTML compression
+- **netlify-plugin-inline-critical-css** - Performance boost
+
+### 🌐 Optional Integrations
+
+For advanced functionality, manually install these plugins from the Netlify UI:
+
+#### Bluesky Custom Domain
+
+Verify your custom domain for Bluesky social media integration.
+
+**Setup:** [Install Bluesky Plugin](https://app.netlify.com/extensions/bluesky-custom-domain)
+
+#### Supabase Integration
+
+Add backend functionality with Supabase database and authentication.
+
+**Setup:** [Install Supabase Plugin](https://app.netlify.com/extensions/supabase)
+
+> **Note:** These integrations require manual configuration after installation. Visit the provided links for detailed setup instructions.
+
 ## Getting started
 
 To start a new project in an empty folder run:
@@ -57,6 +90,42 @@ npx core-maugli init my-blog --lang es
 You pick the language only once during project creation; updates won't ask again.
 
 Your blog will be available at `http://localhost:4321/`
+
+## 🔄 Updating Your Blog
+
+### Individual Blog Update
+
+For a single blog project:
+
+```bash
+npm update core-maugli
+```
+
+The system includes **smart version checking**:
+
+- Interactive prompts for regular updates (Y/n)
+- Automatic updates in CI/CD environments (Netlify, Vercel, GitHub Actions)
+- **Forced updates** for critical security fixes with 10-second countdown
+- Skip checks with `SKIP_VERSION_CHECK=true` environment variable
+
+### Mass Update (For Blog Networks)
+
+If you manage multiple blog installations locally:
+
+```bash
+# Update multiple blogs at once
+node scripts/update-all-blogs.js /path/to/blog1 /path/to/blog2 /path/to/blog3
+
+# Or use wildcards for all blogs in a directory
+node scripts/update-all-blogs.js /Users/yourname/blogs/*
+```
+
+This centralized update system:
+
+- Updates npm packages to latest version
+- Copies new optimization scripts
+- Updates netlify.toml configuration
+- Preserves your custom content and settings
 
 1. **Install dependencies**
 

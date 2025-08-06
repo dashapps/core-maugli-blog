@@ -1,5 +1,5 @@
 // MAUGLI_CONFIG_VERSION — config version for CLI/automation compatibility
-export const MAUGLI_CONFIG_VERSION = '0.4';
+export const MAUGLI_CONFIG_VERSION = '0.5';
 // Main configuration interface for the Maugli project
 export interface MaugliConfig {
   // Show example/demo content (for CLI/empty blog setup)
@@ -18,6 +18,7 @@ export interface MaugliConfig {
     farmRubricIds?: string[];    // Array of farm rubric IDs for API
     farmProductIds?: string[];   // Array of farm product IDs for API
     farmProjectIds?: string[];   // Array of farm project/case IDs for API
+    forceUpdate?: boolean;       // Force updates without Y/n prompts (default: false)
   };
   // Repository settings for deployment
   repository?: {
@@ -134,6 +135,7 @@ export const maugliConfig: MaugliConfig = {
     farmRubricIds: [],    // Array of farm rubric IDs for API
     farmProductIds: [],   // Array of farm product IDs for API
     farmProjectIds: [],   // Array of farm project/case IDs for API
+    forceUpdate: true,    // Force updates without Y/n prompts (default: true for stable deployment)
   },
   // Repository settings for deployment
   repository: {
@@ -150,7 +152,9 @@ export const maugliConfig: MaugliConfig = {
       'netlify-plugin-image-optim',     // Image optimization
       'netlify-plugin-minify-html',     // HTML minification
       'netlify-plugin-inline-critical-css', // Inline critical CSS
-      'netlify-plugin-hashfiles'        // Cache optimization with file hashing
+      'netlify-plugin-hashfiles',       // Cache optimization with file hashing
+      'netlify-plugin-bluesky-custom-domain', // Bluesky custom domain verification
+      'netlify-plugin-supabase'         // Supabase integration
     ], // Recommended Netlify plugins from UI
     buildCommand: 'npm run build', // Default build command
     publishDir: 'dist', // Astro output directory
