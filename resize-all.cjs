@@ -31,11 +31,21 @@ function processDirectory(dir) {
       
       // Проверяем, что это изображение и не содержит размер в названии
       if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+        // Исключаем PWA иконки и служебные файлы
+        const excludePatterns = [
+          'icon-192', 'icon-512', // PWA иконки
+          'favicon', // Фавиконки
+          'logo', // Логотипы (часто SVG, но на всякий случай)
+          'manifest' // Файлы манифеста
+        ];
+        
+        const shouldExclude = excludePatterns.some(pattern => baseName.includes(pattern));
+        
         // Пропускаем файлы, которые уже содержат размер (например, image-400.webp, image-800-800.webp)
         // Улучшенная проверка: пропускаем файлы с -400, -800, -1200 в любом месте названия
         const hasResizeSuffix = sizes.some(size => baseName.includes(`-${size}`));
         
-        if (!hasResizeSuffix && !processedFiles.has(itemPath)) {
+        if (!hasResizeSuffix && !shouldExclude && !processedFiles.has(itemPath)) {
           processedFiles.add(itemPath);
           
           console.log(`Обрабатываем: ${itemPath}`);

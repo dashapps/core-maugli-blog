@@ -1,4 +1,5 @@
 ---
+import { maugliConfig } from '../config/maugli.config';
 import siteConfig from '../data/site-config';
 import '../styles/global.css';
 import { getFilteredCollection } from '../utils/content-loader';
@@ -143,7 +144,7 @@ let defaultAuthorName = defaultAuthor.data.name;
 <!-- Low Priority Global Metadata -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="manifest" href="/manifest.webmanifest" />
-<meta name="theme-color" content="var(--theme-color)" />
+<meta name="theme-color" content={maugliConfig.pwa?.themeColor || '#0cbf11'} />
 <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
 <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -167,3 +168,6 @@ let defaultAuthorName = defaultAuthor.data.name;
 <meta property="twitter:description" content={seoDescription} />
 {resolvedImage?.src && <meta property="twitter:image" content={resolvedImage.src} />}
 {resolvedImage?.alt && <meta name="twitter:image:alt" content={resolvedImage?.alt} />}
+
+<!-- PWA Registration -->
+<script src="../pwa.ts"></script>
