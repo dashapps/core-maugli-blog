@@ -20,26 +20,24 @@ function main() {
             const existingContent = fs.readFileSync(targetPath, 'utf8');
             
             // Проверяем, кастомизирован ли файл пользователем
-            const hasCustomizations = 
-                !existingContent.includes('# Auto-copied from core-maugli package') ||
-                existingContent.includes('# CUSTOMIZED') ||
-                (existingContent.includes('netlify-plugin-bluesky') && !existingContent.includes('# [[plugins]]')) ||
-                (existingContent.includes('@supabase/netlify-integration') && !existingContent.includes('# [[plugins]]')) ||
-                // Проверяем на активные (не закомментированные) дополнительные плагины
-                existingContent.split('\n').some(line => 
-                    line.trim().startsWith('package = ') && 
-                    !['netlify-plugin-astro', '@netlify/plugin-lighthouse', 'netlify-plugin-image-optim', 
-                      'netlify-plugin-minify-html', 'netlify-plugin-submit-sitemap'].some(plugin => 
-                        line.includes(plugin)
-                    )
-                );
+            const hasBlueskyActive = existingContent.includes('bluesky-custom-domain') && 
+                                    !existingContent.includes('# [[plugins]]');
+            const hasSupabaseActive = existingContent.includes('@supabase/netlify-integration') && 
+                                     !existingContent.includes('# [[plugins]]');
+            const hasCustomComment = existingContent.includes('# CUSTOMIZED');
+            const hasUserModifications = !existingContent.includes('# Auto-copied from core-maugli package');
+            
+            const hasCustomizations = hasBlueskyActive || hasSupabaseActive || hasCustomComment || hasUserModifications;
             
             if (hasCustomizations) {
-                console.log('📋 netlify.toml exists and appears customized - skipping copy');
+                console.log('📋 netlify.toml exists with active integrations - preserving user settings');
+                if (hasBlueskyActive) console.log('   🔵 Bluesky integration detected');
+                if (hasSupabaseActive) console.log('   🟢 Supabase integration detected');
+                if (hasCustomComment) console.log('   ✏️  Custom modifications marked');
                 console.log('💡 To force update: delete netlify.toml and reinstall');
                 return;
             } else {
-                console.log('📋 netlify.toml exists but not customized - updating to latest template');
+                console.log('📋 netlify.toml exists but no active integrations - updating to latest template');
                 // Создадим бэкап на всякий случай
                 fs.copyFileSync(targetPath, targetPath + '.backup');
                 console.log('📦 Created backup: netlify.toml.backup');
