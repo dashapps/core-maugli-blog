@@ -253,7 +253,7 @@ async function main() {
                 !process.stdin.isTTY; // Non-interactive terminal
     
     // Check forceUpdate setting from maugli.config.ts
-    const forceUpdate = maugliConfig?.automation?.forceUpdate || false;
+    const forceUpdate = maugliConfig?.forceUpdate || false;
     
     if (forceUpdate || isCI) {
         console.log(colorize('\n🤖 Automatic update enabled. Updating...', 'cyan'));
