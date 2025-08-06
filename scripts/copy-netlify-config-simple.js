@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Копирует netlify.toml только при инициализации нового блога
- * НЕ ТРОГАЕТ существующие netlify.toml файлы!
+ * Простое копирование netlify.toml из пакета core-maugli
  */
 
 import fs from 'fs';
@@ -16,11 +15,18 @@ function main() {
     try {
         const targetPath = path.join(process.cwd(), 'netlify.toml');
         
-        // Если netlify.toml уже существует - НЕ ТРОГАЕМ!
+        // Проверяем, есть ли уже netlify.toml с маркером "CUSTOMIZED"
         if (fs.existsSync(targetPath)) {
-            console.log('📋 netlify.toml already exists - leaving unchanged');
-            console.log('� Configure Netlify plugins manually via Netlify UI');
-            return;
+            const existingContent = fs.readFileSync(targetPath, 'utf8');
+            
+            if (existingContent.includes('# CUSTOMIZED')) {
+                console.log('📋 Found "# CUSTOMIZED" marker - preserving entire file');
+                return;
+            }
+            
+            // Создаем бэкап
+            fs.copyFileSync(targetPath, targetPath + '.backup');
+            console.log('📦 Created backup: netlify.toml.backup');
         }
         
         // Ищем исходный файл в пакете
@@ -37,14 +43,12 @@ function main() {
             return;
         }
         
-        // Копируем файл только для нового блога
+        // Просто копируем файл
         fs.copyFileSync(sourcePath, targetPath);
-        console.log('✅ netlify.toml created for new blog');
+        console.log('✅ netlify.toml copied successfully');
+        
         console.log('');
-        console.log('📝 Next steps:');
-        console.log('   1. Deploy to Netlify');
-        console.log('   2. Configure plugins via Netlify UI');
-        console.log('   3. Add "# CUSTOMIZED" comment to prevent overwrites');
+        console.log('💡 Add "# CUSTOMIZED" comment to prevent auto-updates');
         
     } catch (error) {
         console.error('❌ Error copying netlify.toml:', error.message);

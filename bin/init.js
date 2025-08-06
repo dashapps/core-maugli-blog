@@ -93,6 +93,16 @@ function updateConfig(targetDir, lang, repoUrl) {
   if (repoUrl) {
     console.log(`Configured repository URL to ${repoUrl}`);
   }
+  
+  // Create netlify.toml for new blog
+  try {
+    execSync('npm run init-netlify', { 
+      cwd: targetDir, 
+      stdio: 'pipe' 
+    });
+  } catch (error) {
+    console.log('Note: netlify.toml will be created on npm install');
+  }
 }
 
 export default async function init(targetName, langOption, repoOption) {

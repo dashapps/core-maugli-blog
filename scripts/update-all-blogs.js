@@ -56,10 +56,8 @@ const REQUIRED_SCRIPTS = [
     'scripts/update-with-backup.js',
     'scripts/check-version.js',
     'scripts/auto-update.js',
-    'scripts/copy-netlify-config.js',
     'scripts/set-force-update.js',
-    '.gitignore',
-    'netlify.toml'
+    '.gitignore'
 ];
 
 function log(message, type = 'info') {
@@ -155,23 +153,7 @@ function updateBlogProject(projectPath) {
         process.chdir(absolutePath);
         execSync('npm update core-maugli', { stdio: 'pipe' });
         
-        // 8. Копируем netlify.toml
-        log('Copying netlify.toml configuration...', 'info');
-        const copyNetlifyScript = path.join(process.cwd(), 'scripts/copy-netlify-config.js');
-        if (fs.existsSync(copyNetlifyScript)) {
-            try {
-                const { execSync } = require('child_process');
-                execSync(`node "${copyNetlifyScript}"`, { 
-                    stdio: 'pipe',
-                    cwd: absolutePath 
-                });
-                log('   ✅ netlify.toml copied', 'success');
-            } catch (error) {
-                log(`   ⚠️ netlify.toml copy failed: ${error.message}`, 'warn');
-            }
-        }
-
-        // 9. Результат
+        // 8. Результат
         log(`Project updated successfully!`, 'success');
         log(`  Version: ${oldVersion} → ${CURRENT_VERSION}`, 'info');
         log(`  Scripts updated: ${scriptsUpdated ? 'Yes' : 'No'}`, 'info');
