@@ -23,13 +23,32 @@ pnpm-debug.log*
 # Кеш типографа
 .typograf-cache.json
 
-# Игнорировать все автогенерируемые изображения
-# Адаптивные ресайзы
+# Игнорируем автогенерируемые изображения разных размеров (все форматы)
 public/**/*-400.webp
-public/**/*-800.webp  
+public/**/*-800.webp
 public/**/*-1200.webp
-
-# Оптимизированные версии (с суффиксом _optimized)
+public/**/*-400.png
+public/**/*-800.png
+public/**/*-1200.png
+public/**/*-400.jpg
+public/**/*-800.jpg
+public/**/*-1200.jpg
+public/**/*-400.jpeg
+public/**/*-800.jpeg
+public/**/*-1200.jpeg
+# Игнорируем дубликаты (если вдруг появятся)
+public/**/*-400-*.webp
+public/**/*-800-*.webp
+public/**/*-1200-*.webp
+public/**/*-400-*.png
+public/**/*-800-*.png
+public/**/*-1200-*.png
+public/**/*-400-*.jpg
+public/**/*-800-*.jpg
+public/**/*-1200-*.jpg
+public/**/*-400-*.jpeg
+public/**/*-800-*.jpeg
+public/**/*-1200-*.jpeg# Оптимизированные версии (с суффиксом _optimized)
 public/**/*_optimized.webp
 
 # Вынесенные из подпапок изображения с префиксами
