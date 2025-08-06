@@ -31,14 +31,18 @@
 [[plugins]]
   package = "netlify-plugin-submit-sitemap"
 
+# Пользовательский плагин
+[[plugins]]
+  package = "netlify-plugin-my-custom-analytics"
+
 # Плагины для интеграций (требуют ручной настройки)
 # Раскомментируйте после настройки в Netlify UI:
 # ⚠️  После раскомментирования этот файл не будет автоматически обновляться
 
 # Bluesky Custom Domain
 # Инструкция: https://app.netlify.com/extensions/bluesky-custom-domain
-# [[plugins]]
-#   package = "netlify-plugin-bluesky"
+[[plugins]]
+  package = "netlify-plugin-bluesky"
 
 # Supabase Integration  
 # Инструкция: https://app.netlify.com/extensions/supabase

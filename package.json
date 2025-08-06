@@ -27,6 +27,7 @@
         "build:no-check": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "optimize": "node scripts/optimize-images.cjs",
         "optimize:squoosh": "node scripts/squoosh-optimize.js",
+        "clean:resized": "node scripts/clean-resized-images.js",
         "test": "node tests/examplesFilter.test.ts",
         "astro": "astro",
         "featured:add": "node scripts/featured.js add",
