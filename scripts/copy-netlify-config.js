@@ -69,19 +69,36 @@ async function getMaugliConfigPlugins() {
         }
         
         const configContent = fs.readFileSync(configPath, 'utf8');
-        const pluginsMatch = configContent.match(/plugins:\s*\[([\s\S]*?)\]/);
         
-        if (pluginsMatch) {
-            const pluginsString = pluginsMatch[1];
-            const plugins = pluginsString
-                .split(',')
-                .map(p => p.trim().replace(/['"]/g, ''))
-                .filter(p => p && !p.includes('//'));
+        // Ищем секцию netlify.plugins
+        const netlifyMatch = configContent.match(/netlify:\s*{[\s\S]*?plugins:\s*\[([\s\S]*?)\]/);
+        
+        if (netlifyMatch) {
+            const pluginsString = netlifyMatch[1];
+            const plugins = [];
+            
+            // Разбираем построчно, чтобы правильно обработать комментарии
+            const lines = pluginsString.split('\n');
+            for (const line of lines) {
+                const trimmed = line.trim();
+                // Пропускаем пустые строки и комментарии
+                if (!trimmed || trimmed.startsWith('//')) continue;
+                
+                // Извлекаем строку плагина
+                const match = trimmed.match(/['"]([^'"]+)['"]/);
+                if (match) {
+                    const pluginName = match[1].trim();
+                    if (pluginName && !pluginName.includes('//')) {
+                        plugins.push(pluginName);
+                    }
+                }
+            }
             
             console.log(`📋 Found ${plugins.length} plugins in maugli.config.ts`);
             return plugins;
         }
         
+        console.log('📝 No plugins found in maugli.config.ts, using defaults');
         return BASE_PLUGINS;
     } catch (error) {
         console.log(`⚠️  Error reading maugli.config.ts: ${error.message}`);
@@ -166,7 +183,8 @@ async function main() {
                 .filter(pkg => OPTIONAL_PLUGINS.includes(pkg));
             
             // Проверяем, нужно ли сохранить файл
-            const hasCustomComment = existingContent.includes('# CUSTOMIZED');
+            const hasCustomComment = existingContent.includes('# CUSTOMIZED') && 
+                                    !existingContent.includes('Add "# CUSTOMIZED" comment'); // Исключаем инструкцию
             const hasUserModifications = !existingContent.includes('# Auto-copied from core-maugli package');
             
             if (hasCustomComment) {
