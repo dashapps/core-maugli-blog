@@ -8,15 +8,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Handle CLI arguments and environment variables first
-const args = process.argv.slice(2);
-if (args.includes('--skip-check') || 
-    process.env.SKIP_VERSION_CHECK === 'true' ||
-    process.env.DISABLE_AUTO_UPDATE === 'true') {
-    console.log(colorize('⏭️  Version check skipped', 'yellow'));
-    process.exit(0);
-}
-
 // Colors for console output
 const colors = {
     red: '\x1b[31m',
@@ -34,6 +25,15 @@ function colorize(text, color) {
     return `${colors[color]}${text}${colors.reset}`;
 }
 
+// Handle CLI arguments and environment variables first
+const args = process.argv.slice(2);
+if (args.includes('--skip-check') || 
+    process.env.SKIP_VERSION_CHECK === 'true' ||
+    process.env.DISABLE_AUTO_UPDATE === 'true') {
+    console.log(colorize('⏭️  Version check skipped', 'yellow'));
+    process.exit(0);
+}
+
 async function getMaugliConfig() {
     try {
         const configPath = path.join(process.cwd(), 'src/config/maugli.config.ts');
@@ -43,7 +43,7 @@ async function getMaugliConfig() {
         
         // Простое чтение конфига через регулярные выражения
         const configContent = fs.readFileSync(configPath, 'utf8');
-        const forceUpdateMatch = configContent.match(/forceUpdate:\s*(true|false)/);
+        const forceUpdateMatch = configContent.match(/automation:\s*{[^}]*?forceUpdate:\s*(true|false)/s);
         
         return {
             forceUpdate: forceUpdateMatch ? forceUpdateMatch[1] === 'true' : false
@@ -253,7 +253,7 @@ async function main() {
                 !process.stdin.isTTY; // Non-interactive terminal
     
     // Check forceUpdate setting from maugli.config.ts
-    const forceUpdate = maugliConfig?.forceUpdate || false;
+    const forceUpdate = maugliConfig?.automation?.forceUpdate || false;
     
     if (forceUpdate || isCI) {
         console.log(colorize('\n🤖 Automatic update enabled. Updating...', 'cyan'));
