@@ -127,32 +127,14 @@ let defaultAuthorName = defaultAuthor.data.name;
 <!-- Critical Resource Preloading for Performance -->
 <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
 <link rel="preload" href="/footerlabel.svg" as="image" type="image/svg+xml" />
-<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
 <!-- Image Optimization Hints -->
 <meta name="format-detection" content="telephone=no" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-<!-- Font Loading Strategy - Non-blocking -->
-<link
-    rel="preload"
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-    as="style"
-    onload="this.onload=null;this.rel='stylesheet'"
-/>
-<link
-    rel="preload"
-    href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&display=swap"
-    as="style"
-    onload="this.onload=null;this.rel='stylesheet'"
-/>
-<noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600&display=swap" />
-</noscript>
+<!-- Resource Hints for Performance -->
+<link rel="dns-prefetch" href="//fonts.bunny.net" />
+<link rel="preconnect" href="//fonts.bunny.net" crossorigin />
 
 <!-- SEO -->
 <meta name="description" content={seoDescription} />
