@@ -47,8 +47,10 @@ function getResponsiveImages(imagePath: string) {
         }
     }
 
-    // Всегда добавляем оригинальное изображение
-    srcsetItems.push(`${imagePath} 1200w`);
+    // Если нет адаптивных версий, добавляем оригинальное как fallback
+    if (srcsetItems.length === 0) {
+        srcsetItems.push(imagePath);
+    }
 
     return {
         src: imagePath,

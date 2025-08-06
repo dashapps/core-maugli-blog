@@ -66,13 +66,15 @@ function getResponsiveImages(imagePath: string) {
         }
     }
 
-    // Всегда добавляем оригинальное изображение
-    srcsetItems.push(`${imagePath} 1200w`);
+    // Если нет адаптивных версий, добавляем оригинальное как fallback
+    if (srcsetItems.length === 0) {
+        srcsetItems.push(imagePath);
+    }
 
     return {
         src: imagePath,
         srcset: srcsetItems.join(', '),
-        sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px'
+        sizes: '(max-width: 768px) 100vw, 400px'
     };
 }
 
