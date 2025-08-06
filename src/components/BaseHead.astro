@@ -1,9 +1,7 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import siteConfig from '../data/site-config';
 import '../styles/global.css';
 import { getFilteredCollection } from '../utils/content-loader';
-import siteConfig from '../data/site-config';
-import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from 'astro:i18n';
 // Определи тип выше:
 export type ImageMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
 
