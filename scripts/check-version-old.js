@@ -1,0 +1,346 @@
+#!/usr/bin/env node
+
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Colors for console output
+const colors = {
+    red: '\x1b[31m',
+    green: '\x1b[32m',
+    yellow: '\x1b[33m',
+    blue: '\x1b[34m',
+    magenta: '\x1b[35m',
+    cyan: '\x1b[36m',
+    white: '\x1b[37m',
+    reset: '\x1b[0m',
+    bold: '\x1b[1m'
+};
+
+function colorize(text, color) {
+    return `${colors[color]}${text}${colors.reset}`;
+}
+
+// Handle CLI arguments and environment variables first
+const args = process.argv.slice(2);
+if (args.includes('--skip-check') || 
+    process.env.SKIP_VERSION_CHECK === 'true' ||
+    process.env.DISABLE_AUTO_UPDATE === 'true') {
+    console.log(colorize('⏭️  Version check skipped', 'yellow'));
+    process.exit(0);
+}
+
+async function getMaugliConfig() {
+    try {
+        const configPath = path.join(process.cwd(), 'src/config/maugli.config.ts');
+        if (!fs.existsSync(configPath)) {
+            console.log(colorize('⚠️  maugli.config.ts not found at src/config/maugli.config.ts', 'yellow'));
+            return null;
+        }
+        
+        // Простое чтение конфига через регулярные выражения
+        const configContent = fs.readFileSync(configPath, 'utf8');
+        console.log(colorize('🔍 Reading maugli.config.ts...', 'cyan'));
+        
+        // Убираем комментарии и лишние пробелы для более точного парсинга
+        const cleanContent = configContent
+            .replace(/\/\*[\s\S]*?\*\//g, '') // убираем /* */ комментарии
+            .replace(/\/\/.*$/gm, '') // убираем // комментарии
+            .replace(/\s+/g, ' '); // заменяем множественные пробелы на одинарные
+        
+        // Ищем forceUpdate разными способами
+        let forceUpdate = false;
+        
+        // Способ 1: В секции automation
+        const automationMatch = cleanContent.match(/automation\s*:\s*\{([^}]*)\}/);
+        if (automationMatch) {
+            const automationSection = automationMatch[1];
+            const forceUpdateMatch = automationSection.match(/forceUpdate\s*:\s*(true|false)/);
+            if (forceUpdateMatch) {
+                forceUpdate = forceUpdateMatch[1] === 'true';
+                console.log(colorize(`📋 Found in automation section - forceUpdate: ${forceUpdate}`, 'cyan'));
+            }
+        }
+        
+        // Способ 2: Прямой поиск forceUpdate в файле (fallback)
+        if (!automationMatch) {
+            const directMatch = cleanContent.match(/forceUpdate\s*:\s*(true|false)/);
+            if (directMatch) {
+                forceUpdate = directMatch[1] === 'true';
+                console.log(colorize(`📋 Found direct forceUpdate - value: ${forceUpdate}`, 'cyan'));
+            } else {
+                console.log(colorize('⚠️  No forceUpdate setting found in config', 'yellow'));
+                console.log(colorize('� Make sure your config has: automation: { forceUpdate: true }', 'cyan'));
+                
+                // Показываем часть конфига для диагностики
+                const configSnippet = configContent.slice(0, 200).replace(/\n/g, '\\n');
+                console.log(colorize(`🔍 Config preview: ${configSnippet}...`, 'gray'));
+            }
+        }
+        
+        return {
+            automation: {
+                forceUpdate: forceUpdate
+            }
+        };
+    } catch (error) {
+        console.warn(colorize('⚠️  Could not read maugli.config.ts: ' + error.message, 'yellow'));
+        return null;
+    }
+}
+
+async function getCurrentVersion() {
+    try {
+        const packagePath = path.join(process.cwd(), 'package.json');
+        const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+        return packageJson.dependencies?.['core-maugli'] || packageJson.version;
+    } catch (error) {
+        console.warn(colorize('⚠️  Could not read package.json', 'yellow'));
+        return null;
+    }
+}
+
+async function getLatestVersion() {
+    try {
+        const result = execSync('npm view core-maugli version', { encoding: 'utf8' });
+        return result.trim();
+    } catch (error) {
+        console.warn(colorize('⚠️  Could not fetch latest version from npm', 'yellow'));
+        return null;
+    }
+}
+
+function isCriticalUpdate(current, latest) {
+    // Определяем критические обновления (major version или серьезные security fixes)
+    const currentParts = current.replace(/^[\^~]/, '').split('.').map(Number);
+    const latestParts = latest.split('.').map(Number);
+    
+    // Разница в major версии - критическое обновление
+    if (latestParts[0] > currentParts[0]) return true;
+    
+    // Разница в minor версии больше 2 - критическое
+    if (latestParts[1] - currentParts[1] > 2) return true;
+    
+    // Разница в patch версии больше 10 - критическое  
+    if (latestParts[1] === currentParts[1] && latestParts[2] - currentParts[2] > 10) return true;
+    
+    return false;
+}
+
+function compareVersions(current, latest) {
+    if (!current || !latest) return false;
+    
+    // Remove ^ or ~ from version if present
+    current = current.replace(/^[\^~]/, '');
+    
+    const currentParts = current.split('.').map(Number);
+    const latestParts = latest.split('.').map(Number);
+    
+    for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
+        const currentPart = currentParts[i] || 0;
+        const latestPart = latestParts[i] || 0;
+        
+        if (latestPart > currentPart) return true;
+        if (latestPart < currentPart) return false;
+    }
+    
+    return false;
+}
+
+async function getUpdateContent(version) {
+    try {
+        // Try to get changelog or release notes
+        const result = execSync(`npm view core-maugli@${version} description`, { encoding: 'utf8' });
+        return result.trim();
+    } catch (error) {
+        return "New version available with improvements and bug fixes.";
+    }
+}
+
+async function promptUpdate() {
+    return new Promise((resolve) => {
+        // Check for CI/CD environments
+        const isCI = process.env.CI === 'true' || 
+                    process.env.NETLIFY === 'true' || 
+                    process.env.VERCEL === '1' || 
+                    process.env.GITHUB_ACTIONS === 'true' ||
+                    process.env.BUILD_ID || // Netlify
+                    process.env.VERCEL_ENV || // Vercel
+                    !process.stdin.isTTY; // Non-interactive terminal
+        
+        if (isCI) {
+            console.log(colorize('\n🤖 CI/CD environment detected. Auto-updating...', 'cyan'));
+            resolve(true);
+            return;
+        }
+        
+        // Simple input handling that works across all environments
+        process.stdin.resume();
+        process.stdin.setEncoding('utf8');
+        
+        const handleInput = (data) => {
+            const input = data.toString().trim().toLowerCase();
+            process.stdin.pause();
+            process.stdin.removeListener('data', handleInput);
+            
+            if (input === 'y' || input === 'yes' || input === '') {
+                resolve(true);
+            } else if (input === 'n' || input === 'no') {
+                resolve(false);
+            } else {
+                console.log(colorize('\nPlease enter Y for yes or N for no:', 'yellow'));
+                process.stdout.write(colorize('🔄 Would you like to update now? (Y/n): ', 'bold'));
+                process.stdin.resume();
+                process.stdin.once('data', handleInput);
+            }
+        };
+        
+        process.stdin.once('data', handleInput);
+    });
+}
+
+async function performUpdate() {
+    console.log(colorize('\n🔄 Updating core-maugli...', 'blue'));
+    
+    try {
+        // Check if update script exists
+        const updateScriptPath = path.join(process.cwd(), 'scripts', 'update-all-blogs.js');
+        if (fs.existsSync(updateScriptPath)) {
+            console.log(colorize('📦 Running update script...', 'cyan'));
+            execSync(`node ${updateScriptPath} ${process.cwd()}`, { stdio: 'inherit' });
+        } else {
+            // Fallback to simple npm update
+            console.log(colorize('📦 Running npm update...', 'cyan'));
+            execSync('npm update core-maugli', { stdio: 'inherit' });
+        }
+        
+        console.log(colorize('✅ Update completed successfully!', 'green'));
+        return true;
+    } catch (error) {
+        console.error(colorize('❌ Update failed:', 'red'), error.message);
+        return false;
+    }
+}
+
+async function main() {
+    console.log(colorize('\n🔍 Checking for core-maugli updates...', 'cyan'));
+    
+    const currentVersion = await getCurrentVersion();
+    const latestVersion = await getLatestVersion();
+    const maugliConfig = await getMaugliConfig();
+    
+    if (!currentVersion || !latestVersion) {
+        console.log(colorize('⚠️  Could not check version. Continuing with build...', 'yellow'));
+        return;
+    }
+    
+    console.log(colorize(`📦 Current version: ${currentVersion}`, 'white'));
+    console.log(colorize(`📦 Latest version: ${latestVersion}`, 'white'));
+    
+    if (!compareVersions(currentVersion, latestVersion)) {
+        console.log(colorize('✅ You are using the latest version!', 'green'));
+        return;
+    }
+    
+    // New version available
+    console.log(colorize('\n🎉 A new version of core-maugli is available!', 'magenta'));
+    console.log(colorize('═'.repeat(60), 'magenta'));
+    
+    const updateContent = await getUpdateContent(latestVersion);
+    console.log(colorize(`\n📋 What's new in v${latestVersion}:`, 'bold'));
+    console.log(colorize(updateContent, 'white'));
+    
+    console.log(colorize('\n🚀 New features include:', 'bold'));
+    console.log(colorize('• Enhanced image optimization pipeline', 'green'));
+    console.log(colorize('• Improved build performance', 'green'));
+    console.log(colorize('• Better asset management', 'green'));
+    console.log(colorize('• Centralized update system', 'green'));
+    console.log(colorize('• Bug fixes and stability improvements', 'green'));
+    
+    console.log(colorize('\n💡 Benefits of updating:', 'bold'));
+    console.log(colorize('• Faster build times with flatten-images optimization', 'cyan'));
+    console.log(colorize('• Better Netlify compatibility', 'cyan'));
+    console.log(colorize('• Enhanced security and bug fixes', 'cyan'));
+    console.log(colorize('• Access to latest features and improvements', 'cyan'));
+    
+    console.log(colorize('\n═'.repeat(60), 'magenta'));
+    
+    // Проверяем, является ли обновление критическим
+    const isCritical = isCriticalUpdate(currentVersion, latestVersion);
+    
+    if (isCritical) {
+        console.log(colorize(`\n🚨 CRITICAL UPDATE REQUIRED!`, 'red'));
+        console.log(colorize(`Your version (${currentVersion}) is significantly outdated.`, 'red'));
+        console.log(colorize('This update contains important security fixes and breaking changes.', 'red'));
+        console.log(colorize('Building with outdated version may cause errors.', 'red'));
+    } else {
+        console.log(colorize(`\n⚠️  Your current version (${currentVersion}) is outdated.`, 'yellow'));
+        console.log(colorize('To ensure optimal performance and security, updating is recommended.', 'yellow'));
+    }
+    
+    // Check for CI/CD environments and forceUpdate setting
+    const isCI = process.env.CI === 'true' || 
+                process.env.NETLIFY === 'true' || 
+                process.env.VERCEL === '1' || 
+                process.env.GITHUB_ACTIONS === 'true' ||
+                process.env.BUILD_ID || // Netlify
+                process.env.VERCEL_ENV || // Vercel
+                !process.stdin.isTTY; // Non-interactive terminal
+    
+    // Check forceUpdate setting from maugli.config.ts
+    const forceUpdate = maugliConfig?.automation?.forceUpdate || false;
+    
+    console.log(colorize(`\n🔧 Configuration check:`, 'cyan'));
+    console.log(colorize(`   • maugli.config.ts found: ${maugliConfig ? 'Yes' : 'No'}`, 'white'));
+    console.log(colorize(`   • forceUpdate setting: ${forceUpdate}`, 'white'));
+    console.log(colorize(`   • CI/CD detected: ${isCI}`, 'white'));
+    
+    // Если конфиг не найден, предложим создать его
+    if (!maugliConfig) {
+        console.log(colorize('\n💡 To enable automatic updates, create src/config/maugli.config.ts with:', 'cyan'));
+        console.log(colorize('   automation: { forceUpdate: true }', 'white'));
+    }
+    
+    if (isCI) {
+        console.log(colorize('\n🤖 CI/CD environment detected. Updating automatically...', 'cyan'));
+        const success = await performUpdate();
+        if (!success) {
+            console.log(colorize('\n❌ Auto-update failed in CI/CD environment. Build cancelled.', 'red'));
+            process.exit(1);
+        }
+        return;
+    }
+    
+    if (forceUpdate) {
+        console.log(colorize('\n🤖 Force update enabled in config. Updating automatically...', 'cyan'));
+        const success = await performUpdate();
+        if (!success) {
+            console.log(colorize('\n❌ Auto-update failed. Continuing with build...', 'yellow'));
+        }
+        return;
+    }
+    
+    // If forceUpdate is false, show update notification without prompts
+    console.log(colorize('\n💡 To update core-maugli, run:', 'cyan'));
+    console.log(colorize('   npm run update', 'white'));
+    console.log(colorize('   # или', 'gray'));
+    console.log(colorize('   npm update core-maugli', 'white'));
+    
+    if (isCritical) {
+        console.log(colorize('\n🚨 WARNING: This is a critical update!', 'red'));
+        console.log(colorize('Building with this version may cause errors.', 'red'));
+    }
+    
+    
+    console.log(colorize('\n✅ Proceeding with build...\n', 'green'));
+}
+
+main().catch(error => {
+    console.error(colorize('❌ Version check failed:', 'red'), error.message);
+    console.log(colorize('⚠️  Continuing with build...', 'yellow'));
+    process.exit(0);
+});

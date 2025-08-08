@@ -42,23 +42,39 @@ async function getMaugliConfig() {
             return null;
         }
         
-        // Простое чтение конфига через регулярные выражения
         const configContent = fs.readFileSync(configPath, 'utf8');
         console.log(colorize('🔍 Reading maugli.config.ts...', 'cyan'));
         
-        // Ищем forceUpdate в automation секции
-        const automationMatch = configContent.match(/automation\s*:\s*{([^}]+)}/s);
-        if (!automationMatch) {
-            console.log(colorize('⚠️  automation section not found in config', 'yellow'));
-            return null;
+        // Простой и надежный поиск forceUpdate
+        let forceUpdate = false;
+        
+        // Ищем все строки с forceUpdate
+        const lines = configContent.split('\n');
+        const forceUpdateLines = lines.filter(line => line.includes('forceUpdate'));
+        
+        console.log(colorize(`🔍 Found ${forceUpdateLines.length} lines with forceUpdate:`, 'cyan'));
+        
+        for (const line of forceUpdateLines) {
+            console.log(colorize(`   ${line.trim()}`, 'gray'));
+            
+            // Проверяем разные форматы
+            if (line.includes('forceUpdate') && line.includes('true')) {
+                // Проверяем что это не комментарий
+                const trimmedLine = line.trim();
+                if (!trimmedLine.startsWith('//') && !trimmedLine.startsWith('*')) {
+                    forceUpdate = true;
+                    console.log(colorize(`✅ Found forceUpdate: true in line: ${trimmedLine}`, 'green'));
+                    break;
+                }
+            }
         }
         
-        const automationSection = automationMatch[1];
-        const forceUpdateMatch = automationSection.match(/forceUpdate\s*:\s*(true|false)/);
-        
-        const forceUpdate = forceUpdateMatch ? forceUpdateMatch[1] === 'true' : false;
-        
-        console.log(colorize(`📋 Config found - forceUpdate: ${forceUpdate}`, 'cyan'));
+        if (!forceUpdate && forceUpdateLines.length > 0) {
+            console.log(colorize('⚠️  forceUpdate found but not set to true', 'yellow'));
+        } else if (!forceUpdate) {
+            console.log(colorize('⚠️  No forceUpdate setting found in config', 'yellow'));
+            console.log(colorize('💡 Make sure your config has: automation: { forceUpdate: true }', 'cyan'));
+        }
         
         return {
             automation: {
@@ -92,23 +108,6 @@ async function getLatestVersion() {
     }
 }
 
-function isCriticalUpdate(current, latest) {
-    // Определяем критические обновления (major version или серьезные security fixes)
-    const currentParts = current.replace(/^[\^~]/, '').split('.').map(Number);
-    const latestParts = latest.split('.').map(Number);
-    
-    // Разница в major версии - критическое обновление
-    if (latestParts[0] > currentParts[0]) return true;
-    
-    // Разница в minor версии больше 2 - критическое
-    if (latestParts[1] - currentParts[1] > 2) return true;
-    
-    // Разница в patch версии больше 10 - критическое  
-    if (latestParts[1] === currentParts[1] && latestParts[2] - currentParts[2] > 10) return true;
-    
-    return false;
-}
-
 function compareVersions(current, latest) {
     if (!current || !latest) return false;
     
@@ -127,58 +126,6 @@ function compareVersions(current, latest) {
     }
     
     return false;
-}
-
-async function getUpdateContent(version) {
-    try {
-        // Try to get changelog or release notes
-        const result = execSync(`npm view core-maugli@${version} description`, { encoding: 'utf8' });
-        return result.trim();
-    } catch (error) {
-        return "New version available with improvements and bug fixes.";
-    }
-}
-
-async function promptUpdate() {
-    return new Promise((resolve) => {
-        // Check for CI/CD environments
-        const isCI = process.env.CI === 'true' || 
-                    process.env.NETLIFY === 'true' || 
-                    process.env.VERCEL === '1' || 
-                    process.env.GITHUB_ACTIONS === 'true' ||
-                    process.env.BUILD_ID || // Netlify
-                    process.env.VERCEL_ENV || // Vercel
-                    !process.stdin.isTTY; // Non-interactive terminal
-        
-        if (isCI) {
-            console.log(colorize('\n🤖 CI/CD environment detected. Auto-updating...', 'cyan'));
-            resolve(true);
-            return;
-        }
-        
-        // Simple input handling that works across all environments
-        process.stdin.resume();
-        process.stdin.setEncoding('utf8');
-        
-        const handleInput = (data) => {
-            const input = data.toString().trim().toLowerCase();
-            process.stdin.pause();
-            process.stdin.removeListener('data', handleInput);
-            
-            if (input === 'y' || input === 'yes' || input === '') {
-                resolve(true);
-            } else if (input === 'n' || input === 'no') {
-                resolve(false);
-            } else {
-                console.log(colorize('\nPlease enter Y for yes or N for no:', 'yellow'));
-                process.stdout.write(colorize('🔄 Would you like to update now? (Y/n): ', 'bold'));
-                process.stdin.resume();
-                process.stdin.once('data', handleInput);
-            }
-        };
-        
-        process.stdin.once('data', handleInput);
-    });
 }
 
 async function performUpdate() {
@@ -226,39 +173,6 @@ async function main() {
     
     // New version available
     console.log(colorize('\n🎉 A new version of core-maugli is available!', 'magenta'));
-    console.log(colorize('═'.repeat(60), 'magenta'));
-    
-    const updateContent = await getUpdateContent(latestVersion);
-    console.log(colorize(`\n📋 What's new in v${latestVersion}:`, 'bold'));
-    console.log(colorize(updateContent, 'white'));
-    
-    console.log(colorize('\n🚀 New features include:', 'bold'));
-    console.log(colorize('• Enhanced image optimization pipeline', 'green'));
-    console.log(colorize('• Improved build performance', 'green'));
-    console.log(colorize('• Better asset management', 'green'));
-    console.log(colorize('• Centralized update system', 'green'));
-    console.log(colorize('• Bug fixes and stability improvements', 'green'));
-    
-    console.log(colorize('\n💡 Benefits of updating:', 'bold'));
-    console.log(colorize('• Faster build times with flatten-images optimization', 'cyan'));
-    console.log(colorize('• Better Netlify compatibility', 'cyan'));
-    console.log(colorize('• Enhanced security and bug fixes', 'cyan'));
-    console.log(colorize('• Access to latest features and improvements', 'cyan'));
-    
-    console.log(colorize('\n═'.repeat(60), 'magenta'));
-    
-    // Проверяем, является ли обновление критическим
-    const isCritical = isCriticalUpdate(currentVersion, latestVersion);
-    
-    if (isCritical) {
-        console.log(colorize(`\n🚨 CRITICAL UPDATE REQUIRED!`, 'red'));
-        console.log(colorize(`Your version (${currentVersion}) is significantly outdated.`, 'red'));
-        console.log(colorize('This update contains important security fixes and breaking changes.', 'red'));
-        console.log(colorize('Building with outdated version may cause errors.', 'red'));
-    } else {
-        console.log(colorize(`\n⚠️  Your current version (${currentVersion}) is outdated.`, 'yellow'));
-        console.log(colorize('To ensure optimal performance and security, updating is recommended.', 'yellow'));
-    }
     
     // Check for CI/CD environments and forceUpdate setting
     const isCI = process.env.CI === 'true' || 
@@ -269,7 +183,6 @@ async function main() {
                 process.env.VERCEL_ENV || // Vercel
                 !process.stdin.isTTY; // Non-interactive terminal
     
-    // Check forceUpdate setting from maugli.config.ts
     const forceUpdate = maugliConfig?.automation?.forceUpdate || false;
     
     console.log(colorize(`\n🔧 Configuration check:`, 'cyan'));
@@ -299,14 +212,8 @@ async function main() {
     // If forceUpdate is false, show update notification without prompts
     console.log(colorize('\n💡 To update core-maugli, run:', 'cyan'));
     console.log(colorize('   npm run update', 'white'));
-    console.log(colorize('   # или', 'gray'));
+    console.log(colorize('   # or', 'gray'));
     console.log(colorize('   npm update core-maugli', 'white'));
-    
-    if (isCritical) {
-        console.log(colorize('\n🚨 WARNING: This is a critical update!', 'red'));
-        console.log(colorize('Building with this version may cause errors.', 'red'));
-    }
-    
     
     console.log(colorize('\n✅ Proceeding with build...\n', 'green'));
 }
