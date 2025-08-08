@@ -76,6 +76,9 @@
     },
     "files": [
         "src",
+        "resize-all.cjs",
+        "astro-image-resize.mjs",
+        "typograf-batch.js",
         "public/favicon.svg",
         "public/icon-192.png",
         "public/icon-512.png",
@@ -89,6 +92,9 @@
         "public/blackbox*.webp",
         "scripts",
         "bin",
+        "astro.config.mjs",
+        "tsconfig.json",
+        "vite.config.js",
         ".gitignore",
         "netlify.toml"
     ],
