@@ -1,6 +1,5 @@
 ---
 import { type CollectionEntry, render } from 'astro:content';
-import { getFilteredCollection } from '../../utils/content-loader';
 import ArticleMeta from '../../components/ArticleMeta.astro';
 import ContentFooter from '../../components/ContentFooter.astro';
 import HeroImage from '../../components/HeroImage.astro';
@@ -12,6 +11,7 @@ import TableOfContents from '../../components/TableOfContents.astro';
 import TagsAndShare from '../../components/TagsAndShare.astro';
 import { maugliConfig } from '../../config/maugli.config';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getFilteredCollection } from '../../utils/content-loader';
 import { sortItemsByDateDesc } from '../../utils/data-utils';
 import { calculateReadingTime } from '../../utils/reading-time';
 
