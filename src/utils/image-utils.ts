@@ -1,9 +1,9 @@
 // src/utils/image-utils.ts - Утилиты для работы с изображениями
 
 /**
- * Определяет правильный путь к изображению в зависимости от типа контента
- * Все пользовательские изображения должны находиться в /img/page-images/
- * Системные файлы остаются в /img/default/ и /img/examples/
+ * Определяет правильный путь к изображению
+ * Все пользовательские изображения находятся в /img/ и подпапках
+ * Автоматическая оптимизация применяется ко всем изображениям в public/img/
  */
 export function getImagePath(imageName: string, contentType?: 'blog' | 'author' | 'product' | 'project' | 'tag'): string {
   // Если путь уже абсолютный (начинается с /), возвращаем как есть
@@ -11,30 +11,26 @@ export function getImagePath(imageName: string, contentType?: 'blog' | 'author' 
     return imageName;
   }
   
-  // Если это системные папки, не меняем путь
-  if (imageName.startsWith('default/') || imageName.startsWith('examples/')) {
-    return `/img/${imageName}`;
-  }
-  
-  // Все остальные изображения ищем в page-images
-  return `/img/page-images/${imageName}`;
+  // Все изображения идут в /img/
+  return `/img/${imageName}`;
 }
 
 /**
  * Получает путь к изображению для конкретного типа контента
- * Добавляет префикс типа если его нет
+ * Все файлы просто в /img/ без подпапок
  */
 export function getContentImagePath(slug: string, contentType: 'blog' | 'author' | 'product' | 'project' | 'tag', extension: string = '.webp'): string {
   const fileName = `${contentType}_${slug}${extension}`;
-  return getImagePath(fileName);
+  return `/img/${fileName}`;
 }
 
 /**
  * Получает путь к превью изображению
+ * Все файлы просто в /img/ без подпапок
  */
 export function getPreviewImagePath(slug: string, contentType: 'blog' | 'author' | 'product' | 'project' | 'tag', extension: string = '.webp'): string {
   const fileName = `previews_${contentType}_${slug}${extension}`;
-  return getImagePath(fileName);
+  return `/img/${fileName}`;
 }
 
 /**
@@ -54,22 +50,12 @@ export function getDefaultImagePath(contentType: 'blog' | 'author' | 'product' |
 
 /**
  * Конвертирует старые пути к новой структуре
- * Для обратной совместимости
+ * Все изображения теперь просто в /img/ и подпапках
  */
 export function convertLegacyImagePath(imagePath: string): string {
-  // Конвертируем старые пути в новые
-  const conversions = [
-    { from: '/img/blog/', to: '/img/page-images/' },
-    { from: '/img/authors/', to: '/img/page-images/' },
-    { from: '/img/products/', to: '/img/page-images/' },
-    { from: '/img/projects/', to: '/img/page-images/' },
-    { from: '/img/uploads/', to: '/img/page-images/' }
-  ];
-  
-  for (const conversion of conversions) {
-    if (imagePath.startsWith(conversion.from)) {
-      return imagePath.replace(conversion.from, conversion.to);
-    }
+  // Убираем page-images из пути - теперь всё просто в /img/
+  if (imagePath.includes('/img/page-images/')) {
+    return imagePath.replace('/img/page-images/', '/img/');
   }
   
   return imagePath;
