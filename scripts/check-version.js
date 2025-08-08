@@ -38,20 +38,35 @@ async function getMaugliConfig() {
     try {
         const configPath = path.join(process.cwd(), 'src/config/maugli.config.ts');
         if (!fs.existsSync(configPath)) {
+            console.log(colorize('⚠️  maugli.config.ts not found at src/config/maugli.config.ts', 'yellow'));
             return null;
         }
         
         // Простое чтение конфига через регулярные выражения
         const configContent = fs.readFileSync(configPath, 'utf8');
-        const forceUpdateMatch = configContent.match(/automation:\s*{[^}]*?forceUpdate:\s*(true|false)/s);
+        console.log(colorize('🔍 Reading maugli.config.ts...', 'cyan'));
+        
+        // Ищем forceUpdate в automation секции
+        const automationMatch = configContent.match(/automation\s*:\s*{([^}]+)}/s);
+        if (!automationMatch) {
+            console.log(colorize('⚠️  automation section not found in config', 'yellow'));
+            return null;
+        }
+        
+        const automationSection = automationMatch[1];
+        const forceUpdateMatch = automationSection.match(/forceUpdate\s*:\s*(true|false)/);
+        
+        const forceUpdate = forceUpdateMatch ? forceUpdateMatch[1] === 'true' : false;
+        
+        console.log(colorize(`📋 Config found - forceUpdate: ${forceUpdate}`, 'cyan'));
         
         return {
             automation: {
-                forceUpdate: forceUpdateMatch ? forceUpdateMatch[1] === 'true' : false
+                forceUpdate: forceUpdate
             }
         };
     } catch (error) {
-        console.warn(colorize('⚠️  Could not read maugli.config.ts', 'yellow'));
+        console.warn(colorize('⚠️  Could not read maugli.config.ts: ' + error.message, 'yellow'));
         return null;
     }
 }
@@ -256,6 +271,11 @@ async function main() {
     
     // Check forceUpdate setting from maugli.config.ts
     const forceUpdate = maugliConfig?.automation?.forceUpdate || false;
+    
+    console.log(colorize(`\n🔧 Configuration check:`, 'cyan'));
+    console.log(colorize(`   • maugli.config.ts found: ${maugliConfig ? 'Yes' : 'No'}`, 'white'));
+    console.log(colorize(`   • forceUpdate setting: ${forceUpdate}`, 'white'));
+    console.log(colorize(`   • CI/CD detected: ${isCI}`, 'white'));
     
     if (isCI) {
         console.log(colorize('\n🤖 CI/CD environment detected. Updating automatically...', 'cyan'));
