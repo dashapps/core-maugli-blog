@@ -1,6 +1,8 @@
 ---
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { maugliConfig } from '../config/maugli.config';
-
 import { LANGUAGES } from '../i18n/languages';
 
 // Карточка баннера продукта для боковой панели статьи/проекта
@@ -8,10 +10,71 @@ import { LANGUAGES } from '../i18n/languages';
 const { product } = Astro.props;
 const { seo, image, title, id, productLink } = product?.data || {};
 
-// Дефолтная картинка всегда
-const productID = product?.data?.productID;
-let bannerImage = productID ? `/${productID}.webp` : maugliConfig.defaultProductImage;
-if (!bannerImage) bannerImage = maugliConfig.defaultProductImage;
+// Функция для получения изображения продукта с приоритетом превью 400px
+function getProductBannerImage(product: any, defaultImage: string): string {
+    const { image, productID } = product?.data || {};
+
+    // Если есть изображение в контенте продукта - используем его с превью логикой
+    if (image?.src) {
+        const imageSrc = image.src;
+
+        const __filename = fileURLToPath(import.meta.url);
+        const projectRoot = path.resolve(path.dirname(__filename), '../..');
+
+        // Получаем путь к файлу и имя файла
+        const pathParts = imageSrc.split('/');
+        const fileName = pathParts.pop() || '';
+        const directory = pathParts.join('/');
+        const baseName = fileName.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+        const extension = fileName.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
+
+        // Приоритет 1: превью 400px версия
+        const preview400Path = `${directory}/${baseName}-400${extension}`;
+        const preview400FilePath = path.join(projectRoot, 'public', preview400Path.replace(/^\//, ''));
+        if (fs.existsSync(preview400FilePath)) {
+            return preview400Path;
+        }
+
+        // Приоритет 2: превью версия в папке previews
+        const previewPath = `${directory}/previews/${fileName}`;
+        const previewFilePath = path.join(projectRoot, 'public', previewPath.replace(/^\//, ''));
+        if (fs.existsSync(previewFilePath)) {
+            return previewPath;
+        }
+
+        // Приоритет 3: оригинальное изображение из контента
+        const originalFilePath = path.join(projectRoot, 'public', imageSrc.replace(/^\//, ''));
+        if (fs.existsSync(originalFilePath)) {
+            return imageSrc;
+        }
+    }
+
+    // Fallback: если нет изображения в контенте, пробуем по productID (старая логика)
+    if (productID) {
+        const __filename = fileURLToPath(import.meta.url);
+        const projectRoot = path.resolve(path.dirname(__filename), '../..');
+
+        // Проверяем стандартные места для productID
+        const possiblePaths = [
+            `/img/default/previews/${productID}-400.webp`,
+            `/img/default/previews/${productID}.webp`,
+            `/${productID}.webp`,
+            `/img/default/${productID}.webp`
+        ];
+
+        for (const testPath of possiblePaths) {
+            const testFilePath = path.join(projectRoot, 'public', testPath.replace(/^\//, ''));
+            if (fs.existsSync(testFilePath)) {
+                return testPath;
+            }
+        }
+    }
+
+    // Финальный fallback: дефолтное изображение
+    return defaultImage;
+}
+
+const bannerImage = getProductBannerImage(product, maugliConfig.defaultProductImage);
 // Кнопка: если есть productLink, то ссылка, иначе неактивная
 const buttonHref = productLink && productLink.trim() ? productLink : null;
 const isExternal = buttonHref && /^https?:\/\//.test(buttonHref);

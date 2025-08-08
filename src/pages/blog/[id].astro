@@ -117,8 +117,9 @@ if (post.data.productID) {
                                     product={{
                                         data: {
                                             productLink: post.data.productLink,
-                                            image: bannerImage,
-                                            title: post.data.title || 'Продукт'
+                                            image: post.data.image || { src: maugliConfig.seo.defaultImage, alt: post.data.title || 'Продукт' },
+                                            title: post.data.title || 'Продукт',
+                                            productID: post.data.productID
                                         }
                                     }}
                                 />

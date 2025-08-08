@@ -105,11 +105,9 @@ const moreByTag = pages.projects?.moreByTag || 'More cases';
                                     product={{
                                         data: {
                                             productLink: project.data.productLink,
-                                            image: {
-                                                src: project.data.productID ? `/public/${project.data.productID}.webp` : maugliConfig.seo.defaultImage,
-                                                alt: project.data.title || 'Продукт'
-                                            },
-                                            title: project.data.title || 'Продукт'
+                                            image: project.data.image || { src: maugliConfig.seo.defaultImage, alt: project.data.title || 'Продукт' },
+                                            title: project.data.title || 'Продукт',
+                                            productID: project.data.productID
                                         }
                                     }}
                                 />
