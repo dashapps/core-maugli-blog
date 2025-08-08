@@ -2,7 +2,7 @@
     "name": "core-maugli",
     "description": "Astro & Tailwind CSS blog theme for Maugli.",
     "type": "module",
-    "version": "1.2.60",
+    "version": "1.2.61",
     "license": "GPL-3.0-or-later OR Commercial",
     "repository": {
         "type": "git",
