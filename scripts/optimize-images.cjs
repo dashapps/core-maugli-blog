@@ -99,10 +99,10 @@ function getFileSizeStats(originalPath, optimizedPath) {
     };
 }
 
-// Рекурсивная функция для обхода папок
+// Recursive function to traverse folders
 async function processDirectory(dir) {
     if (!fs.existsSync(dir)) {
-        console.log(`📁 Папка ${dir} не существует`);
+        console.log(`📁 Folder ${dir} does not exist`);
         return;
     }
 
@@ -113,36 +113,36 @@ async function processDirectory(dir) {
         const stat = fs.statSync(itemPath);
         
         if (stat.isDirectory()) {
-            // Рекурсивно обрабатываем подпапки
+            // Recursively process subfolders
             await processDirectory(itemPath);
         } else if (stat.isFile()) {
             const ext = path.extname(item).toLowerCase();
             const baseName = path.basename(item, ext);
             
-            // Проверяем, что это изображение и не содержит размер в названии
+            // Check if it's an image and doesn't contain size in the name
             if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-                // Пропускаем файлы, которые уже содержат размер (например, image-400.webp)
+                // Skip files that already contain size (e.g., image-400.webp)
                 if (!/-\d+$/.test(baseName) && !processedFiles.has(itemPath)) {
                     processedFiles.add(itemPath);
                     
-                    console.log(`🔄 Обрабатываем: ${itemPath}`);
+                    console.log(`🔄 Processing: ${itemPath}`);
                     
-                    // Сначала оптимизируем оригинал
+                    // First optimize the original
                     const optimizedOriginal = path.join(path.dirname(itemPath), `${baseName}_optimized${ext}`);
                     await optimizeImage(itemPath, optimizedOriginal);
                     
-                    // Заменяем оригинал оптимизированной версией
+                    // Replace original with optimized version
                     if (fs.existsSync(optimizedOriginal)) {
                         const stats = getFileSizeStats(itemPath, optimizedOriginal);
                         if (stats && stats.savings > 0) {
                             fs.renameSync(optimizedOriginal, itemPath);
-                            console.log(`💾 Экономия: ${stats.savings}KB (${stats.savingsPercent}%) - ${itemPath}`);
+                            console.log(`💾 Savings: ${stats.savings}KB (${stats.savingsPercent}%) - ${itemPath}`);
                         } else {
                             fs.unlinkSync(optimizedOriginal);
                         }
                     }
                     
-                    // Создаем ресайзы
+                    // Create resizes
                     for (const width of sizes) {
                         const outputPath = path.join(path.dirname(itemPath), `${baseName}-${width}${ext}`);
                         await optimizeImage(itemPath, outputPath, width);
@@ -154,18 +154,18 @@ async function processDirectory(dir) {
 }
 
 async function main() {
-    console.log('🚀 Начинаем оптимизацию изображений с Sharp...');
-    console.log('⚙️ Настройки оптимизации:');
-    console.log('  WebP: качество 80, максимальное сжатие');
-    console.log('  JPEG: качество 85, прогрессивная загрузка');
-    console.log('  PNG: качество 90, максимальное сжатие');
+    console.log('🚀 Starting image optimization with Sharp...');
+    console.log('⚙️ Optimization settings:');
+    console.log('  WebP: quality 80, maximum compression');
+    console.log('  JPEG: quality 85, progressive loading');
+    console.log('  PNG: quality 90, maximum compression');
     console.log('');
     
     await processDirectory(inputDir);
     
     console.log('');
-    console.log('✅ Оптимизация завершена!');
-    console.log('📊 Все изображения оптимизированы для максимальной производительности');
+    console.log('✅ Optimization completed!');
+    console.log('📊 All images optimized for maximum performance');
 }
 
 main().catch(console.error);

@@ -46,30 +46,30 @@ function createTempDir() {
     return tempDir;
 }
 
-// Функция для оптимизации через Squoosh CLI
+// Function to optimize through Squoosh CLI
 async function optimizeWithSquoosh() {
-    console.log('🚀 Начинаем оптимизацию через Squoosh CLI...');
+    console.log('🚀 Starting optimization through Squoosh CLI...');
     
     const images = getAllImages(publicDir);
-    console.log(`📁 Найдено ${images.length} изображений для оптимизации`);
+    console.log(`📁 Found ${images.length} images for optimization`);
     
     if (images.length === 0) {
-        console.log('📷 Нет изображений для оптимизации');
+        console.log('📷 No images to optimize');
         return;
     }
     
     const tempDir = createTempDir();
     
     try {
-        // Создаем директорию для входных файлов
+        // Create directory for input files
         const inputDir = path.join(tempDir, 'input');
         const outputDir = path.join(tempDir, 'output');
         
         if (!fs.existsSync(inputDir)) fs.mkdirSync(inputDir, { recursive: true });
         if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
         
-        // Копируем файлы во временную директорию
-        console.log('📋 Подготавливаем файлы...');
+        // Copy files to temporary directory
+        console.log('📋 Preparing files...');
         images.forEach((imagePath, index) => {
             const ext = path.extname(imagePath);
             const tempFileName = `image_${index}${ext}`;
@@ -77,8 +77,8 @@ async function optimizeWithSquoosh() {
             fs.copyFileSync(imagePath, tempFilePath);
         });
         
-        // Запускаем Squoosh CLI для WebP оптимизации
-        console.log('⚡ Запускаем Squoosh CLI...');
+        // Run Squoosh CLI for WebP optimization
+        console.log('⚡ Running Squoosh CLI...');
         const squooshCommand = `npx @squoosh/cli --webp auto "${inputDir}/*" -d "${outputDir}"`;
         
         try {
@@ -87,9 +87,9 @@ async function optimizeWithSquoosh() {
                 cwd: projectRoot 
             });
             
-            console.log('✅ Squoosh CLI завершен');
+            console.log('✅ Squoosh CLI completed');
             
-            // Копируем оптимизированные файлы обратно
+            // Copy optimized files back
             const optimizedFiles = fs.readdirSync(outputDir);
             let totalSavings = 0;
             let processedCount = 0;

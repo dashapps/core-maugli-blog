@@ -84,21 +84,21 @@ async function processDirectory(sourceDir, outputSubDir) {
   }
 }
 
-// Основная функция
+// Main function
 async function generatePreviewsForBuild() {
-  console.log('🚀 Начинаем генерацию превью для сборки...');
+  console.log('🚀 Starting preview generation for build...');
   
-  // Обрабатываем системные папки
+  // Process system folders
   await processDirectory(path.join(rootDir, 'public/img/default'), 'img/default');
   await processDirectory(path.join(rootDir, 'public/img/examples'), 'img/examples');
   
-  // Обрабатываем пользовательские изображения, если они есть
+  // Process user images if they exist
   const pageImagesDir = path.join(rootDir, 'public/img/page-images');
   if (fs.existsSync(pageImagesDir)) {
     await processDirectory(pageImagesDir, 'img/page-images');
   }
   
-  console.log('✅ Генерация превью для сборки завершена!');
+  console.log('✅ Preview generation for build completed!');
 }
 
 generatePreviewsForBuild().catch(console.error);

@@ -1,11 +1,11 @@
-// copy-content-images.cjs - выносим все изображения из подпапок public/img в корень public/img
+// flatten-images.cjs - Move all images from public/img subfolders to public/img root
 const fs = require('fs');
 const path = require('path');
 
 const sourceDir = './public/img';
 const targetDir = './public/img';
 
-// Функция для рекурсивного поиска и копирования изображений из подпапок
+// Function to recursively find and copy images from subfolders
 async function flattenImages(currentDir) {
     const items = fs.readdirSync(currentDir);
     let copiedCount = 0;
@@ -15,26 +15,26 @@ async function flattenImages(currentDir) {
         const stat = fs.statSync(itemPath);
 
         if (stat.isDirectory()) {
-            // Рекурсивно обрабатываем подпапки
+            // Recursively process subfolders
             const copied = await flattenImages(itemPath);
             copiedCount += copied;
         } else if (stat.isFile()) {
             const ext = path.extname(item).toLowerCase();
             
-            // Проверяем, что это изображение и что оно НЕ в корне public/img
+            // Check if it's an image and NOT in public/img root
             if (['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(ext)) {
                 const isInSubfolder = currentDir !== sourceDir;
                 
                 if (isInSubfolder) {
                     const targetPath = path.join(sourceDir, item);
                     
-                    // Проверяем, что файл с таким именем не существует в корне
+                    // Check that file with this name doesn't exist in root
                     if (!fs.existsSync(targetPath)) {
                         fs.copyFileSync(itemPath, targetPath);
-                        console.log(`📋 Вынесено: ${path.relative('./public', itemPath)} → img/${item}`);
+                        console.log(`📋 Moved: ${path.relative('./public', itemPath)} → img/${item}`);
                         copiedCount++;
                     } else {
-                        // Если файл уже существует, добавляем префикс папки
+                        // If file already exists, add folder prefix
                         const folderName = path.basename(currentDir);
                         const nameWithoutExt = path.parse(item).name;
                         const extension = path.parse(item).ext;
@@ -43,10 +43,10 @@ async function flattenImages(currentDir) {
                         
                         if (!fs.existsSync(targetPathWithPrefix)) {
                             fs.copyFileSync(itemPath, targetPathWithPrefix);
-                            console.log(`📋 Вынесено с префиксом: ${path.relative('./public', itemPath)} → img/${newName}`);
+                            console.log(`📋 Moved with prefix: ${path.relative('./public', itemPath)} → img/${newName}`);
                             copiedCount++;
                         } else {
-                            console.log(`⚠️  Пропущено (уже существует): ${item}`);
+                            console.log(`⚠️  Skipped (already exists): ${item}`);
                         }
                     }
                 }
@@ -58,21 +58,21 @@ async function flattenImages(currentDir) {
 }
 
 async function main() {
-    console.log('🚀 Начинаем вынос изображений из подпапок public/img в корень public/img...');
+    console.log('🚀 Starting image flattening from public/img subfolders to public/img root...');
     
     if (!fs.existsSync(sourceDir)) {
-        console.log(`📁 Папка ${sourceDir} не существует!`);
+        console.log(`📁 Folder ${sourceDir} does not exist!`);
         return;
     }
     
-    // Выносим все изображения из подпапок в корень
+    // Move all images from subfolders to root
     const totalCopied = await flattenImages(sourceDir);
     
     console.log('');
-    console.log(`✅ Вынос завершен! Скопировано ${totalCopied} изображений в корень public/img/`);
-    console.log('🔄 Netlify Image Optimization теперь сможет их легче обрабатывать');
-    console.log('⚡ Sharp оптимизация также будет применена к файлам в корне');
-    console.log('📁 Все изображения теперь доступны напрямую из /img/имя_файла.webp');
+    console.log(`✅ Flattening completed! Copied ${totalCopied} images to public/img/ root`);
+    console.log('🔄 Netlify Image Optimization can now process them more easily');
+    console.log('⚡ Sharp optimization will also be applied to files in root');
+    console.log('📁 All images are now available directly from /img/filename.webp');
 }
 
 main().catch(console.error);
