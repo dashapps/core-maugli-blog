@@ -33,7 +33,8 @@
     "tags": {
       "title": "Рубрики",
       "description": "Все статьи по рубрикам",
-      "blogRubrics": "Рубрики блога"
+      "blogRubrics": "Рубрики блога",
+      "moreTags": "Дополнительные теги"
     },
     "index": {
       "title": "<Блог>",

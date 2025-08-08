@@ -36,7 +36,8 @@
     "tags": {
       "title": "Kategorien",
       "description": "Alle Artikel nach Kategorie",
-      "blogRubrics": "Blog-Kategorien"
+      "blogRubrics": "Blog-Kategorien",
+      "moreTags": "Weitere Tags"
     },
     "index": {
       "title": "<Blog>",

@@ -36,7 +36,8 @@
     "tags": {
       "title": "カテゴリ",
       "description": "カテゴリごとの記事一覧",
-      "blogRubrics": "ブログカテゴリ"
+      "blogRubrics": "ブログカテゴリ",
+      "moreTags": "その他のタグ"
     },
     "index": {
       "title": "<ブログ>",

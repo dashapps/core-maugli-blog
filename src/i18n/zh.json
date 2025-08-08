@@ -36,7 +36,8 @@
     "tags": {
       "title": "分类",
       "description": "按类别查看所有文章",
-      "blogRubrics": "博客分类"
+      "blogRubrics": "博客分类",
+      "moreTags": "更多标签"
     },
     "index": {
       "title": "<博客>",
