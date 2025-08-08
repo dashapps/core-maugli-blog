@@ -16,6 +16,8 @@ const blogPreviewWidth = 400;
 const blogPreviewHeight = 210;
 const rubricPreviewWidth = 210; // Увеличенный размер для качества на retina дисплеях (105px * 2)
 const rubricPreviewHeight = 214; // Увеличенный размер для качества на retina дисплеях (107px * 2)
+const authorPreviewWidth = 192; // Квадратный размер для аватарок
+const authorPreviewHeight = 192;
 
 // Функция для извлечения путей изображений из markdown файлов
 function extractImagePaths() {
@@ -62,7 +64,7 @@ function extractImagePaths() {
             } else {
               imagePath = match.match(/src\s*=\s*['"]*([^'">\s]+)['"]*/)?.[1];
             }
-            if (imagePath && !imagePath.startsWith('http') && imagePath.includes('/') && !imagePath.includes('authors/')) {
+            if (imagePath && !imagePath.startsWith('http') && imagePath.includes('/')) {
               imagePaths.add(imagePath);
             }
           });
@@ -73,21 +75,16 @@ function extractImagePaths() {
   
   scanDirectory(contentDir);
   
-  // Также добавляем изображения из public/img/examples/ кроме авторов
+  // Также добавляем изображения из public/img/examples/
   const examplesDir = path.join(rootDir, 'public/img/examples');
   if (fs.existsSync(examplesDir)) {
     function addExampleImages(dir, relativePath = '') {
-      // Пропускаем папку authors - аватары не нужно обрабатывать
-      if (relativePath.includes('authors/')) return;
-      
       const items = fs.readdirSync(dir);
       for (const item of items) {
         const itemPath = path.join(dir, item);
         const stat = fs.statSync(itemPath);
         
         if (stat.isDirectory()) {
-          // Пропускаем папку authors
-          if (item === 'authors') continue;
           addExampleImages(itemPath, `${relativePath}${item}/`);
         } else if (item.match(/\.(webp|jpg|jpeg|png)$/i) && !dir.includes('previews')) {
           imagePaths.add(`/img/examples/${relativePath}${item}`);
@@ -103,8 +100,6 @@ function extractImagePaths() {
     const items = fs.readdirSync(defaultDir);
     for (const item of items) {
       if (item.match(/\.(webp|jpg|jpeg|png)$/i)) {
-        // Исключаем изображения авторов и рубрик
-        if (item.includes('autor') || item.includes('author') || item.includes('rubric')) continue;
         imagePaths.add(`/img/default/${item}`);
       }
     }
@@ -160,6 +155,10 @@ async function createPreview(imagePath) {
     previewWidth = rubricPreviewWidth;
     previewHeight = rubricPreviewHeight;
     console.log(`Creating rubric preview (${previewWidth}x${previewHeight}): ${name}`);
+  } else if (imagePath.includes('author') || name.includes('autor')) {
+    previewWidth = authorPreviewWidth;
+    previewHeight = authorPreviewHeight;
+    console.log(`Creating author preview (${previewWidth}x${previewHeight}): ${name}`);
   } else {
     previewWidth = blogPreviewWidth;
     previewHeight = blogPreviewHeight;

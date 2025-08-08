@@ -1,26 +1,37 @@
-// resize-for-build.cjs - генерация ресайзированных изображений только для сборки
+// resize-for-build.cjs - Generate resized images for build in dist/
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-// Размеры для генерации
+// Sizes to generate
 const sizes = [400, 800, 1200];
 
 const inputDir = './public';
-const outputDir = './dist'; // Генерируем прямо в dist
+const outputDir = './dist';
 const processedFiles = new Set();
 
-// Функция для создания папки, если она не существует
+// Function to create directory if it doesn't exist
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 }
 
-// Рекурсивная функция для обхода папок
+// Copy file if it doesn't exist
+function copyIfNotExists(src, dest) {
+  if (!fs.existsSync(dest)) {
+    ensureDir(path.dirname(dest));
+    fs.copyFileSync(src, dest);
+    console.log(`📋 Copied: ${path.relative('./dist', dest)}`);
+    return true;
+  }
+  return false;
+}
+
+// Recursive function to process directories
 function processDirectory(dir, relativePath = '') {
   if (!fs.existsSync(dir)) {
-    console.log(`Папка ${dir} не существует`);
+    console.log(`Directory ${dir} does not exist`);
     return;
   }
 
@@ -32,67 +43,70 @@ function processDirectory(dir, relativePath = '') {
     const currentRelativePath = path.join(relativePath, item);
     
     if (stat.isDirectory()) {
-      // Рекурсивно обрабатываем подпапки
+      // Recursively process subdirectories
       processDirectory(itemPath, currentRelativePath);
     } else if (stat.isFile()) {
       const ext = path.extname(item).toLowerCase();
       const baseName = path.basename(item, ext);
       
-      // Проверяем, что это изображение и не содержит размер в названии
+      // Check if it's an image and doesn't contain size in name
       if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-        // Исключаем PWA иконки и служебные файлы
+        // Exclude PWA icons and system files
         const excludePatterns = [
-          'icon-192', 'icon-512', // PWA иконки
-          'favicon', // Фавиконки
-          'logo', // Логотипы
-          'manifest' // Файлы манифеста
+          'icon-192', 'icon-512', // PWA icons
+          'favicon', // Favicons
+          'logo', // Logos
+          'manifest' // Manifest files
         ];
         
         const shouldExclude = excludePatterns.some(pattern => baseName.includes(pattern));
         
-        // Пропускаем файлы, которые уже содержат размер
+        // Skip files that already contain size
         const hasResizeSuffix = sizes.some(size => baseName.includes(`-${size}`));
         
         if (!hasResizeSuffix && !shouldExclude && !processedFiles.has(itemPath)) {
           processedFiles.add(itemPath);
           
-          console.log(`🔄 Обрабатываем для сборки: ${currentRelativePath}`);
+          console.log(`🔄 Processing for build: ${currentRelativePath}`);
           
-          // Сначала копируем оригинал
+          // First copy original
           const outputDirPath = path.join(outputDir, relativePath);
-          ensureDir(outputDirPath);
-          
           const originalOutputPath = path.join(outputDirPath, item);
-          if (!fs.existsSync(originalOutputPath)) {
-            fs.copyFileSync(itemPath, originalOutputPath);
-            console.log(`📋 Скопирован оригинал: ${path.relative('./dist', originalOutputPath)}`);
-          }
+          copyIfNotExists(itemPath, originalOutputPath);
           
-          // Генерируем ресайзированные версии
+          // Generate resized versions
           sizes.forEach(width => {
             const outputPath = path.join(outputDirPath, `${baseName}-${width}${ext}`);
             
             if (!fs.existsSync(outputPath)) {
+              ensureDir(path.dirname(outputPath));
               sharp(itemPath)
                 .resize(width)
                 .toFile(outputPath, (err) => {
                   if (err) {
-                    console.error(`❌ Ошибка при создании ${outputPath}:`, err.message);
+                    console.error(`❌ Error creating ${outputPath}:`, err.message);
                   } else {
-                    console.log(`✅ Создан: ${path.relative('./dist', outputPath)}`);
+                    console.log(`✅ Created: ${path.relative('./dist', outputPath)}`);
                   }
                 });
+            } else {
+              console.log(`⏭️  Skipped (exists): ${path.relative('./dist', outputPath)}`);
             }
           });
         }
+      } else {
+        // Copy non-image files as is
+        const outputDirPath = path.join(outputDir, relativePath);
+        const outputPath = path.join(outputDirPath, item);
+        copyIfNotExists(itemPath, outputPath);
       }
     }
   });
 }
 
-// Убеждаемся, что dist существует
+// Ensure dist exists
 ensureDir(outputDir);
 
-console.log('🚀 Начинаем генерацию изображений для сборки...');
+console.log('🚀 Starting image processing for build...');
 processDirectory(inputDir);
-console.log('✅ Генерация изображений завершена!');
+console.log('✅ Image processing completed!');
