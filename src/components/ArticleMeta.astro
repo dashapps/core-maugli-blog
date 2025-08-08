@@ -58,6 +58,31 @@ if (!authorData) {
 }
 let authorName = authorData.data.name;
 let authorImg = authorData.data.avatar || '/img/default/autor_default.webp';
+
+// Функция для получения пути к превью изображения автора
+function getAuthorPreviewSrc(imageSrc: string): string {
+    if (!imageSrc) return '/img/default/previews/autor_default.webp';
+    
+    // Если это дефолтное изображение автора
+    if (imageSrc.includes('/img/default/autor_default.webp')) {
+        return '/img/default/previews/autor_default.webp';
+    }
+    
+    // Для изображений авторов из examples
+    if (imageSrc.includes('/img/examples/authors/')) {
+        const fileName = imageSrc.split('/').pop();
+        if (fileName) {
+            const baseName = fileName.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+            const extension = fileName.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
+            return imageSrc.replace(fileName, `previews/${baseName}${extension}`);
+        }
+    }
+    
+    // Fallback к оригинальному изображению если превью нет
+    return imageSrc;
+}
+
+const authorImgPreview = getAuthorPreviewSrc(authorImg);
 ---
 
 <!-- Метаинформация сверху -->
@@ -72,12 +97,12 @@ let authorImg = authorData.data.avatar || '/img/default/autor_default.webp';
                     data-astro-reload
                     style="text-decoration: none; color: inherit; z-index: 10; position: relative;"
                 >
-                    <img src={authorImg} alt={dict.ui?.authorAvatar || 'Author avatar'} class="w-8 h-8 rounded-full" width="32" height="32" decoding="async" />
+                    <img src={authorImgPreview} alt={dict.ui?.authorAvatar || 'Author avatar'} class="w-8 h-8 rounded-full" width="32" height="32" decoding="async" />
                     <span class="font-medium hover:text-[var(--brand-color)] transition-colors duration-200">{authorName}</span>
                 </a>
             ) : (
                 <>
-                    <img src={authorImg} alt={dict.ui?.authorAvatar || 'Author avatar'} class="w-8 h-8 rounded-full" width="32" height="32" decoding="async" />
+                    <img src={authorImgPreview} alt={dict.ui?.authorAvatar || 'Author avatar'} class="w-8 h-8 rounded-full" width="32" height="32" decoding="async" />
                     <span class="font-medium">{authorName}</span>
                 </>
             )

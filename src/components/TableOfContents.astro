@@ -30,16 +30,16 @@ const { headings, title = dict.tableOfContents?.title || fallbackDict.tableOfCon
     id="table-of-contents"
     aria-label={dict.tableOfContents.ariaLabel || fallbackDict.tableOfContents.ariaLabel || 'Contents'}
 >
-    <h3 class="font-serif font-bold text-[18px] leading-[100%] text-[var(--brand-color)] flex-none">
+    <h3 class="font-serif font-bold text-[20px] leading-[110%] text-[var(--brand-color)] flex-none">
         {title}
     </h3>
 
-    <div class="flex flex-col gap-2 flex-none">
+    <div class="flex flex-col gap-3 flex-none">
         {
             headings.map((heading) => (
                 <a
                     href={`#${heading.id}`}
-                    class="toc-link font-sans font-normal text-[12px] leading-[15px] text-[var(--text-heading)] hover:text-[var(--brand-color)] transition-all duration-300 ease-in-out hover:translate-x-1 transform"
+                    class="toc-link font-sans font-normal text-[14px] leading-[18px] text-[var(--text-heading)] hover:text-[var(--brand-color)] transition-all duration-300 ease-in-out hover:translate-x-1 transform"
                     data-target={heading.id}
                 >
                     {heading.title}
