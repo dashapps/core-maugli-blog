@@ -19,12 +19,12 @@
     ],
     "scripts": {
         "typograf": "node typograf-batch.js",
-        "dev": "astro dev",
-        "prestart": "astro dev",
+        "dev": "node resize-all.cjs && node scripts/generate-previews.js && astro dev",
+        "prestart": "node resize-all.cjs && node scripts/generate-previews.js",
         "start": "astro dev",
-        "build": "node scripts/check-version.js && node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && astro build",
-        "build:fast": "node typograf-batch.js && node scripts/verify-assets.js && astro build",
-        "build:no-check": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && astro build",
+        "build": "node scripts/check-version.js && node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build:fast": "node resize-all.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
+        "build:no-check": "node scripts/flatten-images.cjs && node scripts/optimize-images.cjs && node typograf-batch.js && node scripts/verify-assets.js && node scripts/generate-previews.js && astro build",
         "optimize": "node scripts/optimize-images.cjs",
         "optimize:squoosh": "node scripts/squoosh-optimize.js",
         "clean:resized": "node scripts/clean-resized-images.js",
@@ -43,7 +43,8 @@
         "init-netlify": "node scripts/copy-netlify-config.js",
         "set-force-update": "node scripts/set-force-update.js",
         "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
-        "generate-previews": "node scripts/generate-previews.js"
+        "generate-previews": "node scripts/generate-previews.js",
+        "generate-netlify": "node scripts/generate-netlify-config.js"
     },
     "dependencies": {
         "@astrojs/mdx": "^4.3.0",

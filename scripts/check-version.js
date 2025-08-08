@@ -46,7 +46,9 @@ async function getMaugliConfig() {
         const forceUpdateMatch = configContent.match(/automation:\s*{[^}]*?forceUpdate:\s*(true|false)/s);
         
         return {
-            forceUpdate: forceUpdateMatch ? forceUpdateMatch[1] === 'true' : false
+            automation: {
+                forceUpdate: forceUpdateMatch ? forceUpdateMatch[1] === 'true' : false
+            }
         };
     } catch (error) {
         console.warn(colorize('⚠️  Could not read maugli.config.ts', 'yellow'));
@@ -253,82 +255,38 @@ async function main() {
                 !process.stdin.isTTY; // Non-interactive terminal
     
     // Check forceUpdate setting from maugli.config.ts
-    const forceUpdate = maugliConfig?.forceUpdate || false;
+    const forceUpdate = maugliConfig?.automation?.forceUpdate || false;
     
-    if (forceUpdate || isCI) {
-        console.log(colorize('\n🤖 Automatic update enabled. Updating...', 'cyan'));
+    if (isCI) {
+        console.log(colorize('\n🤖 CI/CD environment detected. Updating automatically...', 'cyan'));
         const success = await performUpdate();
         if (!success) {
-            if (isCI) {
-                console.log(colorize('\n❌ Auto-update failed in CI/CD environment. Build cancelled.', 'red'));
-                process.exit(1);
-            } else {
-                console.log(colorize('\n⚠️  Update failed. Continuing with build...', 'yellow'));
-            }
-        }
-        return;
-    }
-    
-    if (!isCI && isCritical) {
-        console.log(colorize('\n🚨 CRITICAL UPDATE: Automatic update will start in 10 seconds...', 'red'));
-        console.log(colorize('Press Ctrl+C to cancel and update manually.', 'yellow'));
-        
-        // 10-секундный таймер для критических обновлений
-        for (let i = 10; i > 0; i--) {
-            process.stdout.write(colorize(`\r⏰ Updating in ${i} seconds... `, 'yellow'));
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-        console.log(colorize('\n🔄 Starting automatic update...', 'cyan'));
-        
-        const success = await performUpdate();
-        if (!success) {
-            console.log(colorize('\n❌ Critical update failed! Please update manually:', 'red'));
-            console.log(colorize('npm update core-maugli', 'white'));
+            console.log(colorize('\n❌ Auto-update failed in CI/CD environment. Build cancelled.', 'red'));
             process.exit(1);
         }
         return;
     }
     
-    if (!isCI) {
-        const prompt = isCritical ? 
-            colorize('\n🚨 Update now? Critical fixes included! (Y/n): ', 'red') :
-            colorize('\n🔄 Would you like to update now? (Y/n): ', 'bold');
-        process.stdout.write(prompt);
-    }
-    
-    const shouldUpdate = await promptUpdate();
-    
-    if (shouldUpdate) {
+    if (forceUpdate) {
+        console.log(colorize('\n🤖 Force update enabled in config. Updating automatically...', 'cyan'));
         const success = await performUpdate();
         if (!success) {
-            if (isCI) {
-                console.log(colorize('\n❌ Auto-update failed in CI/CD environment. Build cancelled.', 'red'));
-                process.exit(1);
-            } else {
-                console.log(colorize('\n⚠️  Update failed. You can continue with the build, but some features may not work correctly.', 'yellow'));
-                process.stdout.write(colorize('Continue anyway? (Y/n): ', 'yellow'));
-                const continueAnyway = await promptUpdate();
-                if (!continueAnyway) {
-                    console.log(colorize('\n❌ Build cancelled. Please update manually and try again.', 'red'));
-                    process.exit(1);
-                }
-            }
+            console.log(colorize('\n❌ Auto-update failed. Continuing with build...', 'yellow'));
         }
-    } else {
-        // Пользователь отказался от обновления
-        if (isCritical) {
-            console.log(colorize('\n🚨 WARNING: Building with critically outdated version!', 'red'));
-            console.log(colorize('This may cause build failures or security issues.', 'red'));
-            console.log(colorize('Please update as soon as possible: npm update core-maugli', 'yellow'));
-        }
-        
-        if (isCI) {
-            console.log(colorize('\n⚠️  CI/CD auto-update disabled. Continuing with build...', 'yellow'));
-        } else {
-            console.log(colorize('\n⚠️  Continuing without update. Some features may not work correctly.', 'yellow'));
-            console.log(colorize('💡 You can update later by running: npm run update-all-blogs', 'cyan'));
-        }
+        return;
     }
+    
+    // If forceUpdate is false, show update notification without prompts
+    console.log(colorize('\n💡 To update core-maugli, run:', 'cyan'));
+    console.log(colorize('   npm run update', 'white'));
+    console.log(colorize('   # или', 'gray'));
+    console.log(colorize('   npm update core-maugli', 'white'));
+    
+    if (isCritical) {
+        console.log(colorize('\n🚨 WARNING: This is a critical update!', 'red'));
+        console.log(colorize('Building with this version may cause errors.', 'red'));
+    }
+    
     
     console.log(colorize('\n✅ Proceeding with build...\n', 'green'));
 }

@@ -14,12 +14,12 @@ const avatarSize = typeof size === 'number' ? `${size}px` : size;
 // Функция для получения пути к превью изображения автора
 function getAuthorPreviewSrc(imageSrc?: string): string {
     if (!imageSrc) return '/img/default/previews/autor_default.webp';
-    
+
     // Если это дефолтное изображение автора
     if (imageSrc.includes('/img/default/autor_default.webp')) {
         return '/img/default/previews/autor_default.webp';
     }
-    
+
     // Для изображений авторов из examples
     if (imageSrc.includes('/img/examples/authors/')) {
         const fileName = imageSrc.split('/').pop();
@@ -29,7 +29,7 @@ function getAuthorPreviewSrc(imageSrc?: string): string {
             return imageSrc.replace(fileName, `previews/${baseName}${extension}`);
         }
     }
-    
+
     // Fallback к оригинальному изображению если превью нет
     return imageSrc;
 }
