@@ -3,6 +3,9 @@ title: Maugli Content Farms
 description: ИИ-редакция полного цикла для создания контента блогов, телеграм-каналов и соцсетей
 publishDate: '2025-05-11'
 tags: ['ИИ', 'Автоматизация', 'Контент', 'Мауgли']
+image:
+  src: '/img/examples/projects/project_1.webp'
+  alt: 'Maugli Content Farms - ИИ-редакция полного цикла'
 productID: 'blackbox'
 productLink: 'https://google.com'
 generativeEngineOptimization:

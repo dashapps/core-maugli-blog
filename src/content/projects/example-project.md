@@ -5,6 +5,9 @@ publishDate: 2024-01-01
 updatedDate: 2024-01-01
 isFeatured: false
 tags: ['demo', 'example']
+image:
+  src: '/img/examples/projects/example_project.webp'
+  alt: 'Example Project Demo'
 seo:
   title: 'Example Project'
   description: 'Demo project for showcase purposes.'
