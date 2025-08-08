@@ -37,7 +37,7 @@
       "title": "Catégories",
       "description": "Tous les articles par catégorie",
       "blogRubrics": "Catégories du blog",
-      "moreTags": "Plus de tags"
+      "moreTags": "Tags"
     },
     "index": {
       "title": "<Blog>",
@@ -106,7 +106,7 @@
   "tagsSection": {
     "allCases": "Tous les cas",
     "allArticles": "Tous les articles",
-    "allTags": "Tous les tags",
+    "allTags": "Tags",
     "rubricAlt": "Catégorie",
     "tagAriaLabel": "Tag : {name} ({count})"
   },
