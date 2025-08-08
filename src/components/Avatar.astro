@@ -10,10 +10,35 @@ const { src, alt, size = '100px', class: className } = Astro.props;
 
 // Определяем размер - может быть строкой (например, "80px", "5rem") или числом (пиксели)
 const avatarSize = typeof size === 'number' ? `${size}px` : size;
+
+// Функция для получения пути к превью изображения автора
+function getAuthorPreviewSrc(imageSrc?: string): string {
+    if (!imageSrc) return '/img/default/previews/autor_default.webp';
+    
+    // Если это дефолтное изображение автора
+    if (imageSrc.includes('/img/default/autor_default.webp')) {
+        return '/img/default/previews/autor_default.webp';
+    }
+    
+    // Для изображений авторов из examples
+    if (imageSrc.includes('/img/examples/authors/')) {
+        const fileName = imageSrc.split('/').pop();
+        if (fileName) {
+            const baseName = fileName.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+            const extension = fileName.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
+            return imageSrc.replace(fileName, `previews/${baseName}${extension}`);
+        }
+    }
+    
+    // Fallback к оригинальному изображению если превью нет
+    return imageSrc;
+}
+
+const previewSrc = getAuthorPreviewSrc(src);
 ---
 
 <div class:list={['avatar-container', className]} style={`width: ${avatarSize}; height: ${avatarSize};`}>
-    <img src={src || '/img/default/autor_default.webp'} alt={alt} decoding="async" class="w-full h-full object-cover" />
+    <img src={previewSrc} alt={alt} decoding="async" class="w-full h-full object-cover" />
 </div>
 
 <style>
