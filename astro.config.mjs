@@ -5,6 +5,7 @@ import { defineConfig } from 'astro/config';
 import remarkSlug from 'remark-slug';
 import { imagetools } from 'vite-imagetools';
 import { VitePWA } from 'vite-plugin-pwa';
+import imageResize from './astro-image-resize.mjs';
 import { maugliConfig } from './src/config/maugli.config';
 import siteConfig from './src/data/site-config';
 import customSlugify from './src/utils/remark-slugify';
@@ -88,7 +89,8 @@ export default defineConfig({
     },
     integrations: [
         mdx(),
-        sitemap()
+        sitemap(),
+        imageResize()
     ],
     vite: {
         plugins: [
