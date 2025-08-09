@@ -1,16 +1,16 @@
-// optimize-images.cjs - продвинутая оптимизация изображений с Sharp
+// optimize-images.cjs - advanced image optimization with Sharp
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-// Размеры для генерации
+// Sizes for generation
 const sizes = [400, 800, 1200];
 
-// Настройки оптимизации для разных форматов
+// Optimization settings for different formats
 const optimizationSettings = {
     webp: {
         quality: 80,
-        effort: 6, // Максимальное сжатие (0-6)
+        effort: 6, // Maximum compression (0-6)
         lossless: false
     },
     jpeg: {
@@ -20,7 +20,7 @@ const optimizationSettings = {
     },
     png: {
         quality: 90,
-        compressionLevel: 9, // Максимальное сжатие
+        compressionLevel: 9, // Maximum compression
         progressive: true
     }
 };
@@ -28,13 +28,13 @@ const optimizationSettings = {
 const inputDir = './public';
 const processedFiles = new Set();
 
-// Функция для оптимизации изображения
+// Function for image optimization
 async function optimizeImage(inputPath, outputPath, width = null) {
     try {
         const ext = path.extname(outputPath).toLowerCase();
         let sharpInstance = sharp(inputPath);
         
-        // Ресайз если указана ширина
+        // Resize if width is specified
         if (width) {
             sharpInstance = sharpInstance.resize(width, null, {
                 withoutEnlargement: true,
@@ -64,7 +64,7 @@ async function optimizeImage(inputPath, outputPath, width = null) {
                 break;
                 
             default:
-                // Для других форматов используем WebP по умолчанию
+                // For other formats use WebP by default
                 const webpPath = outputPath.replace(/\.[^.]+$/, '.webp');
                 await sharpInstance
                     .webp(optimizationSettings.webp)
@@ -80,7 +80,7 @@ async function optimizeImage(inputPath, outputPath, width = null) {
     }
 }
 
-// Получение статистики размера файла
+// Get file size statistics
 function getFileSizeStats(originalPath, optimizedPath) {
     if (!fs.existsSync(originalPath) || !fs.existsSync(optimizedPath)) {
         return null;

@@ -2,7 +2,7 @@
 const testTheme = () => {
     console.log('🧪 Тестируем настройки темы по умолчанию...');
     
-    // Проверяем, что в localStorage ничего не сохранено
+    // Check that nothing is saved in localStorage
     localStorage.removeItem('theme');
     console.log('🔄 Очистили localStorage');
     

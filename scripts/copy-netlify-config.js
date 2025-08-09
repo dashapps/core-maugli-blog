@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Копирует netlify.toml только при инициализации нового блога
- * НЕ ТРОГАЕТ существующие netlify.toml файлы!
+ * Copies netlify.toml only when initializing a new blog
+ * DOES NOT TOUCH existing netlify.toml files!
  */
 
 import fs from 'fs';
@@ -23,7 +23,7 @@ function main() {
             return;
         }
         
-        // Ищем исходный файл в пакете
+        // Search for source file in package
         let sourcePath;
         const nodeModulesPath = path.join(process.cwd(), 'node_modules', 'core-maugli', 'netlify.toml');
         if (fs.existsSync(nodeModulesPath)) {
@@ -37,7 +37,7 @@ function main() {
             return;
         }
         
-        // Копируем файл только для нового блога
+        // Copy file only for new blog
         fs.copyFileSync(sourcePath, targetPath);
         console.log('✅ netlify.toml created for new blog');
         console.log('');

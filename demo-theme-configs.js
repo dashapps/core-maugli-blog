@@ -31,6 +31,6 @@ console.log('\n📋 Как изменить настройку:');
 console.log('1. Откройте src/config/maugli.config.ts');
 console.log('2. Найдите строку: defaultTheme: "dark"');
 console.log('3. Измените на нужное значение: "light", "dark" или "auto"');
-console.log('4. Сохраните файл и перезапустите dev сервер');
+console.log('4. Save the file and restart the dev server');
 
 export { themeConfigs };

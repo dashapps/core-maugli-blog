@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// squoosh-optimize.js - автоматическая оптимизация через Squoosh CLI
+// squoosh-optimize.js - automatic optimization through Squoosh CLI
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const publicDir = path.join(projectRoot, 'public');
 
-// Функция для получения всех изображений
+// Function to get all images
 function getAllImages(dir, images = []) {
     const items = fs.readdirSync(dir);
     
@@ -25,7 +25,7 @@ function getAllImages(dir, images = []) {
         } else if (stat.isFile()) {
             const ext = path.extname(item).toLowerCase();
             if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-                // Пропускаем уже обработанные ресайзы
+                // Skip already processed resized images
                 const baseName = path.basename(item, ext);
                 if (!/-\d+$/.test(baseName)) {
                     images.push(itemPath);
@@ -37,7 +37,7 @@ function getAllImages(dir, images = []) {
     return images;
 }
 
-// Функция для создания временной директории
+// Function to create temporary directory
 function createTempDir() {
     const tempDir = path.join(projectRoot, '.temp-optimization');
     if (!fs.existsSync(tempDir)) {
@@ -113,23 +113,23 @@ async function optimizeWithSquoosh() {
                             totalSavings += savings;
                             processedCount++;
                             
-                            console.log(`💾 ${path.relative(publicDir, originalPath)}: ${Math.round(savings/1024)}KB экономии (${savingsPercent}%)`);
+                            console.log(`💾 ${path.relative(publicDir, originalPath)}: ${Math.round(savings/1024)}KB saved (${savingsPercent}%)`);
                         }
                     }
                 }
             });
             
-            console.log(`\n🎉 Обработано ${processedCount} изображений`);
-            console.log(`💰 Общая экономия: ${Math.round(totalSavings/1024)}KB`);
+            console.log(`\n🎉 Processed ${processedCount} images`);
+            console.log(`💰 Total savings: ${Math.round(totalSavings/1024)}KB`);
             
         } catch (squooshError) {
-            console.error('❌ Ошибка Squoosh CLI:', squooshError.message);
-            console.log('🔄 Переключаемся на Sharp оптимизацию...');
+            console.error('❌ Squoosh CLI error:', squooshError.message);
+            console.log('🔄 Switching to Sharp optimization...');
             return false;
         }
         
     } finally {
-        // Очищаем временные файлы
+        // Clean up temporary files
         if (fs.existsSync(tempDir)) {
             fs.rmSync(tempDir, { recursive: true, force: true });
         }
@@ -138,7 +138,7 @@ async function optimizeWithSquoosh() {
     return true;
 }
 
-// Запуск если вызван напрямую
+// Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
     optimizeWithSquoosh().catch(console.error);
 }

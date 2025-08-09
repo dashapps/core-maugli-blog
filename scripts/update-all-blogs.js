@@ -1,12 +1,12 @@
 #!/usr/bin/env nconst CURRENT_VERSION = '1.2.48';onst CURRENT_VERSION = '1.2.46';de
 
 /**
- * Скрипт для централизованного обновления всех блогов до последней версии core-maugli
+ * Script for centralized updating of all blogs to the latest core-maugli version
  * 
- * Использование:
- * node scripts/update-all-blogs.js [путь_к_проекту]
+ * Usage:
+ * node scripts/update-all-blogs.js [project_path]
  * 
- * Или для множественного обновления:
+ * Or for multiple updates:
  * node scripts/update-all-blogs.js /path/to/blogs/project1 /path/to/blogs/project2
  */
 
@@ -15,7 +15,7 @@ import path from 'path';
 
 const CURRENT_VERSION = '1.2.44';
 
-// Правильные скрипты для package.json
+// Correct scripts for package.json
 const CORRECT_SCRIPTS = {
     "typograf": "node typograf-batch.js",
     "dev": "node resize-all.cjs && node scripts/generate-previews.js && astro dev",
@@ -43,7 +43,7 @@ const CORRECT_SCRIPTS = {
     "generate-previews": "node scripts/generate-previews.js"
 };
 
-// Файлы скриптов, которые нужно скопировать
+// Script files that need to be copied
 const REQUIRED_SCRIPTS = [
     'scripts/flatten-images.cjs',
     'scripts/optimize-images.cjs',

@@ -6,15 +6,15 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Универсальное определение корня проекта
+// Universal project root detection
 const rootDir = __dirname.includes('node_modules')
   ? path.join(__dirname, '../../..')
   : path.join(__dirname, '..');
 
-// Размеры для разных типов контента
+// Sizes for different content types
 const blogPreviewWidth = 400;
 const blogPreviewHeight = 210;
-const rubricPreviewWidth = 210; // Увеличенный размер для качества на retina дисплеях (105px * 2)
+const rubricPreviewWidth = 210; // Increased size for retina display quality (105px * 2)
 const rubricPreviewHeight = 214; // Увеличенный размер для качества на retina дисплеях (107px * 2)
 const authorPreviewWidth = 192; // Квадратный размер для аватарок
 const authorPreviewHeight = 192;
@@ -108,7 +108,7 @@ function extractImagePaths() {
   return Array.from(imagePaths);
 }
 
-// Функция для очистки всех существующих превьюшек
+// Function to clean all existing preview images
 function cleanupExistingPreviews() {
   const publicDir = path.join(rootDir, 'public');
   
@@ -135,7 +135,7 @@ function cleanupExistingPreviews() {
   removePreviewDirs(publicDir);
 }
 
-// Функция для создания превьюшки
+// Function to create preview image
 async function createPreview(imagePath) {
   const fullImagePath = path.join(rootDir, 'public', imagePath.replace(/^\//, ''));
 
@@ -149,7 +149,7 @@ async function createPreview(imagePath) {
   const name = path.basename(fullImagePath, ext);
   const previewPath = path.join(dir, 'previews', `${name}${ext}`);
 
-  // Определяем размер превью в зависимости от типа изображения
+  // Determine preview size based on image type
   let previewWidth, previewHeight;
   if (imagePath.includes('/img/default/') && (name.includes('rubric') || name.includes('tag'))) {
     previewWidth = rubricPreviewWidth;
@@ -171,7 +171,7 @@ async function createPreview(imagePath) {
     fs.mkdirSync(previewDir, { recursive: true });
   }
 
-  // Если превью уже существует — пропускаем генерацию
+  // If preview already exists - skip generation
   if (fs.existsSync(previewPath)) {
     // console.log(`Preview already exists: ${previewPath}`);
     return;
@@ -188,7 +188,7 @@ async function createPreview(imagePath) {
 
 // Основная функция
 async function generatePreviews() {
-  // Очистка превью только если явно указано (например, через переменную)
+  // Clean previews only if explicitly specified (e.g., via environment variable)
   const CLEAN_PREVIEWS = process.env.CLEAN_PREVIEWS === '1';
   if (CLEAN_PREVIEWS) {
     console.log('Cleaning up existing previews...');

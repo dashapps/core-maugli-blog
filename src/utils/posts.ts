@@ -11,7 +11,7 @@ export async function getFeaturedPosts() {
             .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
             .slice(0, 3); // Максимум 3 featured поста
     } catch (error) {
-        console.error('Ошибка при получении featured постов:', error);
+        console.error('Error getting featured posts:', error);
         return [];
     }
 }
@@ -24,7 +24,7 @@ export async function getAllPosts() {
         const allPosts = await getFilteredCollection('blog');
         return allPosts.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
     } catch (error) {
-        console.error('Ошибка при получении постов:', error);
+        console.error('Error getting posts:', error);
         return [];
     }
 }

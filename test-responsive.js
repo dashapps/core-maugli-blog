@@ -25,7 +25,10 @@ function getResponsiveImages(imagePath) {
         const variantPath = `${basePath}${variant.suffix}${extension}`;
         const filePath = path.join(projectRoot, 'public', variantPath.replace(/^\//, ''));
 
-        console.log(`Проверяем: ${filePath} - ${fs.existsSync(filePath) ? 'НАЙДЕН' : 'НЕ НАЙДЕН'}`);
+        console.log(`Checking: ${filePath} - ${fs.existsSync(filePath) ? 'FOUND' : 'NOT FOUND'}`);
+    });
+
+    // Always add the original image
 
         if (fs.existsSync(filePath)) {
             srcsetItems.push(`${variantPath} ${variant.width}`);
@@ -42,11 +45,11 @@ function getResponsiveImages(imagePath) {
     };
 }
 
-// Тестируем с нашим изображением
+// Testing with our image
 const testImage = '/img/blog/agent-test-image.webp';
-console.log('🧪 Тестируем функцию getResponsiveImages');
+console.log('🧪 Testing getResponsiveImages function');
 console.log('📁 Базовый путь проекта:', projectRoot);
-console.log('🖼️ Тестовое изображение:', testImage);
+console.log('🖼️ Test image:', testImage);
 console.log('');
 
 const result = getResponsiveImages(testImage);

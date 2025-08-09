@@ -1,18 +1,18 @@
-// resize-all.cjs - рекурсивный ресайз изображений
+// resize-all.cjs - recursive image resizing
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-// Размеры для генерации
+// Sizes for generation
 const sizes = [400, 800, 1200];
 
 const inputDir = './public';
-const processedFiles = new Set(); // Отслеживаем обработанные файлы
+const processedFiles = new Set(); // Track processed files
 
-// Рекурсивная функция для обхода папок
+// Recursive function for directory traversal
 function processDirectory(dir) {
   if (!fs.existsSync(dir)) {
-    console.log(`Папка ${dir} не существует`);
+    console.log(`Directory ${dir} does not exist`);
     return;
   }
 
@@ -23,15 +23,15 @@ function processDirectory(dir) {
     const stat = fs.statSync(itemPath);
     
     if (stat.isDirectory()) {
-      // Рекурсивно обрабатываем подпапки
+      // Recursively process subdirectories
       processDirectory(itemPath);
     } else if (stat.isFile()) {
       const ext = path.extname(item).toLowerCase();
       const baseName = path.basename(item, ext);
       
-      // Проверяем, что это изображение и не содержит размер в названии
+      // Check if it's an image and doesn't contain size in filename
       if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
-        // Исключаем PWA иконки и служебные файлы
+        // Exclude PWA icons and service files
         const excludePatterns = [
           'icon-192', 'icon-512', // PWA иконки
           'favicon', // Фавиконки
@@ -41,31 +41,31 @@ function processDirectory(dir) {
         
         const shouldExclude = excludePatterns.some(pattern => baseName.includes(pattern));
         
-        // Пропускаем файлы, которые уже содержат размер (например, image-400.webp, image-800-800.webp)
-        // Улучшенная проверка: пропускаем файлы с -400, -800, -1200 в любом месте названия
+        // Skip files that already contain size (e.g., image-400.webp, image-800-800.webp)
+        // Enhanced check: skip files with -400, -800, -1200 anywhere in the name
         const hasResizeSuffix = sizes.some(size => baseName.includes(`-${size}`));
         
         if (!hasResizeSuffix && !shouldExclude && !processedFiles.has(itemPath)) {
           processedFiles.add(itemPath);
           
-          console.log(`Обрабатываем: ${itemPath}`);
+          console.log(`Processing: ${itemPath}`);
           
           sizes.forEach(width => {
             const outputPath = path.join(path.dirname(itemPath), `${baseName}-${width}${ext}`);
             
-            // Проверяем, что файл еще не существует
+            // Check if file doesn't already exist
             if (!fs.existsSync(outputPath)) {
               sharp(itemPath)
                 .resize(width)
                 .toFile(outputPath, (err) => {
                   if (err) {
-                    console.error(`Ошибка при создании ${outputPath}:`, err.message);
+                    console.error(`Error creating ${outputPath}:`, err.message);
                   } else {
-                    console.log(`✅ Создан: ${path.relative('./public', outputPath)}`);
+                    console.log(`✅ Created: ${path.relative('./public', outputPath)}`);
                   }
                 });
             } else {
-              console.log(`⏭️  Пропускаем (уже существует): ${path.relative('./public', outputPath)}`);
+              console.log(`⏭️  Skipping (already exists): ${path.relative('./public', outputPath)}`);
             }
           });
         }
@@ -74,6 +74,6 @@ function processDirectory(dir) {
   });
 }
 
-console.log('🔄 Начинаем ресайз всех изображений...');
+console.log('🔄 Starting image resize process...');
 processDirectory(inputDir);
-console.log('✅ Обработка завершена!');
+console.log('✅ Image processing completed!');

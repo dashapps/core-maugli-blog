@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Определяем корневые папки
+// Define root directories
 const isInNodeModules = __dirname.includes('node_modules');
 const isSourceProject = !isInNodeModules && (
   __dirname.includes('core-maugli-blog') || 
@@ -83,7 +83,7 @@ async function updateConfigVersion() {
       
       let updated = false;
       
-      // Обновляем версию зависимости
+      // Update dependency version
       if (userPackageData.dependencies && userPackageData.dependencies['core-maugli']) {
         const currentVersion = userPackageData.dependencies['core-maugli'];
         if (currentVersion !== `^${newVersion}`) {
@@ -100,14 +100,14 @@ async function updateConfigVersion() {
         }
       }
       
-      // Обновляем build скрипт для включения генерации превью
+      // Update build script to include preview generation
       if (userPackageData.scripts) {
         const expectedBuildScript = "node typograf-batch.js && node scripts/generate-previews.js && node scripts/verify-assets.js && astro build";
         const currentBuildScript = userPackageData.scripts.build;
         
-        // Проверяем, содержит ли build скрипт генерацию превью
+        // Check if build script contains preview generation
         if (currentBuildScript && !currentBuildScript.includes('generate-previews.js')) {
-          // Добавляем генерацию превью в build процесс
+          // Add preview generation to build process
           if (currentBuildScript.includes('astro build')) {
             userPackageData.scripts.build = currentBuildScript.replace(
               'astro build',
@@ -204,7 +204,7 @@ async function updateComponents() {
     return;
   }
   
-  // Дополнительная проверка
+  // Additional check
   if (packageRoot === userRoot) {
     console.log('⚠️  Skipping component update (packageRoot equals userRoot)');
     return;
@@ -247,7 +247,7 @@ async function updateComponents() {
   // Обрабатываем стили отдельно
   await updateStyles();
   
-  // Обновляем версию в конфиге
+  // Update version in config
   await updateConfigVersion();
   
   console.log(`✅ Updated ${updatedCount} component directories/files`);
