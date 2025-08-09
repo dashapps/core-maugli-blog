@@ -45,10 +45,10 @@ async function getMaugliConfig() {
         const configContent = fs.readFileSync(configPath, 'utf8');
         console.log(colorize('🔍 Reading maugli.config.ts...', 'cyan'));
         
-        // Простой и надежный поиск forceUpdate
+        // Simple and reliable forceUpdate search
         let forceUpdate = false;
         
-        // Ищем все строки с forceUpdate
+        // Search for all lines with forceUpdate
         const lines = configContent.split('\n');
         const forceUpdateLines = lines.filter(line => line.includes('forceUpdate'));
         
@@ -57,9 +57,9 @@ async function getMaugliConfig() {
         for (const line of forceUpdateLines) {
             console.log(colorize(`   ${line.trim()}`, 'gray'));
             
-            // Проверяем разные форматы
+            // Check different formats
             if (line.includes('forceUpdate') && line.includes('true')) {
-                // Проверяем что это не комментарий
+                // Check that this is not a comment
                 const trimmedLine = line.trim();
                 if (!trimmedLine.startsWith('//') && !trimmedLine.startsWith('*')) {
                     forceUpdate = true;

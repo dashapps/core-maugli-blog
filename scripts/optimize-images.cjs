@@ -42,7 +42,7 @@ async function optimizeImage(inputPath, outputPath, width = null) {
             });
         }
         
-        // Применяем оптимизацию в зависимости от формата
+        // Apply optimization based on format
         switch (ext) {
             case '.webp':
                 await sharpInstance
@@ -69,14 +69,14 @@ async function optimizeImage(inputPath, outputPath, width = null) {
                 await sharpInstance
                     .webp(optimizationSettings.webp)
                     .toFile(webpPath);
-                console.log(`🔄 Конвертирован в WebP: ${path.relative('./public', webpPath)}`);
+                console.log(`🔄 Converted to WebP: ${path.relative('./public', webpPath)}`);
                 return;
         }
         
-        console.log(`✅ Оптимизирован: ${path.relative('./public', outputPath)}`);
+        console.log(`✅ Optimized: ${path.relative('./public', outputPath)}`);
         
     } catch (err) {
-        console.error(`❌ Ошибка оптимизации ${outputPath}:`, err.message);
+        console.error(`❌ Optimization error ${outputPath}:`, err.message);
     }
 }
 

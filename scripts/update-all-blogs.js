@@ -97,20 +97,20 @@ function updateBlogProject(projectPath) {
     log(`Updating project: ${absolutePath}`, 'info');
     
     try {
-        // 1. Читаем package.json
+        // 1. Read package.json
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
         
-        // 2. Проверяем, что это проект core-maugli
+        // 2. Check that this is a core-maugli project
         if (packageJson.name !== 'core-maugli') {
             log(`Skipping: not a core-maugli project (${packageJson.name})`, 'warning');
             return false;
         }
         
-        // 3. Обновляем версию
+        // 3. Update version
         const oldVersion = packageJson.version;
         packageJson.version = CURRENT_VERSION;
         
-        // 4. Обновляем скрипты
+        // 4. Update scripts
         let scriptsUpdated = false;
         for (const [scriptName, scriptValue] of Object.entries(CORRECT_SCRIPTS)) {
             if (packageJson.scripts[scriptName] !== scriptValue) {
@@ -119,10 +119,10 @@ function updateBlogProject(projectPath) {
             }
         }
         
-        // 5. Сохраняем package.json
+        // 5. Save package.json
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4));
         
-        // 6. Копируем недостающие скрипты
+        // 6. Copy missing scripts
         const scriptsDir = path.join(absolutePath, 'scripts');
         if (!fs.existsSync(scriptsDir)) {
             fs.mkdirSync(scriptsDir, { recursive: true });

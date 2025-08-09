@@ -107,7 +107,7 @@ async function optimizeWithSquoosh() {
                             const savings = originalSize - optimizedSize;
                             const savingsPercent = Math.round((savings / originalSize) * 100);
                             
-                            // Заменяем оригинал на оптимизированную версию
+                            // Replace original with optimized version
                             fs.copyFileSync(optimizedPath, originalPath);
                             
                             totalSavings += savings;
