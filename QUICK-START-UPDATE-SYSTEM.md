@@ -1,57 +1,57 @@
-# Quick Start Guide: Принудительное обновление версий
+# Quick Start Guide: Force Version Updates
 
-## 🚀 Что нового?
+## 🚀 What's New?
 
-Теперь при каждой сборке (`npm run build`) система автоматически:
+Now with every build (`npm run build`) the system automatically:
 
-1. **Проверяет наличие обновлений** core-maugli
-2. **Показывает новые функции** на английском языке
-3. **Предлагает обновиться** с интерактивным выбором Y/n
-4. **Выполняет полное обновление** при согласии
+1. **Checks for updates** to core-maugli
+2. **Shows new features** in English
+3. **Suggests updating** with interactive Y/n choice
+4. **Performs full update** when agreed
 
-## 📋 Команды
+## 📋 Commands
 
-### Для разработчиков
+### For Developers
 
 ```bash
-npm run build          # Сборка с проверкой версий
-npm run build:fast     # Быстрая сборка без проверки
-npm run check-version  # Принудительная проверка версий
+npm run build          # Build with version check
+npm run build:fast     # Fast build without checking
+npm run check-version  # Force version check
 ```
 
-### Для CI/CD
+### For CI/CD
 
 ```bash
-npm run auto-update    # Автообновление без запросов
-npm run build:ci       # Сборка для CI/CD
+npm run auto-update    # Auto-update without prompts
+npm run build:ci       # Build for CI/CD
 ```
 
-### Для управления блогами
+### For Blog Management
 
 ```bash
-npm run update-all-blogs /path/to/blog    # Обновить один блог
+npm run update-all-blogs /path/to/blog    # Update one blog
 ```
 
-## ⚙️ Переменные окружения
+## ⚙️ Environment Variables
 
 ```bash
-export SKIP_VERSION_CHECK=true      # Пропустить проверку версий
-export DISABLE_AUTO_UPDATE=true     # Отключить автообновления в CI/CD
-export CI=true                      # Активировать CI режим
+export SKIP_VERSION_CHECK=true      # Skip version check
+export DISABLE_AUTO_UPDATE=true     # Disable auto-updates in CI/CD
+export CI=true                      # Activate CI mode
 ```
 
 ## 🌐 Netlify / Vercel Configuration
 
-### Автоматическое обновление (рекомендуется)
+### Automatic Updates (Recommended)
 
 ```toml
 # netlify.toml
 [build]
-  command = "npm run build"  # Автоматически обновится при сборке
+  command = "npm run build"  # Will auto-update during build
   publish = "dist"
 ```
 
-### Отключение автообновлений
+### Disable Auto-Updates
 
 ```toml
 # netlify.toml
@@ -59,19 +59,19 @@ export CI=true                      # Активировать CI режим
   DISABLE_AUTO_UPDATE = "true"
 
 [build]
-  command = "npm run build:ci"  # Сборка без проверки версий
+  command = "npm run build:ci"  # Build without version check
   publish = "dist"
 ```
 
-## 🎯 Результат
+## 🎯 Result
 
-- ✅ Все 100+ блогов можно обновлять централизованно
-- ✅ Принудительная проверка при каждой сборке
-- ✅ Красивый интерфейс с описанием обновлений
-- ✅ Автоматический режим для CI/CD
-- ✅ Полная совместимость со всеми системами сборки
+- ✅ All 100+ blogs can be updated centrally
+- ✅ Force check on every build
+- ✅ Beautiful interface with update descriptions
+- ✅ Automatic mode for CI/CD
+- ✅ Full compatibility with all build systems
 
-## 🔄 Пример работы
+## 🔄 Example Workflow
 
 ```
 🔍 Checking for core-maugli updates...
@@ -93,6 +93,6 @@ export CI=true                      # Активировать CI режим
 ✅ Proceeding with build...
 ```
 
-## 🛠️ Интеграция
+## 🛠️ Integration
 
-Система автоматически интегрируется в любой проект core-maugli и не требует дополнительной настройки!
+The system automatically integrates into any core-maugli project and requires no additional configuration!

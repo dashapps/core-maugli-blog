@@ -1,31 +1,31 @@
-# Исправление проблемы с forceUpdate
+# ForceUpdate Problem Fix
 
-## Проблема
+## Problem
 
-Пользователи устанавливали `"forceUpdate": true` в `maugli.config.ts`, но система все равно запрашивала подтверждение обновления вместо автоматического обновления.
+Users were setting `"forceUpdate": true` in `maugli.config.ts`, but the system still requested update confirmation instead of performing automatic updates.
 
-## Исправление в версии 1.2.62
+## Fix in Version 1.2.62
 
-### Что было исправлено:
+### What was fixed:
 
-1. **Улучшен парсинг конфигурации** - скрипт `scripts/check-version.js` теперь правильно извлекает настройку `forceUpdate` из секции `automation` в файле `maugli.config.ts`
+1. **Improved configuration parsing** - script `scripts/check-version.js` now properly extracts `forceUpdate` setting from `automation` section in `maugli.config.ts` file
 
-2. **Добавлена подробная диагностика** - теперь скрипт показывает:
-   - Найден ли файл `maugli.config.ts`
-   - Какое значение имеет `forceUpdate`
-   - Обнаружена ли CI/CD среда
+2. **Added detailed diagnostics** - now the script shows:
+   - Whether `maugli.config.ts` file is found
+   - What value `forceUpdate` has
+   - Whether CI/CD environment is detected
 
-3. **Исправлено регулярное выражение** для поиска настройки `forceUpdate` в конфигурации
+3. **Fixed regular expression** for finding `forceUpdate` setting in configuration
 
-### Как проверить, что исправление работает:
+### How to check that the fix works:
 
-1. Обновитесь до версии 1.2.62:
+1. Update to version 1.2.62:
 
    ```bash
    npm update core-maugli
    ```
 
-2. Убедитесь, что в `src/config/maugli.config.ts` установлено:
+2. Make sure that in `src/config/maugli.config.ts` is set:
 
    ```typescript
    automation: {
@@ -33,13 +33,13 @@
    }
    ```
 
-3. Запустите команду build и проверьте вывод:
+3. Run build command and check output:
 
    ```bash
    npm run build
    ```
 
-4. В выводе должно быть:
+4. The output should show:
 
    ```
    🔧 Configuration check:
@@ -50,29 +50,29 @@
    🤖 Force update enabled in config. Updating automatically...
    ```
 
-### Если проблема остается:
+### If the problem persists:
 
-1. Проверьте путь к файлу конфигурации: `src/config/maugli.config.ts`
-2. Убедитесь, что секция `automation` правильно оформлена
-3. Проверьте, что нет синтаксических ошибок в TypeScript
+1. Check the configuration file path: `src/config/maugli.config.ts`
+2. Make sure the `automation` section is properly formatted
+3. Check that there are no syntax errors in TypeScript
 
-## Техническая информация
+## Technical Information
 
-### Старое регулярное выражение (не работало):
+### Old regular expression (didn't work):
 
 ```javascript
 const forceUpdateMatch = configContent.match(/automation:\s*{[^}]*?forceUpdate:\s*(true|false)/s);
 ```
 
-### Новое регулярное выражение (работает):
+### New regular expression (works):
 
 ```javascript
 const automationMatch = configContent.match(/automation\s*:\s*{([^}]+)}/s);
 const forceUpdateMatch = automationSection.match(/forceUpdate\s*:\s*(true|false)/);
 ```
 
-### Дополнительные улучшения:
+### Additional improvements:
 
-- Добавлено логирование процесса чтения конфигурации
-- Добавлена диагностическая информация о найденных настройках
-- Улучшена обработка ошибок при парсинге конфигурации
+- Added logging of configuration reading process
+- Added diagnostic information about found settings
+- Improved error handling when parsing configuration

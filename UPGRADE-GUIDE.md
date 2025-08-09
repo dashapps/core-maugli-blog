@@ -1,78 +1,78 @@
-# Инструкция по обновлению для пользователей Maugli Blog
+# Upgrade Guide for Maugli Blog Users
 
-## Исправление ошибки сборки PWA (v1.2.68)
+## PWA Build Error Fix (v1.2.68)
 
-### Проблема
+### Problem
 
-При сборке проекта с командой `npm run build` возникает ошибка:
+When building the project with `npm run build` command, an error occurs:
 
 ```
 ENOTDIR: not a directory, mkdir '/path/to/project/dist/sw.js/'
 ```
 
-### Решение
+### Solution
 
-Обновитесь до версии **1.2.68** или выше:
+Update to version **1.2.68** or higher:
 
 ```bash
 npm update core-maugli
 ```
 
-После обновления автоматически:
+After update automatically:
 
-1. ✅ PWA плагин будет правильно настроен в astro.config.mjs
-2. ✅ Service Worker будет генерироваться без конфликтов
-3. ✅ Сборка проекта будет проходить успешно
+1. ✅ PWA plugin will be properly configured in astro.config.mjs
+2. ✅ Service Worker will be generated without conflicts
+3. ✅ Project build will complete successfully
 
 ---
 
-## Исправление предупреждений PWA Service Worker (v1.2.67)
+## PWA Service Worker Warnings Fix (v1.2.67)
 
-### Проблема
+### Problem
 
-При запуске команды `npm run dev` появляются предупреждения:
+When running `npm run dev` command, warnings appear:
 
 ```
 [WARN] [router] A `getStaticPaths()` route pattern was matched, but no matching static path was found for requested path `/sw.js`
 ```
 
-### Решение
+### Solution
 
-Обновитесь до версии **1.2.67** или выше:
+Update to version **1.2.67** or higher:
 
 ```bash
 npm update core-maugli
 ```
 
-После обновления автоматически:
+After update automatically:
 
-1. ✅ Будет создан файл `src/pages/sw.js.astro` для корректной маршрутизации PWA
-2. ✅ Предупреждения в консоли разработчика исчезнут
-3. ✅ PWA функциональность будет работать без конфликтов
+1. ✅ File `src/pages/sw.js.astro` will be created for correct PWA routing
+2. ✅ Development console warnings will disappear
+3. ✅ PWA functionality will work without conflicts
 
 ---
 
-## Проблема с размером изображений в Lighthouse
+## Lighthouse Image Size Problem
 
-Если ваш отчет Lighthouse показывает большие неоптимизированные изображения (как показано в скриншоте), это означает, что автоматическая генерация превью изображений не работает.
+If your Lighthouse report shows large unoptimized images (as shown in screenshot), this means automatic image preview generation is not working.
 
-## Решение
+## Solution
 
-Обновитесь до версии **1.2.6** или выше:
+Update to version **1.2.6** or higher:
 
 ```bash
 npm update core-maugli
 ```
 
-После обновления автоматически:
+After update automatically:
 
-1. ✅ Скрипты генерации превью будут скопированы в ваш проект
-2. ✅ Build процесс будет обновлен для включения генерации превью
-3. ✅ Версия в package.json будет обновлена
+1. ✅ Preview generation scripts will be copied to your project
+2. ✅ Build process will be updated to include preview generation
+3. ✅ Version in package.json will be updated
 
-## Проверка
+## Verification
 
-После обновления проверьте ваш `package.json`:
+After update, check your `package.json`:
 
 ```json
 {
@@ -85,20 +85,20 @@ npm update core-maugli
 }
 ```
 
-## Запуск генерации превью
+## Running Preview Generation
 
-Теперь при каждой сборке будут автоматически создаваться оптимизированные превью (400x210px) для всех изображений в блоге.
+Now with every build, optimized previews (400x210px) will be automatically created for all blog images.
 
 ```bash
 npm run build
 ```
 
-## Результат
+## Result
 
-После этого ваши изображения в карточках блога будут:
+After this, your blog card images will:
 
-- ⚡ Быстрее загружаться
-- 📱 Корректно отображаться на всех устройствах
-- 🟢 Получать высокие оценки в Lighthouse
+- ⚡ Load faster
+- 📱 Display correctly on all devices
+- 🟢 Get high Lighthouse scores
 
-Размер изображений уменьшится с ~130KB до ~20-30KB!
+Image size will decrease from ~130KB to ~20-30KB!
