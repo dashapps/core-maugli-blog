@@ -119,6 +119,9 @@ async function updateConfigVersion() {
         }
       }
       
+      // Создаем файл sw.js.astro для исправления PWA маршрутизации
+      await createPWAServiceWorkerFile();
+      
       if (updated) {
         await fs.writeFile(userPackageJsonPath, JSON.stringify(userPackageData, null, 2) + '\n', 'utf-8');
         console.log(`📦 Updated package.json with version ^${newVersion}`);
@@ -134,6 +137,42 @@ async function updateConfigVersion() {
     }
   } catch (error) {
     console.warn('Warning: Could not read package version:', error.message);
+  }
+}
+
+async function createPWAServiceWorkerFile() {
+  try {
+    const swPath = path.join(userRoot, 'src/pages/sw.js.astro');
+    
+    // Проверяем, существует ли уже файл
+    try {
+      await fs.stat(swPath);
+      console.log('🔧 PWA service worker file already exists, skipping...');
+      return;
+    } catch {
+      // Файл не существует, создаем его
+    }
+    
+    const swContent = `---
+// Astro page для обработки service worker запросов PWA
+// Это исправляет предупреждения маршрутизации в dev режиме
+---
+
+<script>
+  // Перенаправляем на актуальный service worker
+  if (typeof window !== 'undefined') {
+    window.location.href = '/dev-dist/sw.js';
+  }
+</script>`;
+
+    // Создаем папку если её нет
+    await fs.mkdir(path.dirname(swPath), { recursive: true });
+    
+    // Создаем файл
+    await fs.writeFile(swPath, swContent, 'utf-8');
+    console.log('🔧 Created PWA service worker file: src/pages/sw.js.astro');
+  } catch (error) {
+    console.warn('Warning: Could not create PWA service worker file:', error.message);
   }
 }
 
