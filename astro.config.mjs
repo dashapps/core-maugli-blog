@@ -37,7 +37,7 @@ export const pwaOptions = {
     workbox: {
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/sw\.js$/],
         clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,webp,svg}'],
         runtimeCaching: [
@@ -95,6 +95,7 @@ export default defineConfig({
     vite: {
         plugins: [
             tailwindcss(),
+            VitePWA(pwaOptions),
             imagetools({
                 // Aggressive image optimization
                 defaultDirectives: () => {
