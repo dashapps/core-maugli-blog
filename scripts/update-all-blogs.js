@@ -58,7 +58,12 @@ const REQUIRED_SCRIPTS = [
     'scripts/check-version.js',
     'scripts/auto-update.js',
     'scripts/set-force-update.js',
-    '.gitignore'
+    '.gitignore',
+];
+
+// Файлы, которые должны быть в корне проекта
+const REQUIRED_ROOT_FILES = [
+    'astro-image-resize.mjs'
 ];
 
 function log(message, type = 'info') {
@@ -123,29 +128,41 @@ function updateBlogProject(projectPath) {
         // 5. Save package.json
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 4));
         
-        // 6. Copy missing scripts
+        // 6. Copy scripts (заменяем всегда)
         const scriptsDir = path.join(absolutePath, 'scripts');
         if (!fs.existsSync(scriptsDir)) {
             fs.mkdirSync(scriptsDir, { recursive: true });
         }
-        
         let scriptsCopied = 0;
-        const sourceScriptsDir = path.join(process.cwd(), 'scripts');
-        
         for (const scriptFile of REQUIRED_SCRIPTS) {
             const sourcePath = path.join(process.cwd(), scriptFile);
             const targetPath = path.join(absolutePath, scriptFile);
-            
             if (fs.existsSync(sourcePath)) {
-                // Создаем директорию если не существует
                 const targetDir = path.dirname(targetPath);
                 if (!fs.existsSync(targetDir)) {
                     fs.mkdirSync(targetDir, { recursive: true });
                 }
-                
-                // Копируем файл
+                // Всегда заменяем файл
                 fs.copyFileSync(sourcePath, targetPath);
                 scriptsCopied++;
+            }
+        }
+        // 6.1. Копируем файлы в корень (например, astro-image-resize.mjs)
+        for (const rootFile of REQUIRED_ROOT_FILES) {
+            const sourcePath = path.join(process.cwd(), rootFile);
+            const targetPath = path.join(absolutePath, rootFile);
+            if (fs.existsSync(sourcePath)) {
+                fs.copyFileSync(sourcePath, targetPath);
+            }
+        }
+        // 6.2. Удаляем дублирующиеся скрипты с " 2" в имени
+        const glob = require('glob');
+        const dups = glob.sync(path.join(scriptsDir, '* 2.*'));
+        for (const dup of dups) {
+            try {
+                fs.unlinkSync(dup);
+            } catch (e) {
+                log(`Не удалось удалить дубликат: ${dup}`, 'warning');
             }
         }
         

@@ -9,7 +9,7 @@
 
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm update core-maugli && npm run build"
 
 [build.environment]
   NODE_VERSION = "20"
