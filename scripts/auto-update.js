@@ -8,6 +8,7 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 // Colors for console output
 const colors = {
@@ -62,6 +63,78 @@ function compareVersions(current, latest) {
     return false;
 }
 
+async function syncHelperFiles() {
+    const root = process.cwd();
+    const srcBase = path.join(root, 'node_modules', 'core-maugli');
+    const itemsToCopy = [
+        'astro-image-resize.mjs',
+        'scripts/flatten-images.cjs',
+        'scripts/optimize-images.cjs',
+        'scripts/generate-previews.js',
+        'scripts/verify-assets.js',
+        'scripts/upgrade-config.js',
+        'scripts/setup-user-images.js',
+        'scripts/featured.js',
+        'scripts/update-components.js',
+        'scripts/update-with-backup.js',
+        'scripts/check-version.js',
+        'scripts/auto-update.js',
+        'scripts/set-force-update.js',
+        '.gitignore',
+    ];
+
+    async function sha256(p) {
+        try {
+            const buf = await fs.promises.readFile(p);
+            return crypto.createHash('sha256').update(buf).digest('hex');
+        } catch {
+            return null;
+        }
+    }
+
+    async function ensureDir(p) {
+        await fs.promises.mkdir(path.dirname(p), { recursive: true });
+    }
+
+    async function copyIfChanged(src, dst) {
+        const [hSrc, hDst] = await Promise.all([sha256(src), sha256(dst)]);
+        if (!hSrc) throw new Error(`Source not found: ${src}`);
+        if (hSrc !== hDst) {
+            await ensureDir(dst);
+            await fs.promises.copyFile(src, dst);
+            console.log(`→ updated ${path.relative(root, dst)}`);
+        } else {
+            console.log(`= up-to-date ${path.relative(root, dst)}`);
+        }
+    }
+
+    async function copyItems() {
+        for (const rel of itemsToCopy) {
+            const src = path.join(srcBase, rel);
+            const dst = path.join(root, rel);
+            await copyIfChanged(src, dst);
+        }
+    }
+
+    async function cleanupDuplicates() {
+        async function walk(dir) {
+            const ents = await fs.promises.readdir(dir, { withFileTypes: true });
+            for (const e of ents) {
+                const p = path.join(dir, e.name);
+                if (e.isDirectory()) await walk(p);
+                else if (/\s2(\.[^.]+)?$/i.test(e.name)) {
+                    await fs.promises.unlink(p).catch(() => {});
+                    console.log(`✖ removed duplicate: ${path.relative(root, p)}`);
+                }
+            }
+        }
+        await walk(root);
+    }
+
+    await copyItems();
+    await cleanupDuplicates().catch(e => console.warn('cleanup warning:', e.message));
+}
+
 async function performAutoUpdate() {
     console.log(colorize('🤖 CI/CD Auto-update mode activated', 'cyan'));
     console.log(colorize('🔄 Updating core-maugli automatically...', 'blue'));
@@ -76,6 +149,7 @@ async function performAutoUpdate() {
             // Fallback to simple npm update
             console.log(colorize('📦 Running npm update...', 'cyan'));
             execSync('npm update core-maugli', { stdio: 'inherit' });
+            await syncHelperFiles();
         }
         
         console.log(colorize('✅ Auto-update completed successfully!', 'green'));
