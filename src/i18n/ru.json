@@ -85,6 +85,14 @@
     "yesterday": "вчера"
   },
   "sidebarAriaLabel": "Сайдбар",
+  "summaryCard": {
+    "ariaLabel": "Саммари статьи",
+    "summaryLabel": "Саммари:"
+  },
+  "faqCard": {
+    "ariaLabel": "Часто задаваемые вопросы",
+    "faqLabel": "FAQ:"
+  },
   "summaryFAQCard": {
     "ariaLabel": "Саммари и FAQ",
     "summaryLabel": "Саммари:",

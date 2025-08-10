@@ -88,6 +88,14 @@
     "yesterday": "yesterday"
   },
   "sidebarAriaLabel": "Sidebar",
+  "summaryCard": {
+    "ariaLabel": "Article Summary",
+    "summaryLabel": "Summary:"
+  },
+  "faqCard": {
+    "ariaLabel": "Frequently Asked Questions",
+    "faqLabel": "FAQ:"
+  },
   "summaryFAQCard": {
     "ariaLabel": "Summary and FAQ",
     "summaryLabel": "Summary:",

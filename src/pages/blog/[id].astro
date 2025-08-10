@@ -2,11 +2,12 @@
 import { type CollectionEntry, render } from 'astro:content';
 import ArticleMeta from '../../components/ArticleMeta.astro';
 import ContentFooter from '../../components/ContentFooter.astro';
+import FAQCard from '../../components/FAQCard.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import ProductBannerCard from '../../components/ProductBannerCard.astro';
 import Subscribe from '../../components/Subscribe.astro';
-import SummaryFAQCard from '../../components/SummaryFAQCard.astro';
+import SummaryCard from '../../components/SummaryCard.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import TagsAndShare from '../../components/TagsAndShare.astro';
 import { maugliConfig } from '../../config/maugli.config';
@@ -131,17 +132,15 @@ if (post.data.productID) {
 
             <!-- Основной контент -->
             <div class="md:col-span-11 px-4 md:px-0 h-auto lg:col-span-11">
-                <!-- Summary/FAQ в начале контента -->
+                <!-- Summary в начале контента -->
                 {
                     post.data.generativeEngineOptimization?.generated &&
                         (post.data.generativeEngineOptimization.generated.summary ||
-                            post.data.generativeEngineOptimization.generated.highlights?.length > 0 ||
-                            post.data.generativeEngineOptimization.generated.faq?.length > 0) && (
+                            post.data.generativeEngineOptimization.generated.highlights?.length > 0) && (
                             <div class="not-prose mb-8">
-                                <SummaryFAQCard
+                                <SummaryCard
                                     summary={post.data.generativeEngineOptimization.generated.summary}
                                     highlights={post.data.generativeEngineOptimization.generated.highlights}
-                                    faq={post.data.generativeEngineOptimization.generated.faq}
                                 />
                             </div>
                         )
@@ -154,6 +153,15 @@ if (post.data.productID) {
 
                 <!-- Блок тегов и кнопки поделиться под контентом (только на мобилке) -->
                 <ContentFooter tags={tags} shareUrl={href} title={title} basePath="/blog" productLink={post.data.productLink} />
+
+                <!-- FAQ после контента -->
+                {
+                    post.data.generativeEngineOptimization?.generated?.faq && post.data.generativeEngineOptimization.generated.faq.length > 0 && (
+                        <div class="not-prose mb-8">
+                            <FAQCard faq={post.data.generativeEngineOptimization.generated.faq} />
+                        </div>
+                    )
+                }
 
                 {
                     (prevPost || nextPost) && (

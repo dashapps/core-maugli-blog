@@ -1,18 +1,19 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
-import { getFilteredCollection } from '../../utils/content-loader';
 import ArticleMeta from '../../components/ArticleMeta.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ContentFooter from '../../components/ContentFooter.astro';
+import FAQCard from '../../components/FAQCard.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import ProjectPreview from '../../components/ProjectPreview.astro';
-import SummaryFAQCard from '../../components/SummaryFAQCard.astro';
+import SummaryCard from '../../components/SummaryCard.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import TagsAndShare from '../../components/TagsAndShare.astro';
 import { maugliConfig } from '../../config/maugli.config';
 import { LANGUAGES } from '../../i18n/languages';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getFilteredCollection } from '../../utils/content-loader';
 import { sortItemsByDateDesc } from '../../utils/data-utils';
 import { calculateReadingTime } from '../../utils/reading-time';
 
@@ -98,17 +99,15 @@ const moreLabel = dict.buttons?.more || dicts['en'].buttons.more || 'More';
                 </div>
             </aside>
             <div class="md:col-span-11 px-4 md:px-0 h-auto lg:col-span-11">
-                {/* Summary/FAQ для продукта */}
+                {/* Summary для продукта */}
                 {
                     product.data.generativeEngineOptimization?.generated &&
                         (product.data.generativeEngineOptimization.generated.summary ||
-                            product.data.generativeEngineOptimization.generated.highlights?.length > 0 ||
-                            product.data.generativeEngineOptimization.generated.faq?.length > 0) && (
+                            product.data.generativeEngineOptimization.generated.highlights?.length > 0) && (
                             <div class="not-prose mb-8">
-                                <SummaryFAQCard
+                                <SummaryCard
                                     summary={product.data.generativeEngineOptimization.generated.summary}
                                     highlights={product.data.generativeEngineOptimization.generated.highlights}
-                                    faq={product.data.generativeEngineOptimization.generated.faq}
                                 />
                             </div>
                         )
@@ -116,6 +115,16 @@ const moreLabel = dict.buttons?.more || dicts['en'].buttons.more || 'More';
                 <div class="prose sm:prose-lg lg:prose-xl max-w-none">
                     <Content />
                 </div>
+
+                {/* FAQ после контента продукта */}
+                {
+                    product.data.generativeEngineOptimization?.generated?.faq && product.data.generativeEngineOptimization.generated.faq.length > 0 && (
+                        <div class="not-prose mb-8">
+                            <FAQCard faq={product.data.generativeEngineOptimization.generated.faq} />
+                        </div>
+                    )
+                }
+
                 <ContentFooter tags={tags} shareUrl={href} title={title} basePath="/products" />
                 {/* Связанные статьи */}
                 {

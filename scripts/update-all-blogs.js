@@ -10,11 +10,11 @@
  * node scripts/update-all-blogs.js /path/to/blogs/project1 /path/to/blogs/project2
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 
-const CURRENT_VERSION = '1.2.70';
+const CORE_MAUGLI_VERSION = '1.2.75';
 
 // Correct scripts for package.json
 const CORRECT_SCRIPTS = {

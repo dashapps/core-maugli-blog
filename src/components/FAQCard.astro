@@ -1,0 +1,126 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+
+export interface FaqItem {
+    question: string;
+    answer: string;
+}
+
+export interface Props {
+    faq: FaqItem[];
+}
+
+const { faq } = Astro.props;
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const faqCard = (dict as any).faqCard || (fallbackDict as any).faqCard || {};
+---
+
+<section
+    class="w-full bg-[var(--bg-muted)] rounded-custom p-6 pl-8 sm:p-8 sm:pl-10 mt-8 mb-4 flex flex-col gap-6 sm:gap-10 overflow-hidden"
+    aria-label={faqCard.ariaLabel || 'Часто задаваемые вопросы'}
+>
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+        <div class="flex-shrink-0">
+            <h3 class="font-serif text-[18px] font-bold flex items-center">
+                <span class="mr-2">
+                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_3491_12505)">
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M12.5 0C19.4036 0 25 5.59644 25 12.5C25 19.4036 19.4036 25 12.5 25C5.59644 25 0 19.4036 0 12.5C0 5.59644 5.59644 0 12.5 0ZM12.7549 16.1074C12.5033 16.1075 12.2876 16.2001 12.1074 16.3857C11.9271 16.5715 11.8369 16.7943 11.8369 17.0537C11.837 17.313 11.9272 17.5359 12.1074 17.7217C12.2876 17.9072 12.5034 17.9999 12.7549 18C12.9248 18 13.0779 17.958 13.2139 17.874C13.3533 17.7864 13.4643 17.6701 13.5459 17.5264C13.6308 17.3828 13.6738 17.2253 13.6738 17.0537C13.6738 16.7944 13.5835 16.5715 13.4033 16.3857C13.2230 16.2 13.0066 16.1074 12.7549 16.1074ZM13.041 7C12.4901 7 11.9885 7.11263 11.5361 7.33691C11.0872 7.56126 10.7247 7.88541 10.4492 8.30957C10.1772 8.73371 10.0272 9.24397 10 9.83984H11.2861C11.3133 9.4262 11.4134 9.09086 11.5869 8.83496C11.7603 8.57924 11.976 8.39162 12.2344 8.27246C12.4929 8.15328 12.7621 8.09375 13.041 8.09375C13.3606 8.09378 13.6513 8.16218 13.9131 8.29883C14.175 8.43554 14.3846 8.63042 14.541 8.88281C14.6973 9.13512 14.7754 9.43301 14.7754 9.77637C14.7754 10.0532 14.728 10.3054 14.6328 10.5332C14.541 10.761 14.4147 10.9625 14.2549 11.1377C14.095 11.3095 13.9145 11.4588 13.7139 11.585C13.3806 11.7917 13.0955 12.0184 12.8574 12.2637C12.6193 12.509 12.4349 12.8295 12.3057 13.2256C12.1764 13.6217 12.1084 14.1547 12.1016 14.8242V14.8867H13.3262V14.8242C13.333 14.3895 13.3774 14.0263 13.459 13.7354C13.5406 13.4445 13.6714 13.1937 13.8516 12.9834C14.0318 12.7696 14.2721 12.5668 14.5713 12.374C14.8706 12.1847 15.126 11.9671 15.3369 11.7217C15.5511 11.4764 15.714 11.1976 15.8262 10.8857C15.9418 10.5739 16 10.2253 16 9.83984C16 9.29312 15.8776 8.80552 15.6328 8.37793C15.3913 7.95027 15.0471 7.61354 14.6016 7.36816C14.1595 7.12293 13.6394 7.00003 13.041 7Z"
+                                fill="var(--brand-color)"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_3491_12505">
+                                <rect width="25" height="25" fill="white"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </span>
+                <span class="text-[var(--brand-color)]">{faqCard.faqLabel || 'FAQ:'}</span>
+            </h3>
+        </div>
+        <div class="flex-1 min-w-0 flex flex-col gap-4">
+            {
+                faq.map(({ question, answer }, idx) => (
+                    <div>
+                        <button
+                            type="button"
+                            class="font-sans text-[16px] text-[var(--text-heading)] mb-1 flex items-center w-full text-left group"
+                            aria-expanded={idx === 0 ? 'true' : 'false'}
+                            aria-controls={`faq-answer-${idx}`}
+                            data-faq-idx={idx}
+                            style="background:none;border:none;padding:0;outline:none;cursor:pointer;"
+                        >
+                            <span class="mr-2 flex-shrink-0 transition-transform duration-200 faq-chevron" style={idx === 0 ? 'transform:rotate(90deg);' : ''}>
+                                <svg width="16" height="16" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_3491_12515)">
+                                        <path
+                                            fill-rule="evenodd"
+                                            clip-rule="evenodd"
+                                            d="M12.5 0C19.4036 0 25 5.59644 25 12.5C25 19.4036 19.4036 25 12.5 25C5.59644 25 0 19.4036 0 12.5C0 5.59644 5.59644 0 12.5 0ZM9.20801 8.80273L14.6641 12.499L9.8291 15.7764L9.20801 16.1963L10.0498 17.4385L16.4209 13.1201C16.6265 12.9806 16.7499 12.7485 16.75 12.5C16.75 12.2824 16.6556 12.0769 16.4941 11.9355L16.4209 11.8789L10.0498 7.56055L9.20801 8.80273Z"
+                                            fill="var(--brand-color)"
+                                        />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_3491_12515">
+                                            <rect width="25" height="25" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </span>
+                            {question}
+                        </button>
+                        <div id={`faq-answer-${idx}`} class={`font-sans text-[14px] text-[var(--text-main)] ml-6 faq-answer${idx === 0 ? ' open' : ''}`}>
+                            {answer}
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .faq-answer {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+            max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: max-height, opacity;
+    }
+    .faq-answer.open {
+        max-height: 500px;
+        opacity: 1;
+    }
+</style>
+
+<script>
+    // Плавный аккордеон без изменения дизайна
+    if (typeof window !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('[data-faq-idx]');
+            const answers = document.querySelectorAll('.faq-answer');
+            const chevrons = document.querySelectorAll('.faq-chevron');
+            buttons.forEach((btn, idx) => {
+                btn.addEventListener('click', function () {
+                    buttons.forEach((b, i) => {
+                        b.setAttribute('aria-expanded', 'false');
+                        answers[i].classList.remove('open');
+                        chevrons[i].style.transform = '';
+                    });
+                    btn.setAttribute('aria-expanded', 'true');
+                    answers[idx].classList.add('open');
+                    chevrons[idx].style.transform = 'rotate(90deg)';
+                });
+            });
+        });
+    }
+</script>

@@ -137,6 +137,46 @@ async function updateConfigVersion() {
   }
 }
 
+// Функция для принудительного обновления PWA конфигурации
+async function forceUpdatePWAConfig() {
+  try {
+    const packageConfigPath = path.join(packageRoot, 'astro.config.mjs');
+    const userConfigPath = path.join(userRoot, 'astro.config.mjs');
+    
+    // Проверяем, существует ли конфиг в пакете
+    try {
+      await fs.access(packageConfigPath);
+    } catch {
+      console.log('🔧 PWA config not found in package, skipping PWA update');
+      return;
+    }
+    
+    // Читаем конфигурацию из пакета
+    const packageConfigContent = await fs.readFile(packageConfigPath, 'utf-8');
+    
+    // Проверяем, есть ли PWA в конфигурации пакета
+    if (packageConfigContent.includes('VitePWA') || packageConfigContent.includes('@vite-pwa')) {
+      // Если у пользователя уже есть конфиг, делаем резервную копию
+      try {
+        await fs.access(userConfigPath);
+        const backupPath = `${userConfigPath}.backup.${Date.now()}`;
+        await fs.copyFile(userConfigPath, backupPath);
+        console.log(`🔧 Backed up existing config to ${path.basename(backupPath)}`);
+      } catch {
+        // Конфига у пользователя нет, это нормально
+      }
+      
+      // Копируем новую конфигурацию с PWA
+      await fs.copyFile(packageConfigPath, userConfigPath);
+      console.log('🚀 Updated astro.config.mjs with PWA configuration');
+    } else {
+      console.log('🔧 No PWA configuration found in package config');
+    }
+  } catch (error) {
+    console.warn('Warning: Could not update PWA configuration:', error.message);
+  }
+}
+
 async function copyDirectory(src, dest) {
   try {
     await fs.mkdir(dest, { recursive: true });
@@ -249,6 +289,9 @@ async function updateComponents() {
   
   // Update version in config
   await updateConfigVersion();
+  
+  // Force update PWA configuration
+  await forceUpdatePWAConfig();
   
   console.log(`✅ Updated ${updatedCount} component directories/files`);
 }

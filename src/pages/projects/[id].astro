@@ -3,10 +3,11 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import ArticleMeta from '../../components/ArticleMeta.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ContentFooter from '../../components/ContentFooter.astro';
+import FAQCard from '../../components/FAQCard.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import ProductBannerCard from '../../components/ProductBannerCard.astro';
 import ProjectPreview from '../../components/ProjectPreview.astro';
-import SummaryFAQCard from '../../components/SummaryFAQCard.astro';
+import SummaryCard from '../../components/SummaryCard.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import TagsAndShare from '../../components/TagsAndShare.astro';
 import { maugliConfig } from '../../config/maugli.config';
@@ -119,17 +120,15 @@ const moreByTag = pages.projects?.moreByTag || 'More cases';
 
             <!-- Основной контент -->
             <div class="md:col-span-11 px-4 md:px-0 h-auto lg:col-span-11">
-                <!-- Summary/FAQ в начале контента -->
+                <!-- Summary в начале контента -->
                 {
                     project.data.generativeEngineOptimization?.generated &&
                         (project.data.generativeEngineOptimization.generated.summary ||
-                            project.data.generativeEngineOptimization.generated.highlights?.length > 0 ||
-                            project.data.generativeEngineOptimization.generated.faq?.length > 0) && (
+                            project.data.generativeEngineOptimization.generated.highlights?.length > 0) && (
                             <div class="not-prose mb-8">
-                                <SummaryFAQCard
+                                <SummaryCard
                                     summary={project.data.generativeEngineOptimization.generated.summary}
                                     highlights={project.data.generativeEngineOptimization.generated.highlights}
-                                    faq={project.data.generativeEngineOptimization.generated.faq}
                                 />
                             </div>
                         )
@@ -144,6 +143,15 @@ const moreByTag = pages.projects?.moreByTag || 'More cases';
 
                 {/* Мобильный блок: поделиться и "Больше о продукте" в один ряд */}
                 <ContentFooter tags={tags} shareUrl={href} title={title} basePath="/projects" class="sm:hidden" productLink={project.data.productLink} />
+
+                <!-- FAQ после контента -->
+                {
+                    project.data.generativeEngineOptimization?.generated?.faq && project.data.generativeEngineOptimization.generated.faq.length > 0 && (
+                        <div class="not-prose mb-8">
+                            <FAQCard faq={project.data.generativeEngineOptimization.generated.faq} />
+                        </div>
+                    )
+                }
 
                 <!-- Блок "Еще по теме" в контенте -->
                 {

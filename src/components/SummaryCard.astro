@@ -1,0 +1,51 @@
+---
+import { maugliConfig } from '../config/maugli.config';
+import { LANGUAGES } from '../i18n/languages';
+
+export interface Props {
+    summary: string;
+    highlights: string[];
+}
+
+const { summary, highlights } = Astro.props;
+const lang = typeof maugliConfig.defaultLang === 'string' ? maugliConfig.defaultLang : 'en';
+const languageObj = LANGUAGES.find((l) => l.code === lang) || LANGUAGES.find((l) => l.code === 'en');
+const fallbackDict = LANGUAGES.find((l) => l.code === 'en')?.dict || {};
+const dict = languageObj?.dict && Object.keys(languageObj.dict).length > 0 ? languageObj.dict : fallbackDict;
+const summaryCard = (dict as any).summaryCard || (fallbackDict as any).summaryCard || {};
+---
+
+<section
+    class="w-full bg-[var(--bg-muted)] rounded-custom p-6 pl-8 sm:p-8 sm:pl-10 mt-0 mb-4 flex flex-col gap-6 sm:gap-10 overflow-hidden"
+    aria-label={summaryCard.ariaLabel || 'Саммари статьи'}
+>
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+        <div class="flex-shrink-0">
+            <h3 class="font-serif text-[18px] font-bold flex items-center">
+                <span class="mr-2">
+                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_3491_12503)">
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M12.5 0C9.18479 0 6.00537 1.31696 3.66117 3.66117C1.31696 6.00537 0 9.18479 0 12.5C0 15.8152 1.31696 18.9946 3.66117 21.3388C6.00537 23.683 9.18479 25 12.5 25C15.8152 25 18.9946 23.683 21.3388 21.3388C23.683 18.9946 25 15.8152 25 12.5C25 9.18479 23.683 6.00537 21.3388 3.66117C18.9946 1.31696 15.8152 0 12.5 0ZM8 9H9V10H8V9ZM10 9H18V10H10V9ZM8 11H9V12H8V11ZM10 11H15V12H10V11ZM8 13H9V14H8V13ZM10 13H17V14H10V13ZM8 15H9V16H8V15ZM10 15H19V16H10V15Z"
+                                fill="var(--brand-color)"></path>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_3491_12503">
+                                <rect width="25" height="25" fill="white"></rect>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </span>
+                <span class="text-[var(--brand-color)]">{summaryCard.summaryLabel || 'Саммари:'}</span>
+            </h3>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="font-sans text-[16px] mb-4 text-[var(--text-main)] max-w-[calc(100%-2rem)]">{summary}</div>
+            <ul class="list-disc ml-6 font-sans text-[14px] text-[var(--text-heading)] leading-[1.2]">
+                {highlights.map((hl) => <li>{hl}</li>)}
+            </ul>
+        </div>
+    </div>
+</section>
