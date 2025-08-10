@@ -14,25 +14,25 @@ export const pwaOptions = {
     registerType: 'autoUpdate',
     includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
     manifest: {
-        name: "Maugli Blog",
-        short_name: "Maugli",
-        start_url: "/",
-        display: "standalone",
+        name: 'Maugli Blog',
+        short_name: 'Maugli',
+        start_url: '/',
+        display: 'standalone',
         background_color: maugliConfig.pwa?.backgroundColor ?? '#ffffff',
         theme_color: maugliConfig.pwa?.themeColor ?? '#0cbf11',
         icons: maugliConfig.pwa?.icons ?? [
             {
-                src: "/icon-192.png",
-                sizes: "192x192",
-                type: "image/png",
-                purpose: "any maskable",
+                src: '/icon-192.png',
+                sizes: '192x192',
+                type: 'image/png',
+                purpose: 'any maskable'
             },
             {
-                src: "/icon-512.png",
-                sizes: "512x512",
-                type: "image/png",
-            },
-        ],
+                src: '/icon-512.png',
+                sizes: '512x512',
+                type: 'image/png'
+            }
+        ]
     },
     workbox: {
         navigateFallback: '/index.html',
@@ -67,7 +67,7 @@ export const pwaOptions = {
     },
     devOptions: {
         enabled: true, // чтобы работал в деве
-        type: 'module',
+        type: 'module'
     }
 };
 
@@ -83,19 +83,14 @@ export default defineConfig({
                 jpeg: { quality: 75, progressive: true },
                 webp: { quality: 75, effort: 6 },
                 avif: { quality: 65, effort: 6 },
-                png: { quality: 75, compressionLevel: 9 },
+                png: { quality: 75, compressionLevel: 9 }
             }
         }
     },
-    integrations: [
-        mdx(),
-        sitemap(),
-        imageResize()
-    ],
+    integrations: [mdx(), sitemap(), imageResize()],
     vite: {
         plugins: [
             tailwindcss(),
-            VitePWA(pwaOptions),
             imagetools({
                 // Aggressive image optimization
                 defaultDirectives: () => {
@@ -134,7 +129,7 @@ export default defineConfig({
                     manualChunks: {
                         // Split vendor code for better caching - removed astro from manual chunks
                     }
-                },
+                }
                 // Remove problematic external configuration
             },
             // Additional optimization settings
@@ -154,8 +149,6 @@ export default defineConfig({
         }
     },
     markdown: {
-        remarkPlugins: [
-            [remarkSlug, { slug: customSlugify }]
-        ]
+        remarkPlugins: [[remarkSlug, { slug: customSlugify }]]
     }
 });
