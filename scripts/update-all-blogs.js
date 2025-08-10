@@ -1,4 +1,4 @@
-#!/usr/bin/env nconst CURRENT_VERSION = '1.2.48';onst CURRENT_VERSION = '1.2.46';de
+#!/usr/bin/env node
 
 /**
  * Script for centralized updating of all blogs to the latest core-maugli version
@@ -12,8 +12,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
-const CURRENT_VERSION = '1.2.44';
+const CURRENT_VERSION = '1.2.70';
 
 // Correct scripts for package.json
 const CORRECT_SCRIPTS = {
