@@ -13,8 +13,11 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const CORE_MAUGLI_VERSION = '1.2.75';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json')));
+const CORE_MAUGLI_VERSION = pkg.version;
 
 // Correct scripts for package.json
 const CORRECT_SCRIPTS = {
@@ -114,7 +117,7 @@ function updateBlogProject(projectPath) {
         
         // 3. Update version
         const oldVersion = packageJson.version;
-        packageJson.version = CURRENT_VERSION;
+        packageJson.version = CORE_MAUGLI_VERSION;
         
         // 4. Update scripts
         let scriptsUpdated = false;
@@ -173,7 +176,7 @@ function updateBlogProject(projectPath) {
         
         // 8. Результат
         log(`Project updated successfully!`, 'success');
-        log(`  Version: ${oldVersion} → ${CURRENT_VERSION}`, 'info');
+        log(`  Version: ${oldVersion} → ${CORE_MAUGLI_VERSION}`, 'info');
         log(`  Scripts updated: ${scriptsUpdated ? 'Yes' : 'No'}`, 'info');
         log(`  Script files copied: ${scriptsCopied}`, 'info');
         
