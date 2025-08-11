@@ -21,10 +21,13 @@
         --text-main: #243047; /* body */
         --text-heading: #1e2a3f; /* headings */
         --text-muted: #5a6475;
+
         --bg-main: #ffffff;
         --bg-main-40: rgba(255, 255, 255, 0.3);
         --bg-muted: rgba(245, 247, 249, 0.94);
         --border-main: rgba(17, 28, 44, 0.13);
+        --code-bg: #e7eaf8; /* фон кода в тексте */
+        --code-color: rgb(24, 133, 79); /* цвет кода в тексте */
 
         --font-sans: 'Inter Variable', sans-serif;
         --font-serif: 'Geologica Variable', sans-serif;
@@ -58,6 +61,8 @@
         --bg-main-40: rgba(11, 19, 30, 0.4);
         --bg-muted: #131d2cde;
         --border-main: rgba(51, 66, 66, 0.6);
+        --code-bg: #202a34; /* фон кода в тексте */
+        --code-color: rgb(80, 174, 241); /* цвет кода в тексте */
 
         /* Card Styles */
         --card-shadow:
@@ -218,5 +223,18 @@
     .prose blockquote p:first-child::before,
     .prose blockquote p:last-child::after {
         content: none !important;
+    }
+    .prose code {
+        color: var(--code-color);
+        background: var(--code-bg);
+        border-radius: 4px;
+        padding: 0.15em 0.4em;
+        font-size: 0.97em;
+        font-family: 'JetBrains Mono', 'Fira Mono', 'Menlo', monospace;
+        word-break: break-word;
+        box-decoration-break: clone;
+        transition:
+            background 0.2s,
+            color 0.2s;
     }
 }
