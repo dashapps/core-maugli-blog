@@ -9,17 +9,6 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Импортируем функцию обновления компонентов
-async function importUpdateComponents() {
-  try {
-    const { updateComponents } = await import('./update-components.js');
-    return updateComponents;
-  } catch (error) {
-    console.warn('Could not load update-components.js:', error.message);
-    return null;
-  }
-}
-
 const defaultConfigPath = path.join(__dirname, '../src/config/maugli.config.ts');
 const userRoot = process.env.INIT_CWD || process.cwd();
 const userConfigPath = path.join(userRoot, 'src/config/maugli.config.ts');
@@ -55,14 +44,6 @@ function mergeMissing(target, source) {
 
 async function main() {
     console.log('🔄 Starting Maugli upgrade process...');
-    
-    // Сначала обновляем компоненты
-    const updateComponents = await importUpdateComponents();
-    if (updateComponents) {
-        await updateComponents();
-    }
-    
-    // Затем обновляем конфиг
     const pkg = await loadTsModule(defaultConfigPath);
     const defCfg = pkg.maugliConfig;
     const newVersion = pkg.MAUGLI_CONFIG_VERSION || defCfg.configVersion;
