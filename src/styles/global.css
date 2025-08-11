@@ -157,7 +157,13 @@
         --tw-prose-captions: var(--text-muted);
     }
 
-    .prose p,
+    .prose p {
+        font-size: 1em;
+        margin: 0 0 0.9em;
+        color: var(--text-main) 85%;
+        line-height: 1.65 !important;
+    }
+
     .prose li {
         line-height: 1.65 !important;
     }
@@ -188,6 +194,44 @@
     }
 
     /* Ссылки — читаемые и неядрёные */
+
+    /* Таблицы — перегородки (границы) в цвет мутед-бэкграунда */
+    .prose table {
+        border-collapse: collapse;
+        margin-top: 16px;
+    }
+    .prose th,
+    .prose td {
+        border-top: 1px solid var(--bg-muted);
+        border-bottom: 1px solid var(--bg-muted);
+        border-left: none;
+        border-right: none;
+    }
+    .prose thead th {
+        background: none !important;
+        font-size: 1em;
+        color: var(--text-heading);
+        border-top: none !important;
+        font-weight: 700;
+    }
+    .prose th,
+    .prose td {
+        font-size: 1em;
+        color: color-mix(in srgb, var(--text-main) 80%, transparent);
+    }
+    html.dark .prose thead th {
+        background: none;
+    }
+    html.dark .prose th,
+    html.dark .prose td {
+        border-top-color: none;
+        border-bottom-color: var(--bg-muted);
+        border-left: none;
+        border-right: none;
+    }
+    html.dark .prose thead th {
+        background: none !important;
+    }
     .prose a {
         color: color-mix(in srgb, var(--color-brand) 80%, var(--text-main));
         text-decoration: underline;
