@@ -2,7 +2,30 @@ import Typograf from 'typograf';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
 import yaml from 'js-yaml';
 
-const tp = new Typograf({ locale: ['ru', 'en-US'] });
+// Determine locale from Maugli config (single-language site)
+let defaultLang = 'en';
+try {
+    const configRaw = readFileSync('./src/config/maugli.config.ts', 'utf8');
+    const match = configRaw.match(/defaultLang:\s*['"]([a-zA-Z-]+)['"]/);
+    if (match) defaultLang = match[1];
+} catch {
+    // use fallback defaultLang
+}
+
+const langLocaleMap = {
+    en: 'en-US',
+    ru: 'ru',
+    es: 'es',
+    de: 'de',
+    pt: 'pt',
+    fr: 'fr',
+    zh: 'zh',
+    ja: 'ja'
+};
+
+const locale = langLocaleMap[defaultLang] || defaultLang;
+const tp = new Typograf({ locale: [locale] });
+
 const dir = './src/content/blog';
 const cacheFile = './.typograf-cache.json';
 
