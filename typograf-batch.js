@@ -11,7 +11,14 @@ const cacheFile = './.typograf-cache.json';
 // If none are passed, default collections are used.
 const dirs = process.argv.slice(2);
 if (dirs.length === 0) {
-    dirs.push('./src/content/blog', './src/content/pages', './src/content/projects', './src/content/products', './src/content/tags');
+    dirs.push(
+        './src/content/blog',
+        './src/content/pages',
+        './src/content/projects',
+        './src/content/products',
+        './src/content/tags',
+        './src/content/authors'
+    );
 }
 
 
