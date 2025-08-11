@@ -45,9 +45,10 @@
     "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
     "generate-previews": "node scripts/generate-previews.js",
     "generate-netlify": "node scripts/generate-netlify-config.js",
-    "verify-pack": "node scripts/verify-pack.js"
+    "verify-pack": "node scripts/verify-pack.js",
+    "clean:duplicates": "node scripts/cleanup-duplicates.js"
   },
-  "prepublishOnly": "npm run verify-pack",
+  "prepublishOnly": "npm run clean:duplicates && npm run verify-pack",
   "dependencies": {
     "@astrojs/mdx": "^4.3.0",
     "@astrojs/rss": "^4.0.11",
