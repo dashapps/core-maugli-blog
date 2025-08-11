@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*' # Запускать только при пуше тега вида v1.2.3
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
