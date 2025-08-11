@@ -17,7 +17,9 @@ if (dirs.length === 0) {
         './src/content/projects',
         './src/content/products',
         './src/content/tags',
-        './src/content/authors'
+        './src/content/authors',
+        './docs',
+        '.'
     );
 }
 
@@ -58,6 +60,7 @@ const processFile = (file) => {
     if (cache[file] === mtime) return;
 
     const data = readFileSync(file, 'utf8');
+    if (!data.startsWith('---')) return;
     const parts = data.split('---');
     if (parts.length < 3) return;
     let fm = yaml.load(parts[1]);
@@ -72,14 +75,16 @@ const processFile = (file) => {
     console.log(`Typografed: ${file}`);
 };
 
+const ignoredDirs = new Set(['node_modules', '.git', 'dist', 'dev-dist', 'public']);
+
 const walk = (dir) => {
     readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
-
         const fullPath = path.join(dir, entry.name);
+
         if (entry.isDirectory()) {
+            if (ignoredDirs.has(entry.name)) return;
             walk(fullPath);
         } else if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.mdx'))) {
-
             processFile(fullPath);
         }
     });
