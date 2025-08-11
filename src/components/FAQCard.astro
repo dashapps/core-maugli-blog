@@ -20,14 +20,14 @@ const faqCard = (dict as any).faqCard || (fallbackDict as any).faqCard || {};
 ---
 
 <section
-    class="w-full bg-[var(--bg-muted)] rounded-custom p-6 pl-8 sm:p-8 sm:pl-10 mt-8 mb-4 flex flex-col gap-6 sm:gap-10 overflow-hidden"
+    class="w-full bg-[var(--bg-muted)] rounded-custom pl-8 sm:p-8 sm:pl-10 mt-8 mb-4 flex flex-col gap-6 sm:gap-10 overflow-hidden"
     aria-label={faqCard.ariaLabel || 'Часто задаваемые вопросы'}
 >
-    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+    <div class="flex flex-col sm:flex-row pt-1 gap-6 sm:gap-9">
         <div class="flex-shrink-0">
-            <h3 class="font-serif text-[18px] font-bold flex items-center">
+            <h3 class="font-serif text-[1.2em] font-bold flex items-center">
                 <span class="mr-2">
-                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_3491_12505)">
                             <path
                                 fill-rule="evenodd"
@@ -37,7 +37,7 @@ const faqCard = (dict as any).faqCard || (fallbackDict as any).faqCard || {};
                         </g>
                         <defs>
                             <clipPath id="clip0_3491_12505">
-                                <rect width="25" height="25" fill="white"></rect>
+                                <rect width="32" height="32" fill="white"></rect>
                             </clipPath>
                         </defs>
                     </svg>
@@ -51,14 +51,14 @@ const faqCard = (dict as any).faqCard || (fallbackDict as any).faqCard || {};
                     <div>
                         <button
                             type="button"
-                            class="font-sans text-[16px] text-[var(--text-heading)] mb-1 flex items-center w-full text-left group"
+                            class="font-sans text-[1.2em] text-[var(--text-heading)] mb-1 flex items-center w-full text-left group"
                             aria-expanded={idx === 0 ? 'true' : 'false'}
                             aria-controls={`faq-answer-${idx}`}
                             data-faq-idx={idx}
                             style="background:none;border:none;padding:0;outline:none;cursor:pointer;"
                         >
                             <span class="mr-2 flex-shrink-0 transition-transform duration-200 faq-chevron" style={idx === 0 ? 'transform:rotate(90deg);' : ''}>
-                                <svg width="16" height="16" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_3491_12515)">
                                         <path
                                             fill-rule="evenodd"
@@ -69,14 +69,18 @@ const faqCard = (dict as any).faqCard || (fallbackDict as any).faqCard || {};
                                     </g>
                                     <defs>
                                         <clipPath id="clip0_3491_12515">
-                                            <rect width="25" height="25" fill="white" />
+                                            <rect width="28" height="28" fill="white" />
                                         </clipPath>
                                     </defs>
                                 </svg>
                             </span>
                             {question}
                         </button>
-                        <div id={`faq-answer-${idx}`} class={`font-sans text-[14px] text-[var(--text-main)] ml-6 faq-answer${idx === 0 ? ' open' : ''}`}>
+                        <div
+                            id={`faq-answer-${idx}`}
+                            class={`font-sans text-[1.05em] ml-8  faq-answer${idx === 0 ? ' open' : ''}`}
+                            style="opacity:0.8;line-height:1.45; color: var(--text-main);"
+                        >
                             {answer}
                         </div>
                     </div>

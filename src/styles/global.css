@@ -1,12 +1,13 @@
-/* Import fonts. Replace or add lines to use other Fontsource packages. */
+/* === Fonts & Tailwind === */
 @import '@fontsource-variable/inter/wght.css' layer(base);
 @import '@fontsource-variable/geologica/wght.css' layer(base);
-
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+/* === Variants === */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* === Theme tokens === */
 @layer base {
     :root {
         /* Brand */
@@ -16,26 +17,26 @@
         --brand-color-40: rgba(var(--brand-color-rgb), 0.3);
         --brand-color-20: rgba(var(--brand-color-rgb), 0.08);
 
-        /* Light Theme */
-        --text-main: #111c2d;
-        --text-heading: #1c273b;
-        --text-muted: #464b56;
+        /* Light (мягче контраст) */
+        --text-main: #243047; /* body */
+        --text-heading: #1e2a3f; /* headings */
+        --text-muted: #5a6475;
         --bg-main: #ffffff;
         --bg-main-40: rgba(255, 255, 255, 0.3);
         --bg-muted: rgba(245, 247, 249, 0.94);
         --border-main: rgba(17, 28, 44, 0.13);
+
         --font-sans: 'Inter Variable', sans-serif;
         --font-serif: 'Geologica Variable', sans-serif;
 
-        /* Card Styles */
+        /* Cards */
         --card-shadow:
-            0px 26.6953px 12.9008px -4px #8b8da80d, 0px 22.5312px 10.1812px -4px #8b8da80d, 0px 18.6953px 7.80859px -4px #8b8da60d,
-            0px 15.375px 5.75px -4px #8b8da80d, 0px 12.7578px 3.97266px -4px #8b8da60d, 0px 11.0312px 2.44375px -4px #8b8da60d,
-            0px 10.3828px 1.13047px -4px #8b8da60d;
+            0px 26.7px 12.9px -4px #8b8da80d, 0px 22.5px 10.18px -4px #8b8da80d, 0px 18.7px 7.81px -4px #8b8da60d, 0px 15.38px 5.75px -4px #8b8da80d,
+            0px 12.76px 3.97px -4px #8b8da60d, 0px 11.03px 2.44px -4px #8b8da60d, 0px 10.38px 1.13px -4px #8b8da60d;
         --card-blur: blur(10px);
         --card-bg: var(--bg-muted);
 
-        /* Rounded Styles */
+        /* Radii */
         --rounded-circle: 50%;
         --rounded-custom: 8px 24px 8px 24px;
         --rounded-normal: 4px;
@@ -49,10 +50,10 @@
         --brand-color-40: rgba(var(--brand-color-rgb), 0.4);
         --brand-color-20: rgba(var(--brand-color-rgb), 0.3);
 
-        /* Dark Theme */
-        --text-main: #ffffff;
-        --text-heading: rgba(202, 252, 254, 0.85);
-        --text-muted: #afb6c3;
+        /* Dark (контраст держим, но без “ацетилена”) */
+        --text-main: #abbbcf;
+        --text-heading: #e6f2ff;
+        --text-muted: #acb6c6;
         --bg-main: #0b131e;
         --bg-main-40: rgba(11, 19, 30, 0.4);
         --bg-muted: #131d2cde;
@@ -68,43 +69,25 @@
         --card-bg: var(--bg-muted);
     }
 }
-/* Cyan */
-/*
-:root {
-    --text-main: #162a2b;
-    --bg-main: #d6e0e2;
-    --bg-muted: #ccd8db;
-    --border-main: #162a2b;
-}
-html.dark {
-    --text-main: #d6e0e2;
-    --bg-main: #162a2b;
-    --bg-muted: #1c3537;
-    --border-main: #d6e0e2;
-}
-*/
 
-/* Green */
-/*
-:root {
-    --text-main: #3a4238;
-    --bg-main: #f3efe6;
-    --bg-muted: #eee9dc;
-    --border-main: #3a4238;
+/* === System/Resets === */
+@layer base {
+    html,
+    body {
+        background-color: var(--bg-main);
+        min-height: 100%;
+        font-optical-sizing: auto;
+        font-feature-settings: 'liga', 'calt', 'kern';
+    }
+    * {
+        box-sizing: border-box;
+    }
 }
-html.dark {
-    --text-main: #f3efe6;
-    --bg-main: #5e6c5b;
-    --bg-muted: #596756;
-    --border-main: #f3efe6;
-}
-*/
 
+/* === Utility theme bridge (optional, для удобных var в классовой верстке) === */
 @theme inline {
-    --font-sans: 'Inter Variable', sans-serif; /* Match --font-sans above if changed */
-    --font-serif: 'Geologica Variable', sans-serif; /* Match --font-serif above if changed */
-    --font-weight-bold: 700;
-    --font-weight-extra-bold: 800;
+    --font-sans: 'Inter Variable', sans-serif;
+    --font-serif: 'Geologica Variable', sans-serif;
     --text-color-main: var(--text-main);
     --text-color-heading: var(--text-heading);
     --background-color-main: var(--bg-main);
@@ -115,118 +98,16 @@ html.dark {
     --color-brand-20: var(--brand-color-20);
 }
 
+/* === Layout helpers === */
 @layer utilities {
-    /* Кастомные скругления для плашек */
     .rounded-custom {
         border-radius: var(--rounded-custom);
     }
-
-    /* Обычные скругления для тегов и форм */
     .rounded-normal {
         border-radius: var(--rounded-normal);
     }
-
     .rounded-circle {
         border-radius: var(--rounded-circle);
-    }
-
-    .prose {
-        --tw-prose-body: var(--text-color-main);
-        --tw-prose-headings: var(--text-color-heading);
-        --tw-prose-lead: var(--text-color-main);
-        --tw-prose-links: var(--text-color-main);
-        --tw-prose-bold: var(--text-color-main);
-        --tw-prose-counters: var(--text-color-main);
-        --tw-prose-bullets: var(--text-color-main);
-        --tw-prose-hr: var(--border-color-main);
-        --tw-prose-quotes: var(--text-color-main);
-        --tw-prose-quote-borders: var(--border-color-main);
-        --tw-prose-captions: var(--text-color-main);
-        --tw-prose-kbd: var(--text-color-main);
-        --tw-prose-code: var(--text-color-main);
-        --tw-prose-th-borders: var(--border-color-main);
-        --tw-prose-td-borders: var(--border-color-main);
-    }
-
-    .prose a {
-        /* background: var(--brand-color-20); */ /* Фон под ссылкой */
-        /* border-radius: 8px 24px 8px 24px; */ /* кастомные скругления */
-        /* padding: 4px 12px;  немного отступов для видимости фона */
-        text-decoration: none; /* убираем подчеркивание */
-        color: var(--color-brand);
-        /* transition: background-color 0.2s ease; */ /* плавный переход */
-    }
-
-    .prose a:hover {
-        /* background: var(--brand-color-60); */ /* более яркий фон при наведении */
-        text-decoration: underline; /* подчеркивание при наведении */
-    }
-
-    .prose :where(h1, h2, h3, h4, h5, h6) {
-        @apply font-serif font-[800];
-        line-height: 1.05 !important; /* 105% для заголовков */
-    }
-
-    .prose blockquote {
-        @apply font-serif font-[300] px-6 py-3 my-8;
-        background: var(--bg-muted); /* серый фон как у плашки */
-        border: 0px solid var(--border-main); /* прямые границы */
-        color: var(--text-main); /* тёмный текст */
-        font-size: 1.08em;
-        box-shadow: none;
-        margin-left: 0; /* чтобы не было сильного сдвига влево */
-        padding: 1em;
-        padding-left: 3em;
-
-        margin-right: 0;
-        border-radius: 8px 24px 8px 24px; /* кастомные скругления */
-    }
-    .prose blockquote p {
-        @apply m-0;
-    }
-    .prose blockquote p:first-child::before,
-    .prose blockquote p:last-child::after,
-    .prose blockquote::before,
-    .prose blockquote::after {
-        content: none !important;
-    }
-
-    .prose p,
-    .prose li,
-    .prose ul,
-    .prose ol {
-        line-height: 1.4 !important; /* 130% для body */
-    }
-
-    /* Sticky positioning support and fixes */
-    @supports (position: sticky) {
-        .sticky-container {
-            height: 100vh;
-            overflow-y: auto;
-        }
-    }
-
-    /* Ensure sticky positioning works in all browsers */
-    .sticky-toc {
-        position: -webkit-sticky !important;
-        position: sticky !important;
-        top: 2rem !important;
-        align-self: flex-start !important;
-        z-index: 10;
-    }
-
-    /* Grid layout for ToC */
-    .toc-grid {
-        display: grid;
-        grid-template-columns: minmax(320px, 360px) 1fr;
-        gap: 2.25rem;
-        align-items: start;
-    }
-
-    @media (max-width: 1023px) {
-        .toc-grid {
-            display: block;
-        }
     }
 
     .card-shadow {
@@ -240,34 +121,102 @@ html.dark {
         background: var(--card-bg) !important;
     }
 
-    /* Custom grid template for 16 columns */
     .grid-cols-16 {
         grid-template-columns: repeat(16, minmax(0, 1fr));
+    }
+    .sticky-toc {
+        position: sticky !important;
+        top: 2rem !important;
+        align-self: flex-start !important;
+        z-index: 10;
+    }
+    @supports (position: sticky) {
+        .sticky-container {
+            height: 100vh;
+            overflow-y: auto;
+        }
     }
 }
 
-@layer base {
-    html {
-        background-color: var(--bg-main); /* Фон для html элемента */
-        /* Предотвращаем overscroll в Safari */
-        overscroll-behavior: none;
-        -webkit-overflow-scrolling: touch;
+/* === Typography (Tailwind Typography overrides) === */
+@layer utilities {
+    .prose {
+        max-width: 72ch; /* комфортная ширина колонки */
+        --tw-prose-body: var(--text-color-main);
+        --tw-prose-headings: var(--text-color-heading);
+        --tw-prose-links: var(--text-color-main);
+        --tw-prose-bold: var(--text-color-main);
+        --tw-prose-hr: var(--border-color-main);
+        --tw-prose-quotes: var(--text-color-main);
+        --tw-prose-quote-borders: var(--border-color-main);
+        --tw-prose-captions: var(--text-muted);
     }
 
-    body {
-        min-height: 100vh;
-        background-color: var(--bg-main); /* Фон для body элемента */
-        /* Предотвращаем overscroll в Safari */
-        overscroll-behavior: none;
+    .prose p,
+    .prose li {
+        line-height: 1.65 !important;
+    }
+    .prose p {
+        margin: 0 0 0.9em;
+    }
+    .prose ul,
+    .prose ol {
+        margin: 0.9em 0 1.1em 1.2em;
     }
 
-    /* Предотвращаем переполнение контейнеров */
-    * {
-        box-sizing: border-box;
+    /* Заголовки — меньше жир, больше воздуха + responsive размер */
+    .prose :where(h1, h2, h3, h4, h5, h6) {
+        font-family: var(--font-serif);
+        font-weight: 700 !important;
+        letter-spacing: -0.01em;
+        line-height: 1.18 !important;
+        margin: 1.2em 0 0.4em;
+    }
+    .prose h1 {
+        font-size: clamp(2rem, 2.2vw + 1rem, 2.75rem);
+    }
+    .prose h2 {
+        font-size: clamp(1.6rem, 1.4vw + 1rem, 2.1rem);
+    }
+    .prose h3 {
+        font-size: clamp(1.35rem, 0.8vw + 1rem, 1.6rem);
     }
 
-    /* Custom grid template for 16 columns */
-    .grid-cols-16 {
-        grid-template-columns: repeat(16, minmax(0, 1fr));
+    /* Ссылки — читаемые и неядрёные */
+    .prose a {
+        color: color-mix(in srgb, var(--color-brand) 80%, var(--text-main));
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+    .prose a:hover {
+        color: var(--color-brand);
+        text-decoration: none;
+    }
+
+    /* Цитаты — спокойные */
+    .prose blockquote {
+        font-family: var(--font-serif);
+        font-weight: 400;
+        line-height: 1.5 !important;
+        font-size: 1.05em;
+        color: var(--text-heading);
+        background: none;
+        border: 0;
+        border-left: 0px solid var(--text-heading) 90%;
+        padding: 1.5em 2em;
+        background: color-mix(in srgb, var(--bg-muted) 50%, transparent);
+        border-radius: 8px 24px 8px 24px; /* твои фирменные уголки */
+        margin: 1.2em 0;
+        box-shadow: none;
+        font-style: normal;
+    }
+    .prose blockquote p {
+        margin: 0;
+    }
+    .prose blockquote::before,
+    .prose blockquote::after,
+    .prose blockquote p:first-child::before,
+    .prose blockquote p:last-child::after {
+        content: none !important;
     }
 }

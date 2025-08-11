@@ -21,9 +21,9 @@ const summaryCard = (dict as any).summaryCard || (fallbackDict as any).summaryCa
 >
     <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
         <div class="flex-shrink-0">
-            <h3 class="font-serif text-[18px] font-bold flex items-center">
+            <h3 class="font-serif text-[1.4em] font-bold flex items-center">
                 <span class="mr-2">
-                    <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_3491_12503)">
                             <path
                                 fill-rule="evenodd"
@@ -42,8 +42,8 @@ const summaryCard = (dict as any).summaryCard || (fallbackDict as any).summaryCa
             </h3>
         </div>
         <div class="flex-1 min-w-0">
-            <div class="font-sans text-[16px] mb-4 text-[var(--text-main)] max-w-[calc(100%-2rem)]">{summary}</div>
-            <ul class="list-disc ml-6 font-sans text-[14px] text-[var(--text-heading)] leading-[1.2]">
+            <div class="font-sans text-[1.2em] pt-1 mb-4 text-[var(--text-main)] max-w-[calc(100%-2rem)]">{summary}</div>
+            <ul class="list-disc ml-6 font-sans text-[1.06em] text-[var(--text-heading)] leading-[1.5em]">
                 {highlights.map((hl) => <li>{hl}</li>)}
             </ul>
         </div>

@@ -1,0 +1,43 @@
+import { getFilteredCollection } from './content-loader';
+
+/**
+ * Получает featured посты для отображения на главной странице
+ */
+export async function getFeaturedPosts() {
+    try {
+        const allPosts = await getFilteredCollection('blog');
+        return allPosts
+            .filter((post) => post.data.isFeatured)
+            .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+            .slice(0, 3); // Максимум 3 featured поста
+    } catch (error) {
+        console.error('Error getting featured posts:', error);
+        return [];
+    }
+}
+
+/**
+ * Получает все посты (не featured) для отображения в блоге
+ */
+export async function getAllPosts() {
+    try {
+        const allPosts = await getFilteredCollection('blog');
+        return allPosts.sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+    } catch (error) {
+        console.error('Error getting posts:', error);
+        return [];
+    }
+}
+
+/**
+ * Получает только обычные посты (не featured)
+ */
+export async function getRegularPosts() {
+    try {
+        const allPosts = await getFilteredCollection('blog');
+        return allPosts.filter((post) => !post.data.isFeatured).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+    } catch (error) {
+        console.error('Ошибка при получении обычных постов:', error);
+        return [];
+    }
+}
