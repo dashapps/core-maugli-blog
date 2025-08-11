@@ -6,6 +6,7 @@ excerpt: >-
 publishDate: 2025-05-14T00:00:00.000Z
 isFeatured: false
 author: dmitry-growth-marketer
+inLanguage: ru
 tags:
   - Автоматизация бизнеса
 seo:
