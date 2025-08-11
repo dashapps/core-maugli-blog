@@ -63,7 +63,12 @@ const PRESERVE_PATHS = [
 ];
 
 // Дополнительные паттерны для мусорных файлов
-const EXTRA_STALE_PATTERNS = [/\s[0-9]+\.(astro|jsx?|tsx?|mjs|cjs|css|json)$/i, /~$/i];
+const EXTRA_STALE_PATTERNS = [
+    /\s[0-9]+\.(astro|jsx?|tsx?|mjs|cjs|css|json)$/i, // "file 1.js"
+    /\(\d+\)\.(astro|tsx?|jsx?|mjs|cjs|css|json)$/i, // "file(1).js"
+    /(?:[\s_-](?:копия|copy))\.(astro|tsx?|jsx?|mjs|cjs|css|json)$/i, // "file - копия.js" или "file_copy.js"
+    /~$/i
+];
 
 // Рекурсивный обход проекта
 async function walk(dir, visitor) {
@@ -103,12 +108,16 @@ async function cleanup() {
 
     // Удаляем дубликаты и временные файлы внутри FORCE_UPDATE_PATHS
     await walk(userRoot, async (p, dir) => {
+        const base = path.basename(p);
         if (dir) {
-            if (isInsideForcePaths(p) && /\s[0-9]+$/.test(path.basename(p))) {
+            if (
+                isInsideForcePaths(p) &&
+                (/\s[0-9]+$/.test(base) || /\(\d+\)$/.test(base) || /(?:[\s_-](?:копия|copy))$/i.test(base))
+            ) {
                 await fs.rm(p, { recursive: true, force: true });
                 removed.push(path.relative(userRoot, p));
             }
-        } else if (isInsideForcePaths(p) && EXTRA_STALE_PATTERNS.some((rx) => rx.test(path.basename(p)))) {
+        } else if (isInsideForcePaths(p) && EXTRA_STALE_PATTERNS.some((rx) => rx.test(base))) {
             await fs.rm(p, { force: true });
             removed.push(path.relative(userRoot, p));
         }
