@@ -1,12 +1,7 @@
 ---
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { getImage } from 'astro:assets';
 import { maugliConfig } from '../config/maugli.config';
 import FormattedDate from './FormattedDate.astro';
-
-const __filename = fileURLToPath(import.meta.url);
-const projectRoot = path.resolve(path.dirname(__filename), '../..');
 
 type Props = {
     href: string;
@@ -44,47 +39,37 @@ const cardImageAlt = seo?.image?.alt || image?.alt || title || 'Изображе
 const content = excerpt || description;
 
 // Функция для создания responsive изображений
-function getResponsiveImages(imagePath: string) {
-    const basePath = imagePath.replace(/\.(webp|jpg|jpeg|png)$/i, '');
-    const extension = imagePath.match(/\.(webp|jpg|jpeg|png)$/i)?.[0] || '.webp';
-
-    const variants = [
-        { suffix: '-400', width: '400w' },
-        { suffix: '-800', width: '800w' },
-        { suffix: '-1200', width: '1200w' }
-    ];
-
-    const srcsetItems = [];
-    let src = imagePath;
-
-    // Добавляем адаптивные версии, если они существуют
-    for (const variant of variants) {
-        const variantPath = `${basePath}${variant.suffix}${extension}`;
-        const filePath = path.join(projectRoot, 'public', variantPath.replace(/^\//, ''));
-
-        if (fs.existsSync(filePath)) {
-            srcsetItems.push(`${variantPath} ${variant.width}`);
-            if (variant.suffix === '-400') {
-                src = variantPath;
-            }
-        }
+async function getResponsiveImages(imagePath: string) {
+    if (!imagePath) {
+        return { src: '', srcset: '', sizes: '' };
     }
 
-    // Если нет адаптивных версий, добавляем оригинальное как fallback
-    if (srcsetItems.length === 0) {
-        srcsetItems.push(imagePath);
-        src = imagePath;
+    if (/^https?:\/\//i.test(imagePath)) {
+        return {
+            src: imagePath,
+            srcset: imagePath,
+            sizes: '(max-width: 640px) 100vw, 400px'
+        };
     }
+
+    const widths = [400, 800, 1200];
+    const imageUrl = new URL(`../../public${imagePath}`, import.meta.url);
+
+    const images = await Promise.all(
+        widths.map((width) => getImage({ src: imageUrl, width, format: 'webp' }))
+    );
 
     return {
-        src,
-        srcset: srcsetItems.join(', '),
+        src: images[0].src,
+        width: images[0].width,
+        height: images[0].height,
+        srcset: images.map((img, i) => `${img.src} ${widths[i]}w`).join(', '),
         sizes: '(max-width: 640px) 100vw, 400px'
     };
 }
 
 // Генерируем responsive изображения для карточки
-const imageData = getResponsiveImages(baseImage);
+const imageData = await getResponsiveImages(baseImage);
 ---
 
 <article
@@ -101,8 +86,8 @@ const imageData = getResponsiveImages(baseImage);
                 src={imageData.src}
                 alt={cardImageAlt}
                 loading="eager"
-                width="1200"
-                height="630"
+                width={imageData.width}
+                height={imageData.height}
                 srcset={imageData.srcset}
                 sizes={imageData.sizes}
                 class="w-full h-full object-cover rounded-custom transition-transform duration-300 group-hover:scale-105"
