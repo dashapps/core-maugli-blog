@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from 'node:child_process';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 
 // Run `npm pack --dry-run` and capture JSON output describing package contents
 const env = { ...process.env, npm_config_loglevel: 'error' };
@@ -42,6 +43,33 @@ for (const entry of expected) {
 if (missing.length > 0) {
   console.error('Missing required files in npm package:', missing.join(', '));
   process.exit(1);
+}
+
+const duplicatePatterns = [/\(\d+\)$/i, /\s\d+$/i, /- copy$/i, /_copy$/i];
+const duplicateDirs = ['src/components', 'src/utils', 'public/flags'];
+
+function findDuplicates(dir, results = []) {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return results;
+  }
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      findDuplicates(full, results);
+    } else {
+      const base = path.basename(entry.name, path.extname(entry.name));
+      if (duplicatePatterns.some((p) => p.test(base))) results.push(full);
+    }
+  }
+  return results;
+}
+
+const duplicates = duplicateDirs.flatMap((d) => findDuplicates(d));
+if (duplicates.length > 0) {
+  console.warn('Warning: duplicate files detected:', duplicates.join(', '));
 }
 
 console.log('All required package files are present.');
