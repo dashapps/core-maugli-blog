@@ -8,42 +8,56 @@ const cacheFile = './.typograf-cache.json';
 
 let cache = {};
 if (existsSync(cacheFile)) {
-  cache = JSON.parse(readFileSync(cacheFile, 'utf8'));
+    cache = JSON.parse(readFileSync(cacheFile, 'utf8'));
 }
 
 let cacheUpdated = false;
 
 readdirSync(dir)
-  .filter(f => f.endsWith('.md'))
-  .forEach(f => {
-    const file = dir + '/' + f;
-    const stats = statSync(file);
-    const mtime = stats.mtimeMs;
+    .filter((f) => f.endsWith('.md'))
+    .forEach((f) => {
+        const file = dir + '/' + f;
+        const stats = statSync(file);
+        const mtime = stats.mtimeMs;
 
-    // Если не изменялся — скипаем
-    if (cache[f] === mtime) return;
+        // Если не изменялся — скипаем
+        if (cache[f] === mtime) return;
 
-    const data = readFileSync(file, 'utf8');
-    const parts = data.split('---');
-    if (parts.length < 3) return;
-    let fm = yaml.load(parts[1]);
-    if (fm.title) fm.title = tp.execute(fm.title);
-    if (fm.description) fm.description = tp.execute(fm.description);
+        const data = readFileSync(file, 'utf8');
+        const parts = data.split('---');
+        if (parts.length < 3) return;
+        let fm = yaml.load(parts[1]);
 
-    const newData = [
-      '---',
-      yaml.dump(fm).trim(),
-      '---',
-      tp.execute(parts.slice(2).join('---'))
-    ].join('\n');
+        const typografize = (value) => {
+            if (Array.isArray(value)) {
+                return value.map(typografize);
+            }
+            if (value && typeof value === 'object') {
+                for (const key of Object.keys(value)) {
+                    value[key] = typografize(value[key]);
+                }
+                return value;
+            }
+            if (typeof value === 'string') {
+                if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('/') || !isNaN(Date.parse(value))) {
+                    return value;
+                }
+                return tp.execute(value);
+            }
+            return value;
+        };
 
-    writeFileSync(file, newData);
-    cache[f] = mtime;
-    cacheUpdated = true;
-    console.log(`Typografed: ${file}`);
-  });
+        fm = typografize(fm);
+
+        const newData = ['---', yaml.dump(fm, { lineWidth: -1, noRefs: true }).trim(), '---', tp.execute(parts.slice(2).join('---'))].join('\n');
+
+        writeFileSync(file, newData);
+        cache[f] = mtime;
+        cacheUpdated = true;
+        console.log(`Typografed: ${file}`);
+    });
 
 // Сохраняем кеш только если были изменения
 if (cacheUpdated) {
-  writeFileSync(cacheFile, JSON.stringify(cache, null, 2));
+    writeFileSync(cacheFile, JSON.stringify(cache, null, 2));
 }
