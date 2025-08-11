@@ -56,7 +56,7 @@ jsonld:
     '@type': 'Offer'
     'priceCurrency': 'USD'
     'price': '0'
-    'url': 'https://freeblog.maugli.ru'
+    'url': 'https://www.npmjs.com/package/core-maugli'
 
 isExample: true
 ---
@@ -157,6 +157,6 @@ Maugli Free Blog спроектирован для лёгкой развертк
 
 ## **Где взять?**
 
-- **GitHub:** [ссылка].
+- **NPM:** [core-maugli](https://www.npmjs.com/package/core-maugli)
 
 **Maugli Free Blog — это платформа, созданная для автоматизации, SEO и AI-интеграций.**
