@@ -2,7 +2,16 @@ import Typograf from 'typograf';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
 import yaml from 'js-yaml';
 
-const tp = new Typograf({ locale: ['ru', 'en-US'] });
+const localeMap = { ru: 'ru', en: 'en-US', es: 'es', fr: 'fr', de: 'de-DE' };
+const tpCache = {};
+function getTp(lang = 'ru') {
+  const locale = localeMap[lang] || 'ru';
+  if (!tpCache[locale]) {
+    tpCache[locale] = new Typograf({ locale: [locale] });
+  }
+  return tpCache[locale];
+}
+
 const dir = './src/content/blog';
 const cacheFile = './.typograf-cache.json';
 
@@ -26,7 +35,8 @@ readdirSync(dir)
     const data = readFileSync(file, 'utf8');
     const parts = data.split('---');
     if (parts.length < 3) return;
-    let fm = yaml.load(parts[1]);
+    let fm = yaml.load(parts[1]) || {};
+    const tp = getTp(fm.inLanguage);
     if (fm.title) fm.title = tp.execute(fm.title);
     if (fm.description) fm.description = tp.execute(fm.description);
 

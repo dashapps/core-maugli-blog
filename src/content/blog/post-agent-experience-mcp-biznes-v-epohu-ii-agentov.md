@@ -8,6 +8,7 @@ publishDate: '2025-05-16'
 isFeatured: true
 tags:
   - Индустриальные обзоры
+inLanguage: ru
 seo:
   title: '5 стратегий контент-маркетинга для стартапов: автоматизация и революция'
   description: |

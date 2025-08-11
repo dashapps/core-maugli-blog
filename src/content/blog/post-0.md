@@ -6,6 +6,7 @@ excerpt: >-
   технологическая революция!
 tags:
   - Автоматизация бизнеса
+inLanguage: ru
 seo:
   image:
     src: /img/examples/blog/post_1_jsonld_guide.webp
