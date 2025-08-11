@@ -66,7 +66,8 @@ const processFile = (file) => {
     const newData = ['---', yaml.dump(fm, { lineWidth: -1, noRefs: true }).trim(), '---', tp.execute(parts.slice(2).join('---'))].join('\n');
 
     writeFileSync(file, newData);
-    cache[file] = mtime;
+    const newMtime = statSync(file).mtimeMs;
+    cache[file] = newMtime;
     cacheUpdated = true;
     console.log(`Typografed: ${file}`);
 };
