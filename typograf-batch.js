@@ -1,5 +1,6 @@
 import Typograf from 'typograf';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
+
 import path from 'path';
 import yaml from 'js-yaml';
 
@@ -12,6 +13,7 @@ const dirs = process.argv.slice(2);
 if (dirs.length === 0) {
     dirs.push('./src/content/blog', './src/content/pages', './src/content/projects', './src/content/products', './src/content/tags');
 }
+
 
 let cache = {};
 if (existsSync(cacheFile)) {
@@ -43,7 +45,9 @@ const processFile = (file) => {
     const stats = statSync(file);
     const mtime = stats.mtimeMs;
 
+
     // Skip if unchanged
+
     if (cache[file] === mtime) return;
 
     const data = readFileSync(file, 'utf8');
@@ -62,16 +66,20 @@ const processFile = (file) => {
 
 const walk = (dir) => {
     readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
+
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
             walk(fullPath);
         } else if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.mdx'))) {
+
             processFile(fullPath);
         }
     });
 };
 
+
 dirs.forEach((d) => walk(d));
+
 
 // Save cache only if updated
 if (cacheUpdated) {
