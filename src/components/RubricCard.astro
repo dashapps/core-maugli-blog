@@ -119,6 +119,7 @@ function getResponsiveImages(imagePath: string) {
     ];
 
     const srcsetItems = [];
+    let src = imagePath;
 
     // Добавляем адаптивные версии, если они существуют
     for (const variant of variants) {
@@ -127,6 +128,9 @@ function getResponsiveImages(imagePath: string) {
 
         if (fs.existsSync(filePath)) {
             srcsetItems.push(`${variantPath} ${variant.width}`);
+            if (variant.suffix === '-400') {
+                src = variantPath;
+            }
         }
     }
 
@@ -134,7 +138,7 @@ function getResponsiveImages(imagePath: string) {
     srcsetItems.push(`${imagePath} 1200w`);
 
     return {
-        src: imagePath,
+        src,
         srcset: srcsetItems.join(', '),
         sizes: '(max-width: 768px) 100vw, 105px'
     };
