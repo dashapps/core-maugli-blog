@@ -46,20 +46,20 @@ async function getLatestVersion() {
 
 function compareVersions(current, latest) {
     if (!current || !latest) return false;
-    
+
     current = current.replace(/^[\^~]/, '');
-    
+
     const currentParts = current.split('.').map(Number);
     const latestParts = latest.split('.').map(Number);
-    
+
     for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
         const currentPart = currentParts[i] || 0;
         const latestPart = latestParts[i] || 0;
-        
+
         if (latestPart > currentPart) return true;
         if (latestPart < currentPart) return false;
     }
-    
+
     return false;
 }
 
@@ -80,7 +80,7 @@ async function syncHelperFiles() {
         'scripts/check-version.js',
         'scripts/auto-update.js',
         'scripts/set-force-update.js',
-        '.gitignore',
+        '.gitignore'
     ];
 
     async function sha256(p) {
@@ -117,28 +117,31 @@ async function syncHelperFiles() {
     }
 
     async function cleanupDuplicates() {
+        let removed = 0;
         async function walk(dir) {
             const ents = await fs.promises.readdir(dir, { withFileTypes: true });
             for (const e of ents) {
                 const p = path.join(dir, e.name);
                 if (e.isDirectory()) await walk(p);
-                else if (/\s2(\.[^.]+)?$/i.test(e.name)) {
+                else if (/\s\d+(\.[^.]+)?$/i.test(e.name) || /\s?\(\d+\)(\.[^.]+)?$/i.test(e.name)) {
                     await fs.promises.unlink(p).catch(() => {});
+                    removed++;
                     console.log(`✖ removed duplicate: ${path.relative(root, p)}`);
                 }
             }
         }
         await walk(root);
+        console.log(`✖ total duplicates removed: ${removed}`);
     }
 
     await copyItems();
-    await cleanupDuplicates().catch(e => console.warn('cleanup warning:', e.message));
+    await cleanupDuplicates().catch((e) => console.warn('cleanup warning:', e.message));
 }
 
 async function performAutoUpdate() {
     console.log(colorize('🤖 CI/CD Auto-update mode activated', 'cyan'));
     console.log(colorize('🔄 Updating core-maugli automatically...', 'blue'));
-    
+
     try {
         // Check if update script exists
         const updateScriptPath = path.join(process.cwd(), 'scripts', 'update-all-blogs.js');
@@ -151,7 +154,7 @@ async function performAutoUpdate() {
             execSync('npm update core-maugli', { stdio: 'inherit' });
             await syncHelperFiles();
         }
-        
+
         console.log(colorize('✅ Auto-update completed successfully!', 'green'));
         return true;
     } catch (error) {
@@ -162,36 +165,36 @@ async function performAutoUpdate() {
 
 async function main() {
     console.log(colorize('🔍 Checking for core-maugli updates...', 'cyan'));
-    
+
     const currentVersion = await getCurrentVersion();
     const latestVersion = await getLatestVersion();
-    
+
     if (!currentVersion || !latestVersion) {
         console.log(colorize('⚠️  Could not check version. Proceeding...', 'yellow'));
         return;
     }
-    
+
     console.log(colorize(`📦 Current version: ${currentVersion}`, 'white'));
     console.log(colorize(`📦 Latest version: ${latestVersion}`, 'white'));
-    
+
     if (!compareVersions(currentVersion, latestVersion)) {
         console.log(colorize('✅ Already using the latest version!', 'green'));
         return;
     }
-    
+
     // Auto-update without prompts
     console.log(colorize(`🚀 New version ${latestVersion} available! Auto-updating...`, 'magenta'));
-    
+
     const success = await performAutoUpdate();
     if (!success) {
         console.error(colorize('❌ Auto-update failed. Build may fail or produce unexpected results.', 'red'));
         process.exit(1);
     }
-    
+
     console.log(colorize('✅ Ready to proceed with updated version!', 'green'));
 }
 
-main().catch(error => {
+main().catch((error) => {
     console.error(colorize('❌ Auto-update check failed:', 'red'), error.message);
     process.exit(1);
 });
