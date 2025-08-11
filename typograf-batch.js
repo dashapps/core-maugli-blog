@@ -1,52 +1,20 @@
 import Typograf from 'typograf';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join } from 'path';
+
+import path from 'path';
 import yaml from 'js-yaml';
 
-
-// Determine locale from Maugli config (single-language site)
-let defaultLang = 'en';
-try {
-    const configRaw = readFileSync('./src/config/maugli.config.ts', 'utf8');
-    const match = configRaw.match(/defaultLang:\s*['"]([a-zA-Z-]+)['"]/);
-    if (match) defaultLang = match[1];
-} catch {
-    // use fallback defaultLang
-}
-
-const langLocaleMap = {
-    en: 'en-US',
-    ru: 'ru',
-    es: 'es',
-    de: 'de',
-    pt: 'pt',
-    fr: 'fr',
-    zh: 'zh',
-    ja: 'ja'
-};
-
-const locale = langLocaleMap[defaultLang] || defaultLang;
-const tp = new Typograf({ locale: [locale] });
-
-const dir = './src/content/blog';
+const tp = new Typograf({ locale: ['ru', 'en-US'] });
 const cacheFile = './.typograf-cache.json';
 
-
-const defaultDirs = [
-    './src/content/blog',
-    './src/content/pages',
-    './src/content/projects',
-    './src/content/products',
-    './src/content/tags',
-    './src/content/authors'
-];
-
+// Directories to process are provided via CLI arguments.
+// If none are passed, default collections are used.
 const dirs = process.argv.slice(2);
 if (dirs.length === 0) {
-    dirs.push(...defaultDirs);
+    dirs.push('./src/content/blog', './src/content/pages', './src/content/projects', './src/content/products', './src/content/tags');
 }
 
-const cacheFile = './.typograf-cache.json';
+
 let cache = {};
 if (existsSync(cacheFile)) {
     cache = JSON.parse(readFileSync(cacheFile, 'utf8'));
@@ -77,7 +45,9 @@ const processFile = (file) => {
     const stats = statSync(file);
     const mtime = stats.mtimeMs;
 
-    // Если не изменялся — скипаем
+
+    // Skip if unchanged
+
     if (cache[file] === mtime) return;
 
     const data = readFileSync(file, 'utf8');
@@ -96,22 +66,22 @@ const processFile = (file) => {
 
 const walk = (dir) => {
     readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
-        const fullPath = join(dir, entry.name);
+
+        const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
             walk(fullPath);
-        } else if (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
+        } else if (entry.isFile() && (entry.name.endsWith('.md') || entry.name.endsWith('.mdx'))) {
+
             processFile(fullPath);
         }
     });
 };
 
-dirs.forEach((dir) => {
-    if (existsSync(dir) && statSync(dir).isDirectory()) {
-        walk(dir);
-    }
-});
 
-// Сохраняем кеш только если были изменения
+dirs.forEach((d) => walk(d));
+
+
+// Save cache only if updated
 if (cacheUpdated) {
     writeFileSync(cacheFile, JSON.stringify(cache, null, 2));
 }
