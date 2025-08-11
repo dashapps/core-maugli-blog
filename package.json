@@ -42,7 +42,7 @@
     "build:ci": "SKIP_VERSION_CHECK=true npm run build",
     "init-netlify": "node scripts/copy-netlify-config.js",
     "set-force-update": "node scripts/set-force-update.js",
-    "postinstall": "node scripts/upgrade-config.js && node scripts/setup-user-images.js",
+    "postinstall": "node scripts/postinstall.js",
     "generate-previews": "node scripts/generate-previews.js",
     "generate-netlify": "node scripts/generate-netlify-config.js",
     "verify-pack": "node scripts/verify-pack.js",
